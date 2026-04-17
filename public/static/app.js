@@ -6,16 +6,22 @@
 (function () {
   'use strict';
 
-  /* ─── Navbar: scroll effect & mobile toggle ─────────────── */
+  /* ─── Navbar: scroll effect, subpage-class & mobile toggle ── */
   const navbar = document.getElementById('navbar');
   const navToggle = document.getElementById('navToggle');
 
   if (navbar) {
+    // Unterseiten: Navbar immer mit weißem Hintergrund (kein Transparent)
+    const isSubpage = window.location.pathname !== '/';
+    if (isSubpage) {
+      navbar.classList.add('navbar--subpage');
+    }
+
     const onScroll = () => {
       if (window.scrollY > 40) {
         navbar.classList.add('scrolled');
       } else {
-        navbar.classList.remove('scrolled');
+        if (!isSubpage) navbar.classList.remove('scrolled');
       }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -26,7 +32,17 @@
     navToggle.addEventListener('click', () => {
       navbar.classList.toggle('mobile-open');
       const isOpen = navbar.classList.contains('mobile-open');
-      navToggle.setAttribute('aria-expanded', isOpen);
+      navToggle.setAttribute('aria-expanded', String(isOpen));
+
+      // Dynamisch CTA positionieren: nach dem mobilen Menü
+      if (isOpen) {
+        const nav = navbar.querySelector('.navbar__nav');
+        const cta = navbar.querySelector('.navbar__cta');
+        if (nav && cta) {
+          const navHeight = nav.offsetHeight;
+          cta.style.top = 'calc(100% + ' + navHeight + 'px)';
+        }
+      }
     });
 
     // Close on nav link click
@@ -34,6 +50,13 @@
       link.addEventListener('click', () => {
         navbar.classList.remove('mobile-open');
       });
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (!navbar.contains(e.target)) {
+        navbar.classList.remove('mobile-open');
+      }
     });
   }
 
@@ -110,7 +133,7 @@
 
       if (!isOpen) {
         toggle.classList.add('open');
-        body.classList.add('open');
+        if (body) body.classList.add('open');
       }
     });
   });
@@ -174,7 +197,7 @@
       const target = document.getElementById(id);
       if (target) {
         e.preventDefault();
-        const offset = 80;
+        const offset = 88;
         const top = target.getBoundingClientRect().top + window.scrollY - offset;
         window.scrollTo({ top, behavior: 'smooth' });
       }
