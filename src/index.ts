@@ -163,7 +163,7 @@ app.get('/', (c) => {
           <div class="badge-text"><strong>Mit Herz dabei</strong><span>Individuelle Betreuung</span></div>
         </div>
         <div class="hero__floating-badge bottom-right">
-          <div class="badge-icon">&#x1F4A1;</div>
+          <div class="badge-icon"><i class="fas fa-lightbulb" style="color:var(--primary);"></i></div>
           <div class="badge-text"><strong>Pflegeberatung</strong><span>Kostenlos &amp; unverbindlich</span></div>
         </div>
       </div>
@@ -175,9 +175,9 @@ app.get('/', (c) => {
   <div class="container">
     <div class="feature-strip__inner">
       <div class="feature-strip__item"><span class="icon" aria-hidden="true">&#x2705;</span>G&uuml;nstigere Preise als ambulante Dienste</div>
-      <div class="feature-strip__item"><span class="icon" aria-hidden="true">&#x1F91D;</span>Pers&ouml;nlicher Ansprechpartner</div>
-      <div class="feature-strip__item"><span class="icon" aria-hidden="true">&#x1F3E0;</span>Pflege in Ihrem Zuhause</div>
-      <div class="feature-strip__item"><span class="icon" aria-hidden="true">&#x1F4CB;</span>Abrechnung &uuml;ber Pflegekasse</div>
+      <div class="feature-strip__item"><i class="fas fa-user" aria-hidden="true"></i>Pers&ouml;nlicher Ansprechpartner</div>
+      <div class="feature-strip__item"><i class="fas fa-home" aria-hidden="true"></i>Pflege in Ihrem Zuhause</div>
+      <div class="feature-strip__item"><i class="fas fa-file-invoice" aria-hidden="true"></i>Abrechnung &uuml;ber Pflegekasse</div>
     </div>
   </div>
 </div>
@@ -190,12 +190,12 @@ app.get('/', (c) => {
       <p style="max-width:580px;margin:14px auto 0;">Die Entscheidung f&uuml;r einen Pflegedienst ist nicht leicht. Auxilium bietet Ihnen eine bewusste Alternative &ndash; professionell, menschlich und bezahlbar.</p>
     </div>
     <div class="grid-3">
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x1F464;</div><h3 class="card__title">Einzigartigkeit</h3><p class="card__text">Jeder Mensch verdient individuelle Aufmerksamkeit. Bei Auxilium steht Ihre pers&ouml;nliche Situation immer im Mittelpunkt.</p></article>
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x1F4B0;</div><h3 class="card__title">G&uuml;nstigere Preise</h3><p class="card__text">Auxilium ist deutlich g&uuml;nstiger als herk&ouml;mmliche ambulante Pflegedienste &ndash; und kann &uuml;ber Verhinderungspflege abgerechnet werden.</p></article>
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x1F393;</div><h3 class="card__title">Professionelle Beratung</h3><p class="card__text">Sie erhalten eine vollst&auml;ndige &Uuml;bersicht aller Leistungsanspr&uuml;che aus der Pflegekasse &ndash; optimal f&uuml;r Ihre Situation genutzt.</p></article>
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x1F3E1;</div><h3 class="card__title">Zuhause bleiben</h3><p class="card__text">&Uuml;ber 80 % der Pflegebed&uuml;rftigen wollen zu Hause versorgt werden. Auxilium macht das m&ouml;glich &ndash; mit echtem Heimgef&uuml;hl.</p></article>
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x1F46A;</div><h3 class="card__title">Entlastung der Familie</h3><p class="card__text">Auch pflegende Angeh&ouml;rige sind Kunden bei Auxilium. Ich schaffe FreiR&auml;ume und st&auml;rke dem gesamten Umfeld den R&uuml;cken.</p></article>
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x1F50D;</div><h3 class="card__title">Transparenz</h3><p class="card__text">Klare Preise, kein Kleingedrucktes. Sie wissen immer genau, was Sie erwartet &ndash; ohne &Uuml;berraschungen oder versteckte Kosten.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-user-circle" aria-hidden="true"></i></div><h3 class="card__title">Einzigartigkeit</h3><p class="card__text">Jeder Mensch verdient individuelle Aufmerksamkeit. Bei Auxilium steht Ihre pers&ouml;nliche Situation immer im Mittelpunkt.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-coins" aria-hidden="true"></i></div><h3 class="card__title">G&uuml;nstigere Preise</h3><p class="card__text">Auxilium ist deutlich g&uuml;nstiger als herk&ouml;mmliche ambulante Pflegedienste &ndash; und kann &uuml;ber Verhinderungspflege abgerechnet werden.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-graduation-cap" aria-hidden="true"></i></div><h3 class="card__title">Professionelle Beratung</h3><p class="card__text">Sie erhalten eine vollst&auml;ndige &Uuml;bersicht aller Leistungsanspr&uuml;che aus der Pflegekasse &ndash; optimal f&uuml;r Ihre Situation genutzt.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-home" aria-hidden="true"></i></div><h3 class="card__title">Zuhause bleiben</h3><p class="card__text">&Uuml;ber 80 % der Pflegebed&uuml;rftigen wollen zu Hause versorgt werden. Auxilium macht das m&ouml;glich &ndash; mit echtem Heimgef&uuml;hl.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-users" aria-hidden="true"></i></div><h3 class="card__title">Entlastung der Familie</h3><p class="card__text">Auch pflegende Angeh&ouml;rige sind Kunden bei Auxilium. Ich schaffe FreiR&auml;ume und st&auml;rke dem gesamten Umfeld den R&uuml;cken.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-check-circle" aria-hidden="true"></i></div><h3 class="card__title">Transparenz</h3><p class="card__text">Klare Preise, kein Kleingedrucktes. Sie wissen immer genau, was Sie erwartet &ndash; ohne &Uuml;berraschungen oder versteckte Kosten.</p></article>
     </div>
   </div>
 </section>
@@ -203,10 +203,10 @@ app.get('/', (c) => {
 <div class="stats-banner" role="complementary">
   <div class="container">
     <div class="stats-banner__grid">
-      <div class="text-center"><span class="stats-banner__number">5,7 Mio.</span><p class="stats-banner__label">Pflegebed&uuml;rftige in Deutschland (2019)</p></div>
+      <div class="text-center"><span class="stats-banner__number">ca. 6 Mio.</span><p class="stats-banner__label">Pflegebed&uuml;rftige in Deutschland</p></div>
       <div class="text-center"><span class="stats-banner__number">80+ %</span><p class="stats-banner__label">werden zu Hause versorgt</p></div>
       <div class="text-center"><span class="stats-banner__number">3,1 Mio.</span><p class="stats-banner__label">ausschlie&szlig;lich durch Angeh&ouml;rige betreut</p></div>
-      <div class="text-center"><span class="stats-banner__number">2060</span><p class="stats-banner__label">Hochrechnung: &uuml;ber 6 Mio. Pflegebed&uuml;rftige</p></div>
+      <div class="text-center"><span class="stats-banner__number">125 &euro;</span><p class="stats-banner__label">mtl. Entlastungsbetrag &ndash; direkt nutzbar</p></div>
     </div>
   </div>
 </div>
@@ -221,37 +221,37 @@ app.get('/', (c) => {
     <div class="services-grid">
       <article class="service-card">
         <div class="service-card__header">
-          <div class="service-card__icon" aria-hidden="true">&#x1F6C1;</div>
+          <div class="service-card__icon"><i class="fas fa-shower" aria-hidden="true"></i></div>
           <div class="service-card__header-text"><h3 class="service-card__title">K&ouml;rperpflege</h3><span class="service-card__subtitle">Baden, Duschen, Waschen</span></div>
         </div>
         <div class="service-card__body">
           <p class="service-card__text">Unterst&uuml;tzung beim Duschen oder Baden inkl. An- und Auskleiden, Zahnpflege und Mobilisierung im Bad.</p>
           <div class="service-card__price"><span class="price-new">ab 21,00 &euro;</span><span class="price-compare">28,55 &euro;</span><span class="price-note">Vergleich ambulanter Dienst</span></div>
-          <div class="service-card__savings">&#x2705; Sie sparen: bis zu 7,69 &euro; pro Einsatz</div>
+          <div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>Sie sparen: bis zu 7,69 &euro; pro Einsatz</div>
           <a href="/leistungen#koerperpflege" class="btn btn-outline btn-full-width">Details ansehen</a>
         </div>
       </article>
       <article class="service-card">
         <div class="service-card__header">
-          <div class="service-card__icon" aria-hidden="true">&#x1F932;</div>
+          <div class="service-card__icon"><i class="fas fa-hands-helping" aria-hidden="true"></i></div>
           <div class="service-card__header-text"><h3 class="service-card__title">Betreuung</h3><span class="service-card__subtitle">Begleitung &amp; Gesellschaft</span></div>
         </div>
         <div class="service-card__body">
           <p class="service-card__text">Gesellschaft beim Essen, Spazierg&auml;nge, Tagesausflu&szlig;e und vieles mehr &ndash; die Betreuungsm&ouml;glichkeiten sind vielf&auml;ltig.</p>
           <div class="service-card__price"><span class="price-new">15,00 &euro;</span><span class="price-compare">17,33 &euro;</span><span class="price-note">je angefangene Viertelstunde</span></div>
-          <div class="service-card__savings">&#x2705; G&uuml;nstiger als ambulanter Dienst</div>
+          <div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>G&uuml;nstiger als ambulanter Dienst</div>
           <a href="/leistungen#betreuung" class="btn btn-outline btn-full-width">Details ansehen</a>
         </div>
       </article>
       <article class="service-card">
         <div class="service-card__header">
-          <div class="service-card__icon" aria-hidden="true">&#x1F4C5;</div>
+          <div class="service-card__icon"><i class="fas fa-calendar-alt" aria-hidden="true"></i></div>
           <div class="service-card__header-text"><h3 class="service-card__title">Alltagsorganisation</h3><span class="service-card__subtitle">Termine, Einkauf &amp; mehr</span></div>
         </div>
         <div class="service-card__body">
           <p class="service-card__text">Terminvereinbarungen, Arztbesuche, Friseur, Einkauf &ndash; Auxilium hilft Ihnen, den Alltag zu meistern.</p>
           <div class="service-card__price"><span class="price-new">15,00 &euro;</span><span class="price-compare">17,33 &euro;</span><span class="price-note">je angefangene Viertelstunde</span></div>
-          <div class="service-card__savings">&#x2705; G&uuml;nstiger als ambulanter Dienst</div>
+          <div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>G&uuml;nstiger als ambulanter Dienst</div>
           <a href="/leistungen#alltag" class="btn btn-outline btn-full-width">Details ansehen</a>
         </div>
       </article>
@@ -303,10 +303,10 @@ app.get('/', (c) => {
         <a href="/beratung" class="btn btn-accent mt-6"><i class="fas fa-info-circle" aria-hidden="true"></i>Mehr erfahren</a>
       </article>
       <div style="display:flex;flex-direction:column;gap:14px;">
-        <div class="contact-info-item"><div class="info-icon" aria-hidden="true">&#x1F4B6;</div><div><div class="info-label">Pflegegeld</div><div class="info-value">Geld- oder Sachleistung flexibel nutzen</div></div></div>
-        <div class="contact-info-item"><div class="info-icon" aria-hidden="true">&#x1F504;</div><div><div class="info-label">Entlastungsbetrag</div><div class="info-value">bis zu 125 &euro; monatlich f&uuml;r Betreuung</div></div></div>
-        <div class="contact-info-item"><div class="info-icon" aria-hidden="true">&#x1F3E5;</div><div><div class="info-label">Kurzzeitpflege</div><div class="info-value">&Uuml;berbr&uuml;ckung bei Krankenhausaufenthalt</div></div></div>
-        <div class="contact-info-item"><div class="info-icon" aria-hidden="true">&#x1F527;</div><div><div class="info-label">Hilfsmittel &amp; Umbau</div><div class="info-value">Zusch&uuml;sse f&uuml;r wohnumfeldverbessernde Ma&szlig;nahmen</div></div></div>
+        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-wallet" aria-hidden="true"></i></div><div><div class="info-label">Pflegegeld</div><div class="info-value">Geld- oder Sachleistung flexibel nutzen</div></div></div>
+        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-hand-holding-heart" aria-hidden="true"></i></div><div><div class="info-label">Entlastungsbetrag</div><div class="info-value">bis zu 125 &euro; monatlich f&uuml;r Betreuung</div></div></div>
+        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-hospital" aria-hidden="true"></i></div><div><div class="info-label">Kurzzeitpflege</div><div class="info-value">&Uuml;berbr&uuml;ckung bei Krankenhausaufenthalt</div></div></div>
+        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-tools" aria-hidden="true"></i></div><div><div class="info-label">Hilfsmittel &amp; Umbau</div><div class="info-value">Zusch&uuml;sse f&uuml;r wohnumfeldverbessernde Ma&szlig;nahmen</div></div></div>
       </div>
     </div>
   </div>
@@ -327,35 +327,72 @@ app.get('/', (c) => {
 
 // ─── ÜBER AUXILIUM ────────────────────────────────────────────
 app.get('/ueber-auxilium', (c) => {
-  const hero = pageHero('&Uuml;ber uns', 'Einzigartige Pflege f&uuml;r einzigartige Menschen', 'Lernen Sie Kristina Bronner und die Idee hinter Auxilium kennen.', '&Uuml;ber Auxilium')
+  const hero = pageHero('&Uuml;ber uns', 'Herzlich willkommen &ndash; ich bin Kristina Bronner', 'Gr&uuml;nderin von Auxilium &ndash; Ihrer pers&ouml;nlichen St&uuml;tze in der Pflege.', '&Uuml;ber Auxilium')
   const body = hero + `
 <section class="section" aria-labelledby="person-heading">
   <div class="container">
-    <div class="grid-2" style="gap:56px;">
-      <div>
-        <span class="section-label">Zur Person</span>
-        <h2 id="person-heading">Kristina Bronner</h2>
-        <p style="margin:16px 0 20px;">Als Gr&uuml;nderin von Auxilium bringe ich meine Leidenschaft f&uuml;r die Pflege mit echtem Engagement in Ihren Alltag. Mein Versprechen: individuelle, qualitativ hochwertige Versorgung &ndash; nicht nur pflegerisch, sondern als ganzheitliche Unterst&uuml;tzung f&uuml;r Sie und Ihre Angeh&ouml;rigen.</p>
-        <p style="margin-bottom:28px;">Ich glaube daran, dass jeder Mensch das Recht hat, in seiner vertrauten Umgebung zu leben und seinen Alltag so angenehm wie m&ouml;glich zu gestalten. Die Teilhabe am sozialen Leben und das Wohlergehen des gesamten Umfelds stehen dabei im Vordergrund.</p>
-        <div style="display:flex;flex-direction:column;gap:14px;">
-          <div class="step-item"><div class="step-number" aria-hidden="true">&#x1F49C;</div><div class="step-content"><div class="step-title">Leidenschaft f&uuml;r Menschen</div><div class="step-text">Jeder Mensch ist einzigartig &ndash; diese &Uuml;berzeugung tr&auml;gt meine Arbeit t&auml;glich.</div></div></div>
-          <div class="step-item"><div class="step-number" aria-hidden="true">&#x1F393;</div><div class="step-content"><div class="step-title">Fachkenntnis &amp; Qualit&auml;t</div><div class="step-text">Professionelle Pflege auf h&ouml;chstem Niveau, verbunden mit menschlicher W&auml;rme.</div></div></div>
-          <div class="step-item"><div class="step-number" aria-hidden="true">&#x1F91D;</div><div class="step-content"><div class="step-title">Verl&auml;sslichkeit</div><div class="step-text">Sie k&ouml;nnen sich auf mich verlassen &ndash; p&uuml;nktlich, konstant und transparent.</div></div></div>
-        </div>
-      </div>
-      <div>
-        <div style="border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-lg);margin-bottom:20px;">
-          <img src="/static/logo.jpg" alt="Auxilium Logo &ndash; Schmetterling" style="width:100%;height:280px;object-fit:cover;object-position:center 30%;">
-        </div>
-        <div style="background:var(--primary-light);border:2px solid var(--primary);border-radius:var(--radius-lg);padding:24px;text-align:center;">
-          <div style="font-size:2.5rem;margin-bottom:10px;" aria-hidden="true">&#x1F98B;</div>
-          <h3 style="font-family:'Playfair Display',Georgia,serif;font-size:1.2rem;color:var(--secondary);margin-bottom:10px;">Das Symbol von Auxilium</h3>
-          <p style="font-size:0.875rem;color:var(--text-light);line-height:1.72;margin-bottom:14px;">Ein Schmetterling mit einem fehlenden Fl&uuml;gel &ndash; symbolisch f&uuml;r die Kraft der pers&ouml;nlichen Transformation. Der Mut, Hilfe anzunehmen. <strong style="color:var(--accent);">Auxilium</strong> ist die St&uuml;tze, die fehlt.</p>
-          <div style="display:inline-flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-light);">
-            <span style="display:inline-block;width:10px;height:10px;background:var(--primary);border-radius:50%;"></span>
-            Amber-Orange steht f&uuml;r Lebensenergie und Leidenschaft
+    <div class="person-layout">
+      <div class="person-photo-col">
+        <div class="person-photo-wrap">
+          <img src="/static/kristina.jpg" alt="Kristina Bronner &ndash; Gr&uuml;nderin Auxilium" class="person-photo">
+          <div class="person-photo-badge">
+            <i class="fas fa-award" aria-hidden="true"></i>
+            <div>
+              <strong>Kristina Bronner</strong>
+              <span>Gr&uuml;nderin &amp; Inhaberin</span>
+            </div>
           </div>
         </div>
+        <div class="person-logo-box">
+          <img src="/static/logo.jpg" alt="Auxilium Logo" class="person-logo-img">
+          <div>
+            <p class="person-logo-title">Das Symbol von Auxilium</p>
+            <p class="person-logo-text">Ein Schmetterling mit einem fehlenden Fl&uuml;gel &ndash; f&uuml;r die Kraft der pers&ouml;nlichen Transformation und den Mut, Hilfe anzunehmen.</p>
+          </div>
+        </div>
+      </div>
+      <div class="person-text-col">
+        <span class="section-label">Zur Person</span>
+        <h2 id="person-heading">Mein Weg zu Auxilium</h2>
+        <p style="margin:18px 0 16px;font-size:1.05rem;line-height:1.8;">Ich war bereits bei einigen Arbeitgebern angestellt und bin letztendlich f&uuml;r mich zu dem Entschluss gekommen, dass ich vermutlich keinen Arbeitgeber finden werde, der qualitative Pflege und die Betreuung von pflegebed&uuml;rftigen Menschen mit meinen Augen sieht.</p>
+        <p style="margin-bottom:16px;line-height:1.8;">Meine Energie zielt nun auf mein eigenes Herzensprojekt: <strong style="color:var(--accent);">Auxilium &ndash; Ihre &bdquo;St&uuml;tze&ldquo; rund um das Thema Pflege.</strong></p>
+        <p style="margin-bottom:24px;line-height:1.8;">Wesentlich ist f&uuml;r mich eine <strong>ganzheitliche Versorgung</strong> des Kunden &ndash; zum einen in Bezug auf seine k&ouml;rperlichen Beschwerden, zum anderen auch auf seine psychische Situation und seine emotionale Gem&uuml;tslage.</p>
+        <blockquote class="person-quote">
+          <i class="fas fa-quote-left" aria-hidden="true"></i>
+          <p>Akzeptiere, was ist, lass gehen, was war, und habe Vertrauen in das, was kommt.</p>
+          <cite>&ndash; Ma Vie, Leitspruch von Auxilium</cite>
+        </blockquote>
+        <div class="person-values">
+          <div class="person-value">
+            <i class="fas fa-heart" aria-hidden="true"></i>
+            <div>
+              <div class="person-value__title">Leidenschaft f&uuml;r Menschen</div>
+              <div class="person-value__text">Jeder Mensch ist einzigartig &ndash; diese &Uuml;berzeugung tr&auml;gt meine Arbeit t&auml;glich.</div>
+            </div>
+          </div>
+          <div class="person-value">
+            <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+            <div>
+              <div class="person-value__title">Fachkenntnis &amp; Qualit&auml;t</div>
+              <div class="person-value__text">Professionelle Pflege auf h&ouml;chstem Niveau, verbunden mit menschlicher W&auml;rme.</div>
+            </div>
+          </div>
+          <div class="person-value">
+            <i class="fas fa-handshake" aria-hidden="true"></i>
+            <div>
+              <div class="person-value__title">Verl&auml;sslichkeit</div>
+              <div class="person-value__text">Sie k&ouml;nnen sich auf mich verlassen &ndash; p&uuml;nktlich, konstant und transparent.</div>
+            </div>
+          </div>
+          <div class="person-value">
+            <i class="fas fa-seedling" aria-hidden="true"></i>
+            <div>
+              <div class="person-value__title">Ganzheitlichkeit</div>
+              <div class="person-value__text">K&ouml;rper und Seele geh&ouml;ren zusammen &ndash; ich begleite den ganzen Menschen.</div>
+            </div>
+          </div>
+        </div>
+        <a href="/kontakt" class="btn btn-accent" style="margin-top:8px;"><i class="fas fa-calendar-check" aria-hidden="true"></i>Kostenloses Erstgespr&auml;ch</a>
       </div>
     </div>
   </div>
@@ -366,11 +403,12 @@ app.get('/ueber-auxilium', (c) => {
     <div class="text-center mb-12">
       <span class="section-label">Leitbild</span>
       <h2 id="mission-heading">Wof&uuml;r Auxilium steht</h2>
+      <p style="max-width:540px;margin:14px auto 0;">Gute Pflege bedeutet mehr als k&ouml;rperliche Versorgung &ndash; sie bedeutet Menschlichkeit, Respekt und echte Pr&auml;senz.</p>
     </div>
     <div class="grid-3">
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x2B50;</div><h3 class="card__title">Ganzheitlichkeit</h3><p class="card__text">Pflege bedeutet mehr als k&ouml;rperliche Versorgung. Auxilium denkt den ganzen Menschen &ndash; soziale Bed&uuml;rfnisse, Wohlbefinden und das der Familie.</p></article>
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x1F513;</div><h3 class="card__title">Freiräume schaffen</h3><p class="card__text">Pflegende Angeh&ouml;rige brauchen Auszeiten. Ich schaffe die Freiräume, die Sie ben&ouml;tigen &ndash; damit Sie wieder auftanken k&ouml;nnen.</p></article>
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x1F3C5;</div><h3 class="card__title">Qualit&auml;t als Standard</h3><p class="card__text">Qualitativ hochwertige Pflege ist kein Luxus, sondern ein Recht. Auxilium liefert diesen Standard &ndash; zu fairen, transparenten Preisen.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-infinity" aria-hidden="true"></i></div><h3 class="card__title">Ganzheitlichkeit</h3><p class="card__text">Pflege bedeutet mehr als k&ouml;rperliche Versorgung. Auxilium denkt den ganzen Menschen &ndash; soziale Bed&uuml;rfnisse, Wohlbefinden und das der Familie.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-door-open" aria-hidden="true"></i></div><h3 class="card__title">Freiräume schaffen</h3><p class="card__text">Pflegende Angeh&ouml;rige brauchen Auszeiten. Ich schaffe die Freiräume, die Sie ben&ouml;tigen &ndash; damit Sie wieder auftanken k&ouml;nnen.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-shield-alt" aria-hidden="true"></i></div><h3 class="card__title">Qualit&auml;t als Standard</h3><p class="card__text">Qualitativ hochwertige Pflege ist kein Luxus, sondern ein Recht. Auxilium liefert diesen Standard &ndash; zu fairen, transparenten Preisen.</p></article>
     </div>
   </div>
 </section>
@@ -390,9 +428,9 @@ app.get('/ueber-auxilium', (c) => {
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:14px;">
-        <div class="contact-info-item"><div class="info-icon" aria-hidden="true">&#x1F4CD;</div><div><div class="info-label">Einsatzgebiet</div><div class="info-value">Forst (Baden) und Umgebung</div></div></div>
-        <div class="contact-info-item"><div class="info-icon" aria-hidden="true">&#x1F550;</div><div><div class="info-label">Erreichbarkeit</div><div class="info-value">Montag&ndash;Freitag, 8:00&ndash;18:00 Uhr</div></div></div>
-        <div class="contact-info-item"><div class="info-icon" aria-hidden="true">&#x1F4AC;</div><div><div class="info-label">Erstgespr&auml;ch</div><div class="info-value">Kostenlos &amp; unverbindlich</div></div></div>
+        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></div><div><div class="info-label">Einsatzgebiet</div><div class="info-value">Forst (Baden) und Umgebung</div></div></div>
+        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-clock" aria-hidden="true"></i></div><div><div class="info-label">Erreichbarkeit</div><div class="info-value">Montag&ndash;Freitag, 8:00&ndash;18:00 Uhr</div></div></div>
+        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-comments" aria-hidden="true"></i></div><div><div class="info-label">Erstgespr&auml;ch</div><div class="info-value">Kostenlos &amp; unverbindlich</div></div></div>
         <a href="/kontakt" class="btn btn-accent" style="align-self:flex-start;margin-top:4px;"><i class="fas fa-calendar" aria-hidden="true"></i>Termin anfragen</a>
       </div>
     </div>
@@ -413,7 +451,7 @@ app.get('/leistungen', (c) => {
       <div class="service-card__body">
         <p class="service-card__text">${text}</p>
         <div class="service-card__price"><span class="price-new">${priceNew}</span><span class="price-compare">${priceOld}</span><span class="price-note">${priceNote}</span></div>
-        <div class="service-card__savings">&#x2705; ${saving}</div>
+        <div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>${saving}</div>
       </div>
     </article>`
 
@@ -426,7 +464,7 @@ app.get('/leistungen', (c) => {
         <h2 id="intro-heading">Es gibt immer eine L&ouml;sung &ndash; und nicht nur eine</h2>
         <p style="margin:14px 0 18px;">Wir alle begegnen dem Leben auf unsere eigene Weise. Auxilium hilft Ihnen, Ihre pers&ouml;nliche L&ouml;sung zu finden.</p>
         <div style="background:var(--primary-light);border-radius:var(--radius);padding:18px;border-left:4px solid var(--primary);">
-          <p style="font-size:0.875rem;font-weight:600;color:var(--secondary);margin-bottom:4px;">&#x26A0;&#xFE0F; Alle Preise zzgl. Wegpauschale</p>
+          <p style="font-size:0.875rem;font-weight:600;color:var(--secondary);margin-bottom:4px;"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:6px;"></i>Alle Preise zzgl. Wegpauschale</p>
           <p style="font-size:0.8rem;color:var(--text-light);">Die Wegpauschale variiert je nach Einsatzort und wird vorab kommuniziert.</p>
         </div>
       </div>
@@ -448,14 +486,14 @@ app.get('/leistungen', (c) => {
       <h2 id="services-detail-heading">Was Auxilium f&uuml;r Sie tut</h2>
     </div>
     <div class="grid-2" style="gap:24px;align-items:stretch;">
-      ${serviceCard('koerperpflege','&#x1F6C1;','Gro&szlig;e K&ouml;rperpflege','Baden / Duschen &middot; ca. 35 Min','Unterst&uuml;tzung beim Duschen oder Baden inkl. An- und Auskleiden, Zahnpflege und Mobilisierung im Bad.','35,00 &euro;','42,69 &euro;','Ambulanter Dienst','Sie sparen: 7,69 &euro; pro Einsatz')}
-      ${serviceCard('','&#x1F9FC;','Kleine K&ouml;rperpflege','&bdquo;Katzenw&auml;sche&ldquo; &middot; ca. 20 Min','K&ouml;rperpflege am Waschbecken morgens und/oder abends: Oberkoerper, R&uuml;cken, Intimbereich sowie Zahnpflege.','21,00 &euro;','28,55 &euro;','Ambulanter Dienst','Sie sparen: 7,55 &euro; pro Einsatz')}
-      ${serviceCard('einkauf','&#x1F6D2;','Einkauf','Immer frische Lebensmittel','Sie haben Schwierigkeiten beim Einkaufen? Lassen Sie uns schauen, was Sie brauchen &ndash; und Sie bekommen es!','15,00 &euro;','17,33 &euro;','je angef. Viertelstunde (amb. Dienst)','G&uuml;nstiger als ambulanter Dienst')}
-      ${serviceCard('betreuung','&#x1F932;','Pflegerische Betreuung','Stets gut umsorgt','Gesellschaft beim Essen, Spazierg&auml;nge, Tagesausflu&uml;ge und vieles mehr. Was w&uuml;nschen Sie sich?','15,00 &euro;','17,33 &euro;','je angef. Viertelstunde (amb. Dienst)','G&uuml;nstiger als ambulanter Dienst')}
-      ${serviceCard('alltag','&#x1F4C5;','Alltagsorganisation','Im Alltag alles im Griff','Termine vereinbaren, Arztbesuche, Friseur, Beh&ouml;rdeng&auml;nge &ndash; und falls der Alltag im Chaos versinkt: Auxilium hilft.','15,00 &euro;','17,33 &euro;','je angef. Viertelstunde (amb. Dienst)','G&uuml;nstiger als ambulanter Dienst')}
+      ${serviceCard('koerperpflege','<i class="fas fa-shower"></i>','Gro&szlig;e K&ouml;rperpflege','Baden / Duschen &middot; ca. 35 Min','Unterst&uuml;tzung beim Duschen oder Baden inkl. An- und Auskleiden, Zahnpflege und Mobilisierung im Bad.','35,00 &euro;','42,69 &euro;','Ambulanter Dienst','Sie sparen: 7,69 &euro; pro Einsatz')}
+      ${serviceCard('','<i class="fas fa-hands"></i>','Kleine K&ouml;rperpflege','&bdquo;Katzenw&auml;sche&ldquo; &middot; ca. 20 Min','K&ouml;rperpflege am Waschbecken morgens und/oder abends: Oberk&ouml;rper, R&uuml;cken, Intimbereich sowie Zahnpflege.','21,00 &euro;','28,55 &euro;','Ambulanter Dienst','Sie sparen: 7,55 &euro; pro Einsatz')}
+      ${serviceCard('einkauf','<i class="fas fa-shopping-bag"></i>','Einkauf','Immer frische Lebensmittel','Sie haben Schwierigkeiten beim Einkaufen? Lassen Sie uns schauen, was Sie brauchen &ndash; und Sie bekommen es!','15,00 &euro;','17,33 &euro;','je angef. Viertelstunde (amb. Dienst)','G&uuml;nstiger als ambulanter Dienst')}
+      ${serviceCard('betreuung','<i class="fas fa-hands-helping"></i>','Pflegerische Betreuung','Stets gut umsorgt','Gesellschaft beim Essen, Spazierg&auml;nge, Tagesausflu&szlig;e und vieles mehr. Was w&uuml;nschen Sie sich?','15,00 &euro;','17,33 &euro;','je angef. Viertelstunde (amb. Dienst)','G&uuml;nstiger als ambulanter Dienst')}
+      ${serviceCard('alltag','<i class="fas fa-calendar-alt"></i>','Alltagsorganisation','Im Alltag alles im Griff','Termine vereinbaren, Arztbesuche, Friseur, Beh&ouml;rdeng&auml;nge &ndash; und falls der Alltag im Chaos versinkt: Auxilium hilft.','15,00 &euro;','17,33 &euro;','je angef. Viertelstunde (amb. Dienst)','G&uuml;nstiger als ambulanter Dienst')}
       <article class="service-card" style="background:linear-gradient(135deg,var(--accent),var(--accent-dark));border:none;">
         <div class="service-card__body" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:36px 28px;">
-          <div style="font-size:2.5rem;margin-bottom:14px;" aria-hidden="true">&#x1F4AC;</div>
+          <div style="font-size:2.2rem;margin-bottom:14px;color:white;" aria-hidden="true"><i class="fas fa-comments"></i></div>
           <h3 style="color:white;margin-bottom:10px;font-size:1.1rem;">Nicht das Richtige dabei?</h3>
           <p style="color:rgba(255,235,220,0.88);font-size:0.875rem;margin-bottom:22px;line-height:1.7;">Haben Sie individuelle W&uuml;nsche? Sprechen Sie mich an &ndash; gemeinsam finden wir eine L&ouml;sung.</p>
           <a href="/kontakt" class="btn btn-white"><i class="fas fa-phone" aria-hidden="true"></i>Jetzt anfragen</a>
@@ -472,9 +510,9 @@ app.get('/leistungen', (c) => {
       <h2 id="who-heading">Auxilium ist f&uuml;r Sie, wenn &hellip;</h2>
     </div>
     <div class="grid-3">
-      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;" aria-hidden="true">&#x1F4B6;</div><h3 class="card__title">Sie Pflegegeld beziehen</h3><p class="card__text">Pflegegeldempf&auml;nger k&ouml;nnen Auxilium-Leistungen flexibel und unkompliziert abrechnen.</p></article>
-      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;" aria-hidden="true">&#x1F504;</div><h3 class="card__title">Verhinderungspflege nutzen</h3><p class="card__text">Wer Verhinderungspflege oder den Entlastungsbetrag nutzt, kann Auxilium bis zu 3.539 &euro; im Jahr finanzieren.</p></article>
-      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;" aria-hidden="true">&#x1F4B3;</div><h3 class="card__title">Privatzahler/-innen</h3><p class="card__text">Auch ohne Pflegekassen-Leistungen sind alle Auxilium-Angebote als Privatleistung buchbar.</p></article>
+      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-wallet" aria-hidden="true"></i></div><h3 class="card__title">Sie Pflegegeld beziehen</h3><p class="card__text">Pflegegeldempf&auml;nger k&ouml;nnen Auxilium-Leistungen flexibel und unkompliziert abrechnen.</p></article>
+      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-sync-alt" aria-hidden="true"></i></div><h3 class="card__title">Verhinderungspflege nutzen</h3><p class="card__text">Wer Verhinderungspflege oder den Entlastungsbetrag nutzt, kann Auxilium bis zu 3.539 &euro; im Jahr finanzieren.</p></article>
+      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-credit-card" aria-hidden="true"></i></div><h3 class="card__title">Privatzahler/-innen</h3><p class="card__text">Auch ohne Pflegekassen-Leistungen sind alle Auxilium-Angebote als Privatleistung buchbar.</p></article>
     </div>
     <div class="text-center mt-8">
       <a href="/kontakt" class="btn btn-accent"><i class="fas fa-calendar-check" aria-hidden="true"></i>Kostenloses Erstgespr&auml;ch vereinbaren</a>
@@ -499,9 +537,9 @@ app.get('/beratung', (c) => {
         <a href="/kontakt" class="btn btn-accent"><i class="fas fa-calendar" aria-hidden="true"></i>Beratungsgespr&auml;ch anfragen</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:14px;">
-        <div class="contact-info-item"><div class="info-icon" aria-hidden="true">&#x1F4A1;</div><div><div class="info-label">Vorteil</div><div class="info-value">Individuelle Finanzierungsberatung inklusive</div></div></div>
-        <div class="contact-info-item"><div class="info-icon" aria-hidden="true">&#x1F4DE;</div><div><div class="info-label">Erstkontakt</div><div class="info-value">Kostenlos und unverbindlich</div></div></div>
-        <div class="contact-info-item"><div class="info-icon" aria-hidden="true">&#x1F3E0;</div><div><div class="info-label">Ort</div><div class="info-value">Bei Ihnen zu Hause oder telefonisch</div></div></div>
+        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-lightbulb" aria-hidden="true"></i></div><div><div class="info-label">Vorteil</div><div class="info-value">Individuelle Finanzierungsberatung inklusive</div></div></div>
+        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-phone" aria-hidden="true"></i></div><div><div class="info-label">Erstkontakt</div><div class="info-value">Kostenlos und unverbindlich</div></div></div>
+        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-home" aria-hidden="true"></i></div><div><div class="info-label">Ort</div><div class="info-value">Bei Ihnen zu Hause oder telefonisch</div></div></div>
       </div>
     </div>
   </div>
@@ -515,12 +553,12 @@ app.get('/beratung', (c) => {
       <p style="max-width:520px;margin:14px auto 0;">Folgende Leistungen k&ouml;nnen f&uuml;r die Finanzierung von Auxilium genutzt werden.</p>
     </div>
     <div class="grid-2" style="gap:20px;">
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x1F4B6;</div><h3 class="card__title">Pflegerische Hilfen</h3><p class="card__text">Geld- oder Sachleistung &ndash; je nach Bedarf und Pflegegrad optimal einsetzen.</p></article>
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x1F504;</div><h3 class="card__title">Entlastungsbetrag</h3><p class="card__text">Bis zu 125 &euro; monatlich (1.500 &euro; j&auml;hrlich) f&uuml;r anerkannte Entlastungsleistungen.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-wallet" aria-hidden="true"></i></div><h3 class="card__title">Pflegerische Hilfen</h3><p class="card__text">Geld- oder Sachleistung &ndash; je nach Bedarf und Pflegegrad optimal einsetzen.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-sync-alt" aria-hidden="true"></i></div><h3 class="card__title">Entlastungsbetrag</h3><p class="card__text">Bis zu 125 &euro; monatlich (1.500 &euro; j&auml;hrlich) f&uuml;r anerkannte Entlastungsleistungen.</p></article>
       <article class="card"><div class="card__icon" aria-hidden="true">&#x23F8;</div><h3 class="card__title">Kurzzeitpflege</h3><p class="card__text">&Uuml;berbr&uuml;ckung bei Krankenhausaufenthalten oder zur Entlastung der Angeh&ouml;rigen.</p></article>
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x1F680;</div><h3 class="card__title">Verhinderungspflege</h3><p class="card__text">Wenn die regul&auml;re Pflegeperson ausf&auml;llt &ndash; bis zu 3.539 &euro; im Jahr nutzbar.</p></article>
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x1F317;</div><h3 class="card__title">Tages- und Nachtpflege</h3><p class="card__text">Erg&auml;nzende Betreuung in teilstation&auml;ren Einrichtungen tagss&uuml;ber oder nachts.</p></article>
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x1F3C3;</div><h3 class="card__title">Reha</h3><p class="card__text">Wissen Sie um Ihre Anspr&uuml;che auf eine Rehabilitation? Ich informiere Sie umfassend.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-shield-alt" aria-hidden="true"></i></div><h3 class="card__title">Verhinderungspflege</h3><p class="card__text">Wenn die regul&auml;re Pflegeperson ausf&auml;llt &ndash; bis zu 3.539 &euro; im Jahr nutzbar.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-moon" aria-hidden="true"></i></div><h3 class="card__title">Tages- und Nachtpflege</h3><p class="card__text">Erg&auml;nzende Betreuung in teilstation&auml;ren Einrichtungen tagss&uuml;ber oder nachts.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-walking" aria-hidden="true"></i></div><h3 class="card__title">Reha</h3><p class="card__text">Wissen Sie um Ihre Anspr&uuml;che auf eine Rehabilitation? Ich informiere Sie umfassend.</p></article>
     </div>
   </div>
 </section>
@@ -532,9 +570,9 @@ app.get('/beratung', (c) => {
       <h2 id="aids-heading">Mehr Selbstst&auml;ndigkeit durch die richtigen Mittel</h2>
     </div>
     <div class="grid-3">
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x1F6E1;</div><h3 class="card__title">Pflegehilfsmittel</h3><p class="card__text">Monatlich bis zu 40 &euro; f&uuml;r zum Verbrauch bestimmte Pflegehilfsmittel.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-medkit" aria-hidden="true"></i></div><h3 class="card__title">Pflegehilfsmittel</h3><p class="card__text">Monatlich bis zu 40 &euro; f&uuml;r zum Verbrauch bestimmte Pflegehilfsmittel.</p></article>
       <article class="card"><div class="card__icon" aria-hidden="true">&#x267F;</div><h3 class="card__title">Technische Hilfsmittel</h3><p class="card__text">Zusch&uuml;sse f&uuml;r Rollst&uuml;hle, Pflegebetten, Lifter und andere Hilfsmittel.</p></article>
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x1F3E0;</div><h3 class="card__title">Wohnumfeldverbesserung</h3><p class="card__text">Bis zu 4.000 &euro; Zuschuss pro Ma&szlig;nahme f&uuml;r barrierefreie Umbauten.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-home" aria-hidden="true"></i></div><h3 class="card__title">Wohnumfeldverbesserung</h3><p class="card__text">Bis zu 4.000 &euro; Zuschuss pro Ma&szlig;nahme f&uuml;r barrierefreie Umbauten.</p></article>
     </div>
   </div>
 </section>
@@ -547,9 +585,9 @@ app.get('/beratung', (c) => {
         <h2 id="work-heading">Pflegebedingte Freistellung von der Arbeit</h2>
         <p style="margin:14px 0 28px;">Pflegende Angeh&ouml;rige haben besondere Rechte gegen&uuml;ber dem Arbeitgeber.</p>
         <div style="display:flex;flex-direction:column;gap:16px;">
-          <div class="step-item"><div class="step-number" aria-hidden="true">&#x1F4BC;</div><div class="step-content"><div class="step-title">Pflegeunterst&uuml;tzungsgeld</div><div class="step-text">Kurzfristige Freistellung bis 10 Tage bei akuter Pflegesituation.</div></div></div>
+          <div class="step-item"><div class="step-number"><i class="fas fa-briefcase" aria-hidden="true" style="font-size:0.8rem;"></i></div><div class="step-content"><div class="step-title">Pflegeunterst&uuml;tzungsgeld</div><div class="step-text">Kurzfristige Freistellung bis 10 Tage bei akuter Pflegesituation.</div></div></div>
           <div class="step-item"><div class="step-number" aria-hidden="true">&#x23F1;</div><div class="step-content"><div class="step-title">Reduzierung der Arbeitszeit</div><div class="step-text">Bis zu 24 Monate Teilzeit-Option f&uuml;r pflegende Angeh&ouml;rige.</div></div></div>
-          <div class="step-item"><div class="step-number" aria-hidden="true">&#x1F4C6;</div><div class="step-content"><div class="step-title">Option der Freistellung</div><div class="step-text">Vollst&auml;ndige Freistellung bis zu 6 Monate m&ouml;glich.</div></div></div>
+          <div class="step-item"><div class="step-number"><i class="fas fa-calendar-check" aria-hidden="true" style="font-size:0.8rem;"></i></div><div class="step-content"><div class="step-title">Option der Freistellung</div><div class="step-text">Vollst&auml;ndige Freistellung bis zu 6 Monate m&ouml;glich.</div></div></div>
         </div>
       </div>
       <div class="quote-card">
@@ -583,10 +621,10 @@ app.get('/kontakt', (c) => {
         <h2 id="contact-heading">Ich freue mich auf Ihre Nachricht</h2>
         <p style="margin:14px 0 28px;">Egal ob Fragen zu Leistungen, Beratungswunsch oder allgemeine Informationen &ndash; schreiben Sie mir!</p>
         <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:36px;">
-          <div class="contact-info-item"><div class="info-icon" aria-hidden="true">&#x1F4CD;</div><div><div class="info-label">Einsatzgebiet</div><div class="info-value">Forst (Baden) und Umgebung</div></div></div>
+          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></div><div><div class="info-label">Einsatzgebiet</div><div class="info-value">Forst (Baden) und Umgebung</div></div></div>
           <div class="contact-info-item"><div class="info-icon" aria-hidden="true">&#x2709;</div><div><div class="info-label">E-Mail</div><div class="info-value"><a href="mailto:info@auxilium-forst.com" style="color:var(--accent);">info@auxilium-forst.com</a></div></div></div>
-          <div class="contact-info-item"><div class="info-icon" aria-hidden="true">&#x1F550;</div><div><div class="info-label">Erreichbarkeit</div><div class="info-value">Mo&ndash;Fr, 8:00 &ndash; 18:00 Uhr</div></div></div>
-          <div class="contact-info-item"><div class="info-icon" aria-hidden="true">&#x1F4AC;</div><div><div class="info-label">Erstgespr&auml;ch</div><div class="info-value">Kostenlos &amp; unverbindlich</div></div></div>
+          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-clock" aria-hidden="true"></i></div><div><div class="info-label">Erreichbarkeit</div><div class="info-value">Mo&ndash;Fr, 8:00 &ndash; 18:00 Uhr</div></div></div>
+          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-comments" aria-hidden="true"></i></div><div><div class="info-label">Erstgespr&auml;ch</div><div class="info-value">Kostenlos &amp; unverbindlich</div></div></div>
         </div>
         <h3 style="margin-bottom:18px;font-size:1.05rem;">H&auml;ufige Fragen</h3>
         <div class="accordion-list">
