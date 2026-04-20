@@ -1093,21 +1093,7 @@ p  { color: var(--text-light); line-height: 1.75; }
   height: 400px;
   object-fit: cover;
   object-position: center 20%;
-}
-.logo-hero-overlay {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  padding: 28px 28px 24px;
-  background: linear-gradient(to top, rgba(28,14,8,0.9) 0%, transparent 100%);
-}
-.logo-hero-overlay h3 {
-  color: white !important;
-  font-size: 1.3rem;
-  margin-bottom: 4px;
-}
-.logo-hero-overlay p {
-  color: rgba(255,240,210,0.82) !important;
-  font-size: 0.82rem;
+  display: block;
 }
 
 /* ─── Animations ─────────────────────────────────────────── */
@@ -1154,7 +1140,13 @@ p  { color: var(--text-light); line-height: 1.75; }
     gap: 32px;
   }
   .person-photo-col { position: static; }
-  .person-photo { height: 320px; }
+  .person-photo {
+    height: auto;
+    max-height: 480px;
+    object-fit: cover;
+    object-position: center top;
+    width: 100%;
+  }
   .person-values { grid-template-columns: 1fr; }
 }
 
@@ -1209,6 +1201,17 @@ p  { color: var(--text-light); line-height: 1.75; }
   .page-hero { padding: 110px 0 60px; }
   .hero__stats { gap: 16px; }
 
+  /* Person-Foto auf Mobile: volle Breite, automatische Höhe */
+  .person-photo {
+    height: auto;
+    max-height: 400px;
+    width: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+  .person-logo-box { margin-top: 24px; }
+  .person-photo-badge { position: static; margin-top: 12px; }
+
   .footer__grid { grid-template-columns: 1fr; gap: 28px; }
   .footer__bottom { flex-direction: column; gap: 10px; text-align: center; }
   .feature-strip__inner { gap: 18px; }
@@ -1238,6 +1241,23 @@ p  { color: var(--text-light); line-height: 1.75; }
   .service-card { max-width: 100%; }
   .service-card__header { padding: 18px 16px 14px; }
   .service-card__body { padding: 14px 16px 18px; }
+}
+
+/* ─── CTA Section Green (Schmetterling-Grün) ─────────────── */
+.cta-section-green {
+  background: linear-gradient(135deg, #4A9B7F, #2D7A5E);
+  padding: 72px 0;
+}
+.cta-section-green__title {
+  color: white;
+  margin-bottom: 14px;
+}
+.cta-section-green__text {
+  color: rgba(220, 255, 240, 0.90);
+  max-width: 500px;
+  margin: 0 auto 32px;
+  font-size: 1rem;
+  line-height: 1.75;
 }
 
 /* ─── Utilities ──────────────────────────────────────────── */

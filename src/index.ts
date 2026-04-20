@@ -145,27 +145,11 @@ app.get('/', (c) => {
         <a href="/kontakt" class="btn btn-accent"><i class="fas fa-calendar-check" aria-hidden="true"></i>Kostenloses Erstgespr&auml;ch</a>
         <a href="/leistungen" class="btn btn-outline"><i class="fas fa-list" aria-hidden="true"></i>Alle Leistungen</a>
       </div>
-      <div class="hero__stats">
-        <div><div class="hero__stat-number">5,7 Mio.</div><div class="hero__stat-label">Pflegebed&uuml;rftige<br>in Deutschland</div></div>
-        <div><div class="hero__stat-number">80+ %</div><div class="hero__stat-label">werden zu Hause<br>versorgt</div></div>
-        <div><div class="hero__stat-number">100 %</div><div class="hero__stat-label">individuelle<br>Betreuung</div></div>
-      </div>
+
     </div>
     <div class="hero__visual animate-fade-in-delay-1">
       <div class="logo-hero-card animate-float">
         <img src="/static/logo.jpg" alt="Auxilium &ndash; Schmetterling Logo">
-        <div class="logo-hero-overlay">
-          <h3>Auxilium</h3>
-          <p>Lat. f&uuml;r &bdquo;Hilfe&ldquo; &ndash; Ihre St&uuml;tze in der Pflege</p>
-        </div>
-        <div class="hero__floating-badge top-left">
-          <div class="badge-icon">&#x2764;</div>
-          <div class="badge-text"><strong>Mit Herz dabei</strong><span>Individuelle Betreuung</span></div>
-        </div>
-        <div class="hero__floating-badge bottom-right">
-          <div class="badge-icon"><i class="fas fa-lightbulb" style="color:var(--primary);"></i></div>
-          <div class="badge-text"><strong>Pflegeberatung</strong><span>Kostenlos &amp; unverbindlich</span></div>
-        </div>
       </div>
     </div>
   </div>
@@ -174,7 +158,7 @@ app.get('/', (c) => {
 <div class="feature-strip" role="complementary">
   <div class="container">
     <div class="feature-strip__inner">
-      <div class="feature-strip__item"><span class="icon" aria-hidden="true">&#x2705;</span>G&uuml;nstigere Preise als ambulante Dienste</div>
+      <div class="feature-strip__item"><i class="fas fa-tag" aria-hidden="true"></i>G&uuml;nstigere Preise als ambulante Dienste</div>
       <div class="feature-strip__item"><i class="fas fa-user" aria-hidden="true"></i>Pers&ouml;nlicher Ansprechpartner</div>
       <div class="feature-strip__item"><i class="fas fa-home" aria-hidden="true"></i>Pflege in Ihrem Zuhause</div>
       <div class="feature-strip__item"><i class="fas fa-file-invoice" aria-hidden="true"></i>Abrechnung &uuml;ber Pflegekasse</div>
@@ -312,10 +296,10 @@ app.get('/', (c) => {
   </div>
 </section>
 
-<section style="background:linear-gradient(135deg,#8B1A1A,#6B1010);padding:72px 0;" aria-labelledby="cta-heading">
+<section class="cta-section-green" aria-labelledby="cta-heading">
   <div class="container text-center">
-    <h2 id="cta-heading" style="color:white;margin-bottom:14px;">Bereit f&uuml;r das erste Gespr&auml;ch?</h2>
-    <p style="color:rgba(255,235,220,0.88);max-width:500px;margin:0 auto 32px;font-size:1rem;line-height:1.75;">Das Erstgespr&auml;ch ist kostenlos und unverbindlich. Gemeinsam finden wir heraus, wie Auxilium Ihnen am besten helfen kann.</p>
+    <h2 id="cta-heading" class="cta-section-green__title">Bereit f&uuml;r das erste Gespr&auml;ch?</h2>
+    <p class="cta-section-green__text">Das Erstgespr&auml;ch ist kostenlos und unverbindlich. Gemeinsam finden wir heraus, wie Auxilium Ihnen am besten helfen kann.</p>
     <div class="flex justify-center gap-4 flex-wrap">
       <a href="/kontakt" class="btn btn-white"><i class="fas fa-calendar-check" aria-hidden="true"></i>Termin vereinbaren</a>
       <a href="/leistungen" class="btn btn-ghost-white"><i class="fas fa-list" aria-hidden="true"></i>Leistungen ansehen</a>
@@ -555,7 +539,7 @@ app.get('/beratung', (c) => {
     <div class="grid-2" style="gap:20px;">
       <article class="card"><div class="card__icon"><i class="fas fa-wallet" aria-hidden="true"></i></div><h3 class="card__title">Pflegerische Hilfen</h3><p class="card__text">Geld- oder Sachleistung &ndash; je nach Bedarf und Pflegegrad optimal einsetzen.</p></article>
       <article class="card"><div class="card__icon"><i class="fas fa-sync-alt" aria-hidden="true"></i></div><h3 class="card__title">Entlastungsbetrag</h3><p class="card__text">Bis zu 125 &euro; monatlich (1.500 &euro; j&auml;hrlich) f&uuml;r anerkannte Entlastungsleistungen.</p></article>
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x23F8;</div><h3 class="card__title">Kurzzeitpflege</h3><p class="card__text">&Uuml;berbr&uuml;ckung bei Krankenhausaufenthalten oder zur Entlastung der Angeh&ouml;rigen.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-procedures" aria-hidden="true"></i></div><h3 class="card__title">Kurzzeitpflege</h3><p class="card__text">&Uuml;berbr&uuml;ckung bei Krankenhausaufenthalten oder zur Entlastung der Angeh&ouml;rigen.</p></article>
       <article class="card"><div class="card__icon"><i class="fas fa-shield-alt" aria-hidden="true"></i></div><h3 class="card__title">Verhinderungspflege</h3><p class="card__text">Wenn die regul&auml;re Pflegeperson ausf&auml;llt &ndash; bis zu 3.539 &euro; im Jahr nutzbar.</p></article>
       <article class="card"><div class="card__icon"><i class="fas fa-moon" aria-hidden="true"></i></div><h3 class="card__title">Tages- und Nachtpflege</h3><p class="card__text">Erg&auml;nzende Betreuung in teilstation&auml;ren Einrichtungen tagss&uuml;ber oder nachts.</p></article>
       <article class="card"><div class="card__icon"><i class="fas fa-walking" aria-hidden="true"></i></div><h3 class="card__title">Reha</h3><p class="card__text">Wissen Sie um Ihre Anspr&uuml;che auf eine Rehabilitation? Ich informiere Sie umfassend.</p></article>
@@ -571,7 +555,7 @@ app.get('/beratung', (c) => {
     </div>
     <div class="grid-3">
       <article class="card"><div class="card__icon"><i class="fas fa-medkit" aria-hidden="true"></i></div><h3 class="card__title">Pflegehilfsmittel</h3><p class="card__text">Monatlich bis zu 40 &euro; f&uuml;r zum Verbrauch bestimmte Pflegehilfsmittel.</p></article>
-      <article class="card"><div class="card__icon" aria-hidden="true">&#x267F;</div><h3 class="card__title">Technische Hilfsmittel</h3><p class="card__text">Zusch&uuml;sse f&uuml;r Rollst&uuml;hle, Pflegebetten, Lifter und andere Hilfsmittel.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-wheelchair" aria-hidden="true"></i></div><h3 class="card__title">Technische Hilfsmittel</h3><p class="card__text">Zusch&uuml;sse f&uuml;r Rollst&uuml;hle, Pflegebetten, Lifter und andere Hilfsmittel.</p></article>
       <article class="card"><div class="card__icon"><i class="fas fa-home" aria-hidden="true"></i></div><h3 class="card__title">Wohnumfeldverbesserung</h3><p class="card__text">Bis zu 4.000 &euro; Zuschuss pro Ma&szlig;nahme f&uuml;r barrierefreie Umbauten.</p></article>
     </div>
   </div>
@@ -586,7 +570,7 @@ app.get('/beratung', (c) => {
         <p style="margin:14px 0 28px;">Pflegende Angeh&ouml;rige haben besondere Rechte gegen&uuml;ber dem Arbeitgeber.</p>
         <div style="display:flex;flex-direction:column;gap:16px;">
           <div class="step-item"><div class="step-number"><i class="fas fa-briefcase" aria-hidden="true" style="font-size:0.8rem;"></i></div><div class="step-content"><div class="step-title">Pflegeunterst&uuml;tzungsgeld</div><div class="step-text">Kurzfristige Freistellung bis 10 Tage bei akuter Pflegesituation.</div></div></div>
-          <div class="step-item"><div class="step-number" aria-hidden="true">&#x23F1;</div><div class="step-content"><div class="step-title">Reduzierung der Arbeitszeit</div><div class="step-text">Bis zu 24 Monate Teilzeit-Option f&uuml;r pflegende Angeh&ouml;rige.</div></div></div>
+          <div class="step-item"><div class="step-number"><i class="fas fa-user-clock" aria-hidden="true" style="font-size:0.8rem;"></i></div><div class="step-content"><div class="step-title">Reduzierung der Arbeitszeit</div><div class="step-text">Bis zu 24 Monate Teilzeit-Option f&uuml;r pflegende Angeh&ouml;rige.</div></div></div>
           <div class="step-item"><div class="step-number"><i class="fas fa-calendar-check" aria-hidden="true" style="font-size:0.8rem;"></i></div><div class="step-content"><div class="step-title">Option der Freistellung</div><div class="step-text">Vollst&auml;ndige Freistellung bis zu 6 Monate m&ouml;glich.</div></div></div>
         </div>
       </div>
@@ -599,10 +583,10 @@ app.get('/beratung', (c) => {
   </div>
 </section>
 
-<section style="background:linear-gradient(135deg,#8B1A1A,#6B1010);padding:72px 0;" aria-labelledby="advice-cta-heading">
+<section class="cta-section-green" aria-labelledby="advice-cta-heading">
   <div class="container text-center">
-    <h2 id="advice-cta-heading" style="color:white;margin-bottom:14px;">Lassen Sie sich kostenlos beraten</h2>
-    <p style="color:rgba(255,235,220,0.88);max-width:480px;margin:0 auto 32px;font-size:1rem;line-height:1.75;">In einem kostenlosen Gespr&auml;ch analysiere ich mit Ihnen alle Anspr&uuml;che und erstelle die beste Finanzierungsstrategie f&uuml;r Ihre Situation.</p>
+    <h2 id="advice-cta-heading" class="cta-section-green__title">Lassen Sie sich kostenlos beraten</h2>
+    <p class="cta-section-green__text">In einem kostenlosen Gespr&auml;ch analysiere ich mit Ihnen alle Anspr&uuml;che und erstelle die beste Finanzierungsstrategie f&uuml;r Ihre Situation.</p>
     <a href="/kontakt" class="btn btn-white"><i class="fas fa-calendar-check" aria-hidden="true"></i>Jetzt Beratungstermin anfragen</a>
   </div>
 </section>`
@@ -622,7 +606,7 @@ app.get('/kontakt', (c) => {
         <p style="margin:14px 0 28px;">Egal ob Fragen zu Leistungen, Beratungswunsch oder allgemeine Informationen &ndash; schreiben Sie mir!</p>
         <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:36px;">
           <div class="contact-info-item"><div class="info-icon"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></div><div><div class="info-label">Einsatzgebiet</div><div class="info-value">Forst (Baden) und Umgebung</div></div></div>
-          <div class="contact-info-item"><div class="info-icon" aria-hidden="true">&#x2709;</div><div><div class="info-label">E-Mail</div><div class="info-value"><a href="mailto:info@auxilium-forst.com" style="color:var(--accent);">info@auxilium-forst.com</a></div></div></div>
+          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-envelope" aria-hidden="true"></i></div><div><div class="info-label">E-Mail</div><div class="info-value"><a href="mailto:info@auxilium-forst.com" style="color:var(--accent);">info@auxilium-forst.com</a></div></div></div>
           <div class="contact-info-item"><div class="info-icon"><i class="fas fa-clock" aria-hidden="true"></i></div><div><div class="info-label">Erreichbarkeit</div><div class="info-value">Mo&ndash;Fr, 8:00 &ndash; 18:00 Uhr</div></div></div>
           <div class="contact-info-item"><div class="info-icon"><i class="fas fa-comments" aria-hidden="true"></i></div><div><div class="info-label">Erstgespr&auml;ch</div><div class="info-value">Kostenlos &amp; unverbindlich</div></div></div>
         </div>
