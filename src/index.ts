@@ -301,8 +301,8 @@ app.get('/', (c) => {
     <h2 id="cta-heading" class="cta-section-green__title">Bereit f&uuml;r das erste Gespr&auml;ch?</h2>
     <p class="cta-section-green__text">Das Erstgespr&auml;ch ist kostenlos und unverbindlich. Gemeinsam finden wir heraus, wie Auxilium Ihnen am besten helfen kann.</p>
     <div class="flex justify-center gap-4 flex-wrap">
-      <a href="/kontakt" class="btn btn-white"><i class="fas fa-calendar-check" aria-hidden="true"></i>Termin vereinbaren</a>
-      <a href="/leistungen" class="btn btn-ghost-white"><i class="fas fa-list" aria-hidden="true"></i>Leistungen ansehen</a>
+      <a href="/kontakt" class="btn btn-green-solid"><i class="fas fa-calendar-check" aria-hidden="true"></i>Termin vereinbaren</a>
+      <a href="/leistungen" class="btn btn-green-ghost"><i class="fas fa-list" aria-hidden="true"></i>Leistungen ansehen</a>
     </div>
   </div>
 </section>`
@@ -475,12 +475,12 @@ app.get('/leistungen', (c) => {
       ${serviceCard('einkauf','<i class="fas fa-shopping-bag"></i>','Einkauf','Immer frische Lebensmittel','Sie haben Schwierigkeiten beim Einkaufen? Lassen Sie uns schauen, was Sie brauchen &ndash; und Sie bekommen es!','15,00 &euro;','17,33 &euro;','je angef. Viertelstunde (amb. Dienst)','G&uuml;nstiger als ambulanter Dienst')}
       ${serviceCard('betreuung','<i class="fas fa-hands-helping"></i>','Pflegerische Betreuung','Stets gut umsorgt','Gesellschaft beim Essen, Spazierg&auml;nge, Tagesausflu&szlig;e und vieles mehr. Was w&uuml;nschen Sie sich?','15,00 &euro;','17,33 &euro;','je angef. Viertelstunde (amb. Dienst)','G&uuml;nstiger als ambulanter Dienst')}
       ${serviceCard('alltag','<i class="fas fa-calendar-alt"></i>','Alltagsorganisation','Im Alltag alles im Griff','Termine vereinbaren, Arztbesuche, Friseur, Beh&ouml;rdeng&auml;nge &ndash; und falls der Alltag im Chaos versinkt: Auxilium hilft.','15,00 &euro;','17,33 &euro;','je angef. Viertelstunde (amb. Dienst)','G&uuml;nstiger als ambulanter Dienst')}
-      <article class="service-card" style="background:linear-gradient(135deg,var(--accent),var(--accent-dark));border:none;">
+      <article class="service-card" style="background:linear-gradient(135deg,#4A9B7F,#2D7A5E);border:none;">
         <div class="service-card__body" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:36px 28px;">
           <div style="font-size:2.2rem;margin-bottom:14px;color:white;" aria-hidden="true"><i class="fas fa-comments"></i></div>
           <h3 style="color:white;margin-bottom:10px;font-size:1.1rem;">Nicht das Richtige dabei?</h3>
-          <p style="color:rgba(255,235,220,0.88);font-size:0.875rem;margin-bottom:22px;line-height:1.7;">Haben Sie individuelle W&uuml;nsche? Sprechen Sie mich an &ndash; gemeinsam finden wir eine L&ouml;sung.</p>
-          <a href="/kontakt" class="btn btn-white"><i class="fas fa-phone" aria-hidden="true"></i>Jetzt anfragen</a>
+          <p style="color:rgba(220,255,240,0.90);font-size:0.875rem;margin-bottom:22px;line-height:1.7;">Haben Sie individuelle W&uuml;nsche? Sprechen Sie mich an &ndash; gemeinsam finden wir eine L&ouml;sung.</p>
+          <a href="/kontakt" class="btn btn-green-solid"><i class="fas fa-phone" aria-hidden="true"></i>Jetzt anfragen</a>
         </div>
       </article>
     </div>
@@ -587,7 +587,7 @@ app.get('/beratung', (c) => {
   <div class="container text-center">
     <h2 id="advice-cta-heading" class="cta-section-green__title">Lassen Sie sich kostenlos beraten</h2>
     <p class="cta-section-green__text">In einem kostenlosen Gespr&auml;ch analysiere ich mit Ihnen alle Anspr&uuml;che und erstelle die beste Finanzierungsstrategie f&uuml;r Ihre Situation.</p>
-    <a href="/kontakt" class="btn btn-white"><i class="fas fa-calendar-check" aria-hidden="true"></i>Jetzt Beratungstermin anfragen</a>
+    <a href="/kontakt" class="btn btn-green-solid"><i class="fas fa-calendar-check" aria-hidden="true"></i>Jetzt Beratungstermin anfragen</a>
   </div>
 </section>`
   return c.html(layout('Pflegeberatung &ndash; Auxilium Forst Baden', 'Kostenlose Pflegeberatung in Forst (Baden): Pflegeversicherung, Entlastungsbetrag und mehr.', body))
