@@ -33,16 +33,6 @@
       navbar.classList.toggle('mobile-open');
       const isOpen = navbar.classList.contains('mobile-open');
       navToggle.setAttribute('aria-expanded', String(isOpen));
-
-      // Dynamisch CTA positionieren: nach dem mobilen Menü
-      if (isOpen) {
-        const nav = navbar.querySelector('.navbar__nav');
-        const cta = navbar.querySelector('.navbar__cta');
-        if (nav && cta) {
-          const navHeight = nav.offsetHeight;
-          cta.style.top = 'calc(100% + ' + navHeight + 'px)';
-        }
-      }
     });
 
     // Close on nav link click

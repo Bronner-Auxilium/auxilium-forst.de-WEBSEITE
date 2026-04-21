@@ -296,6 +296,38 @@ app.get('/', (c) => {
   </div>
 </section>
 
+<section class="section section--soft" aria-labelledby="faq-heading">
+  <div class="container">
+    <div class="text-center mb-12">
+      <span class="section-label">H&auml;ufige Fragen</span>
+      <h2 id="faq-heading">Antworten auf Ihre Fragen</h2>
+      <p style="max-width:520px;margin:14px auto 0;">Hier finden Sie die h&auml;ufigsten Fragen rund um Auxilium &ndash; schnell und &uuml;bersichtlich.</p>
+    </div>
+    <div class="accordion-list" style="max-width:720px;margin:0 auto;">
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false">Wer kann Auxilium nutzen?<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
+        <div class="accordion-body"><div class="accordion-body__inner">Auxilium richtet sich an Pflegegeldempf&auml;nger, Personen die Verhinderungspflege oder den Entlastungsbetrag nutzen wollen, sowie Privatzahler/-innen.</div></div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false">Ist das Erstgespr&auml;ch wirklich kostenlos?<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
+        <div class="accordion-body"><div class="accordion-body__inner">Ja, das Erstgespr&auml;ch ist vollst&auml;ndig kostenlos und unverbindlich. Es dient dazu, Ihre Bed&uuml;rfnisse kennenzulernen und die passende Unterst&uuml;tzung zu finden.</div></div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false">Kann ich Auxilium &uuml;ber die Pflegekasse abrechnen?<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
+        <div class="accordion-body"><div class="accordion-body__inner">Ja! Auxilium kann &uuml;ber Verhinderungspflege und den Entlastungsbetrag abgerechnet werden. Ich zeige Ihnen alle M&ouml;glichkeiten und helfe Ihnen dabei.</div></div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false">In welchen Bereichen ist Auxilium t&auml;tig?<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
+        <div class="accordion-body"><div class="accordion-body__inner">Auxilium ist in Forst (Baden) und der Umgebung t&auml;tig. Die Wegpauschale h&auml;ngt vom Einsatzort ab und wird vorab transparent kommuniziert.</div></div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false">Wie unterscheidet sich Auxilium von einem ambulanten Pflegedienst?<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
+        <div class="accordion-body"><div class="accordion-body__inner">Auxilium ist g&uuml;nstiger als klassische ambulante Dienste, pers&ouml;nlicher und flexibler. Ich bin Ihr direkter Ansprechpartner &ndash; ohne Vermittlung, ohne Umwege.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="cta-section-green" aria-labelledby="cta-heading">
   <div class="container text-center">
     <h2 id="cta-heading" class="cta-section-green__title">Bereit f&uuml;r das erste Gespr&auml;ch?</h2>
@@ -610,25 +642,7 @@ app.get('/kontakt', (c) => {
           <div class="contact-info-item"><div class="info-icon"><i class="fas fa-clock" aria-hidden="true"></i></div><div><div class="info-label">Erreichbarkeit</div><div class="info-value">Mo&ndash;Fr, 8:00 &ndash; 18:00 Uhr</div></div></div>
           <div class="contact-info-item"><div class="info-icon"><i class="fas fa-comments" aria-hidden="true"></i></div><div><div class="info-label">Erstgespr&auml;ch</div><div class="info-value">Kostenlos &amp; unverbindlich</div></div></div>
         </div>
-        <h3 style="margin-bottom:18px;font-size:1.05rem;">H&auml;ufige Fragen</h3>
-        <div class="accordion-list">
-          <div class="accordion-item">
-            <button class="accordion-toggle" aria-expanded="false">Wer kann Auxilium nutzen?<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
-            <div class="accordion-body"><div class="accordion-body__inner">Auxilium richtet sich an Pflegegeldempf&auml;nger, Personen die Verhinderungspflege oder den Entlastungsbetrag nutzen wollen, sowie Privatzahler/-innen.</div></div>
-          </div>
-          <div class="accordion-item">
-            <button class="accordion-toggle" aria-expanded="false">Ist das Erstgespr&auml;ch wirklich kostenlos?<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
-            <div class="accordion-body"><div class="accordion-body__inner">Ja, das Erstgespr&auml;ch ist vollst&auml;ndig kostenlos und unverbindlich. Es dient dazu, Ihre Bed&uuml;rfnisse kennenzulernen.</div></div>
-          </div>
-          <div class="accordion-item">
-            <button class="accordion-toggle" aria-expanded="false">Kann ich Auxilium &uuml;ber die Pflegekasse abrechnen?<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
-            <div class="accordion-body"><div class="accordion-body__inner">Ja! Auxilium kann &uuml;ber Verhinderungspflege und den Entlastungsbetrag abgerechnet werden. Ich zeige Ihnen alle M&ouml;glichkeiten.</div></div>
-          </div>
-          <div class="accordion-item">
-            <button class="accordion-toggle" aria-expanded="false">In welchen Bereichen ist Auxilium t&auml;tig?<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
-            <div class="accordion-body"><div class="accordion-body__inner">Auxilium ist in Forst (Baden) und der Umgebung t&auml;tig. Die Wegpauschale h&auml;ngt vom Einsatzort ab und wird vorab kommuniziert.</div></div>
-          </div>
-        </div>
+        <p style="font-size:0.9rem;color:var(--text-light);line-height:1.7;">Haben Sie weitere Fragen? Auf der <a href="/" style="color:var(--accent);font-weight:600;">Startseite</a> finden Sie h&auml;ufige Fragen &ndash; oder schreiben Sie mir direkt &uuml;ber das Formular.</p>
       </div>
       <div>
         <div class="contact-form">

@@ -1179,21 +1179,29 @@ p  { color: var(--text-light); line-height: 1.75; }
   /* Mobile Navbar */
   .navbar__nav, .navbar__cta { display: none; }
   .navbar__toggle { display: flex; }
+  /* Mobile-Menü: navbar__inner als vertikaler Block */
   .navbar.mobile-open {
     background: white !important;
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 8px 24px rgba(44,32,24,0.13);
   }
+  .navbar.mobile-open .navbar__inner {
+    flex-wrap: wrap;
+    align-items: center;
+    padding-bottom: 0;
+  }
+  /* Logo (order 1) + Toggle (order 2) bleiben in Zeile 1 */
+  .navbar.mobile-open .navbar__logo { order: 1; }
+  .navbar.mobile-open .navbar__toggle { order: 2; }
+  /* Nav kommt in Zeile 2 */
   .navbar.mobile-open .navbar__nav {
     display: flex;
     flex-direction: column;
-    position: absolute;
-    top: 100%; left: 0; right: 0;
-    background: white;
-    padding: 8px 16px 12px;
-    box-shadow: 0 8px 24px rgba(44,32,24,0.12);
+    width: 100%;
+    padding: 6px 0 8px;
     gap: 2px;
     border-top: 1px solid var(--border);
-    z-index: 1001;
+    order: 3;
+    margin-top: 4px;
   }
   .navbar.mobile-open .navbar__nav a {
     padding: 11px 14px;
@@ -1202,17 +1210,20 @@ p  { color: var(--text-light); line-height: 1.75; }
     width: 100%;
     display: block;
   }
+  /* CTA kommt in Zeile 3, direkt unter den Nav-Links */
   .navbar.mobile-open .navbar__cta {
     display: block;
-    position: absolute;
-    top: auto;
-    left: 0; right: 0;
-    background: white;
-    padding: 10px 16px 14px;
+    position: static;
+    width: 100%;
+    padding: 8px 0 14px;
     border-top: 1px solid var(--border);
-    z-index: 1001;
+    order: 4;
   }
-  /* Berechne offset dynamisch – wird per JS gesetzt */
+  .navbar.mobile-open .navbar__cta .btn {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+  }
 
   /* Mobile Grid */
   .grid-3 { grid-template-columns: 1fr; }
@@ -1239,8 +1250,19 @@ p  { color: var(--text-light); line-height: 1.75; }
   .footer__bottom { flex-direction: column; gap: 10px; text-align: center; }
   .feature-strip__inner { gap: 18px; }
 
-  .stats-banner__grid { grid-template-columns: 1fr 1fr; }
-  .stats-banner__number { font-size: 2rem; }
+  /* Stats-Banner kompakt */
+  .stats-banner { padding: 28px 0; }
+  .stats-banner__grid { grid-template-columns: 1fr 1fr; gap: 12px 8px; }
+  .stats-banner__number { font-size: 1.5rem; }
+  .stats-banner__label { font-size: 0.72rem; margin-top: 3px; }
+
+  /* Footer kompakter auf Mobile */
+  .footer { padding: 40px 0 20px; }
+  .footer__grid { margin-bottom: 28px; }
+  .footer__desc { font-size: 0.82rem; margin-bottom: 14px; }
+  .footer__logo-name { font-size: 1.15rem; }
+  .footer__links li { margin-bottom: 6px; }
+  .footer__links a { font-size: 0.82rem; }
 
   /* Service Cards Mobile: volle Breite, aufgeräumt */
   .service-card {
@@ -1259,11 +1281,18 @@ p  { color: var(--text-light); line-height: 1.75; }
   .hero__actions { flex-direction: column; }
   .hero__actions .btn { width: 100%; justify-content: center; }
   .hero__badge { font-size: 0.75rem; }
-  .stats-banner__grid { grid-template-columns: 1fr; }
+  /* Stats auf ganz kleinen Bildschirmen: 2 Spalten aber noch kompakter */
+  .stats-banner { padding: 22px 0; }
+  .stats-banner__grid { grid-template-columns: 1fr 1fr; gap: 10px 6px; }
+  .stats-banner__number { font-size: 1.3rem; }
+  .stats-banner__label { font-size: 0.68rem; }
   .page-hero { padding: 100px 0 52px; }
   .service-card { max-width: 100%; }
   .service-card__header { padding: 18px 16px 14px; }
   .service-card__body { padding: 14px 16px 18px; }
+  /* Footer noch kompakter */
+  .footer { padding: 32px 0 16px; }
+  .footer__heading { margin-bottom: 10px; }
 }
 
 /* ─── CTA Section Green (Schmetterling-Grün) ─────────────── */
