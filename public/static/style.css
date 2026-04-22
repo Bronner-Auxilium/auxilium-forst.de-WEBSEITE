@@ -189,6 +189,9 @@ p  { color: var(--text-light); line-height: 1.75; }
   transform: translateY(-2px);
 }
 
+/* Mobile-only Kontakt-Link im Nav (auf Desktop versteckt) */
+.navbar__nav-cta-mobile { display: none; }
+
 /* ─── Navigation ─────────────────────────────────────────── */
 .navbar {
   position: fixed;
@@ -1177,7 +1180,9 @@ p  { color: var(--text-light); line-height: 1.75; }
   .section { padding: 56px 0; }
 
   /* Mobile Navbar */
-  .navbar__nav, .navbar__cta { display: none; }
+  .navbar__nav { display: none; }
+  /* Desktop-CTA-Button auf Mobile immer ausblenden */
+  .navbar__cta { display: none !important; }
   .navbar__toggle { display: flex; }
   /* Mobile-Menü: navbar__inner als vertikaler Block */
   .navbar.mobile-open {
@@ -1209,20 +1214,34 @@ p  { color: var(--text-light); line-height: 1.75; }
     font-size: 0.95rem;
     width: 100%;
     display: block;
+    transition: none;
   }
-  /* CTA kommt in Zeile 3, direkt unter den Nav-Links */
-  .navbar.mobile-open .navbar__cta {
-    display: block;
-    position: static;
-    width: 100%;
-    padding: 8px 0 14px;
+  .navbar.mobile-open .navbar__nav a:hover,
+  .navbar.mobile-open .navbar__nav a:focus {
+    background: var(--bg-muted);
+    color: var(--accent);
+    transform: none;
+    box-shadow: none;
+  }
+  /* Kontakt-CTA als letzter Menüpunkt: hervorgehoben */
+  .navbar.mobile-open .navbar__nav-cta-mobile {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    padding: 12px 14px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    color: var(--accent) !important;
+    background: var(--accent-light) !important;
     border-top: 1px solid var(--border);
-    order: 4;
+    transition: none !important;
   }
-  .navbar.mobile-open .navbar__cta .btn {
-    width: 100%;
-    justify-content: center;
-    display: flex;
+  .navbar.mobile-open .navbar__nav-cta-mobile:hover {
+    background: var(--accent-light) !important;
+    color: var(--accent) !important;
+    transform: none !important;
+    box-shadow: none !important;
   }
 
   /* Mobile Grid */

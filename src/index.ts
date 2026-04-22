@@ -1,7 +1,26 @@
 import { Hono } from 'hono'
 import { serveStatic } from 'hono/cloudflare-workers'
+import { getCookie, setCookie, deleteCookie } from 'hono/cookie'
 
-const app = new Hono()
+type Bindings = { DB: D1Database }
+const app = new Hono<{ Bindings: Bindings }>()
+
+// Admin-Passwort (hier einfach hartcodiert – für Prod als Secret setzen)
+const ADMIN_PASSWORD = 'auxilium2024'
+const SESSION_COOKIE = 'adm_sess'
+
+// Auth-Middleware für /admin/* (außer Login)
+async function requireAdmin(c: any, next: any) {
+  if (c.req.path === '/admin/login') return next()
+  const token = getCookie(c, SESSION_COOKIE)
+  if (!token) return c.redirect('/admin/login')
+  const row = await c.env.DB.prepare(
+    'SELECT token FROM admin_sessions WHERE token = ?'
+  ).bind(token).first()
+  if (!row) return c.redirect('/admin/login')
+  return next()
+}
+app.use('/admin/*', requireAdmin)
 
 app.use('/static/*', serveStatic({ root: './' }))
 
@@ -41,6 +60,7 @@ function layout(title: string, description: string, body: string): string {
       <a href="/leistungen">Leistungen &amp; Kosten</a>
       <a href="/beratung">Beratung</a>
       <a href="/kontakt">Kontakt</a>
+      <a href="/kontakt" class="navbar__nav-cta-mobile"><i class="fas fa-calendar-check" aria-hidden="true"></i>Jetzt anfragen</a>
     </nav>
     <a href="/kontakt" class="btn btn-accent navbar__cta">
       <i class="fas fa-phone" aria-hidden="true"></i>
@@ -128,7 +148,26 @@ function pageHero(label: string, title: string, subtitle: string, breadcrumb: st
 }
 
 // ─── HOME ─────────────────────────────────────────────────────
-app.get('/', (c) => {
+app.get('/', async (c) => {
+  // Lade die ersten 3 aktiven Leistungen für die Startseite aus der DB
+  const { results: dbLeistungen } = await c.env.DB.prepare(
+    'SELECT * FROM leistungen WHERE active=1 ORDER BY sort_order LIMIT 3'
+  ).all<any>()
+
+  const homeServiceCards = dbLeistungen.map((r: any) => `
+      <article class="service-card">
+        <div class="service-card__header">
+          <div class="service-card__icon"><i class="fas ${r.icon}" aria-hidden="true"></i></div>
+          <div class="service-card__header-text"><h3 class="service-card__title">${r.title}</h3><span class="service-card__subtitle">${r.subtitle}</span></div>
+        </div>
+        <div class="service-card__body">
+          <p class="service-card__text">${r.description}</p>
+          <div class="service-card__price"><span class="price-new">${r.price_new}</span><span class="price-compare">${r.price_old}</span><span class="price-note">${r.price_note}</span></div>
+          <div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>${r.savings}</div>
+          <a href="/leistungen#${r.slug}" class="btn btn-outline btn-full-width">Details ansehen</a>
+        </div>
+      </article>`).join('\n')
+
   const body = `
 <section class="hero" aria-labelledby="hero-heading">
   <div class="hero__bg-shapes" aria-hidden="true">
@@ -203,42 +242,7 @@ app.get('/', (c) => {
       <p style="max-width:540px;margin:14px auto 0;">Vom Erstgespr&auml;ch bis zur regelm&auml;&szlig;igen Betreuung &ndash; Auxilium ist f&uuml;r Sie da.</p>
     </div>
     <div class="services-grid">
-      <article class="service-card">
-        <div class="service-card__header">
-          <div class="service-card__icon"><i class="fas fa-shower" aria-hidden="true"></i></div>
-          <div class="service-card__header-text"><h3 class="service-card__title">K&ouml;rperpflege</h3><span class="service-card__subtitle">Baden, Duschen, Waschen</span></div>
-        </div>
-        <div class="service-card__body">
-          <p class="service-card__text">Unterst&uuml;tzung beim Duschen oder Baden inkl. An- und Auskleiden, Zahnpflege und Mobilisierung im Bad.</p>
-          <div class="service-card__price"><span class="price-new">ab 21,00 &euro;</span><span class="price-compare">28,55 &euro;</span><span class="price-note">Vergleich ambulanter Dienst</span></div>
-          <div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>Sie sparen: bis zu 7,69 &euro; pro Einsatz</div>
-          <a href="/leistungen#koerperpflege" class="btn btn-outline btn-full-width">Details ansehen</a>
-        </div>
-      </article>
-      <article class="service-card">
-        <div class="service-card__header">
-          <div class="service-card__icon"><i class="fas fa-hands-helping" aria-hidden="true"></i></div>
-          <div class="service-card__header-text"><h3 class="service-card__title">Betreuung</h3><span class="service-card__subtitle">Begleitung &amp; Gesellschaft</span></div>
-        </div>
-        <div class="service-card__body">
-          <p class="service-card__text">Gesellschaft beim Essen, Spazierg&auml;nge, Tagesausflu&szlig;e und vieles mehr &ndash; die Betreuungsm&ouml;glichkeiten sind vielf&auml;ltig.</p>
-          <div class="service-card__price"><span class="price-new">15,00 &euro;</span><span class="price-compare">17,33 &euro;</span><span class="price-note">je angefangene Viertelstunde</span></div>
-          <div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>G&uuml;nstiger als ambulanter Dienst</div>
-          <a href="/leistungen#betreuung" class="btn btn-outline btn-full-width">Details ansehen</a>
-        </div>
-      </article>
-      <article class="service-card">
-        <div class="service-card__header">
-          <div class="service-card__icon"><i class="fas fa-calendar-alt" aria-hidden="true"></i></div>
-          <div class="service-card__header-text"><h3 class="service-card__title">Alltagsorganisation</h3><span class="service-card__subtitle">Termine, Einkauf &amp; mehr</span></div>
-        </div>
-        <div class="service-card__body">
-          <p class="service-card__text">Terminvereinbarungen, Arztbesuche, Friseur, Einkauf &ndash; Auxilium hilft Ihnen, den Alltag zu meistern.</p>
-          <div class="service-card__price"><span class="price-new">15,00 &euro;</span><span class="price-compare">17,33 &euro;</span><span class="price-note">je angefangene Viertelstunde</span></div>
-          <div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>G&uuml;nstiger als ambulanter Dienst</div>
-          <a href="/leistungen#alltag" class="btn btn-outline btn-full-width">Details ansehen</a>
-        </div>
-      </article>
+      ${homeServiceCards}
     </div>
     <div class="text-center mt-8">
       <a href="/leistungen" class="btn btn-accent"><i class="fas fa-arrow-right" aria-hidden="true"></i>Alle Leistungen und Preise</a>
@@ -455,22 +459,24 @@ app.get('/ueber-auxilium', (c) => {
   return c.html(layout('&Uuml;ber Auxilium &ndash; Kristina Bronner | Pflegeberatung Forst Baden', 'Lernen Sie Kristina Bronner und die Philosophie von Auxilium kennen.', body))
 })
 
-// ─── LEISTUNGEN ───────────────────────────────────────────────
-app.get('/leistungen', (c) => {
+// ─── LEISTUNGEN (aus DB) ──────────────────────────────────────
+app.get('/leistungen', async (c) => {
   const hero = pageHero('Leistungen', 'Transparente Preise &ndash; faire Leistungen', 'Alle Leistungen von Auxilium im &Uuml;berblick &ndash; mit ehrlichem Preisvergleich.', 'Leistungen &amp; Kosten')
-  const serviceCard = (id: string, icon: string, title: string, sub: string, text: string, priceNew: string, priceOld: string, priceNote: string, saving: string) =>
-    `<article class="service-card"${id ? ` id="${id}"` : ''}>
+  const { results } = await c.env.DB.prepare(
+    'SELECT * FROM leistungen WHERE active=1 ORDER BY sort_order'
+  ).all<any>()
+  const cards = results.map((r: any) => `
+    <article class="service-card" id="${r.slug}">
       <div class="service-card__header">
-        <div class="service-card__icon" aria-hidden="true">${icon}</div>
-        <div class="service-card__header-text"><h3 class="service-card__title">${title}</h3><span class="service-card__subtitle">${sub}</span></div>
+        <div class="service-card__icon" aria-hidden="true"><i class="fas ${r.icon}"></i></div>
+        <div class="service-card__header-text"><h3 class="service-card__title">${r.title}</h3><span class="service-card__subtitle">${r.subtitle}</span></div>
       </div>
       <div class="service-card__body">
-        <p class="service-card__text">${text}</p>
-        <div class="service-card__price"><span class="price-new">${priceNew}</span><span class="price-compare">${priceOld}</span><span class="price-note">${priceNote}</span></div>
-        <div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>${saving}</div>
+        <p class="service-card__text">${r.description}</p>
+        <div class="service-card__price"><span class="price-new">${r.price_new}</span><span class="price-compare">${r.price_old}</span><span class="price-note">${r.price_note}</span></div>
+        <div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>${r.savings}</div>
       </div>
-    </article>`
-
+    </article>`).join('\n')
   const body = hero + `
 <section class="section" aria-labelledby="intro-heading">
   <div class="container">
@@ -494,7 +500,6 @@ app.get('/leistungen', (c) => {
     </div>
   </div>
 </section>
-
 <section class="section section--soft" aria-labelledby="services-detail-heading">
   <div class="container">
     <div class="text-center mb-12">
@@ -502,11 +507,7 @@ app.get('/leistungen', (c) => {
       <h2 id="services-detail-heading">Was Auxilium f&uuml;r Sie tut</h2>
     </div>
     <div class="grid-2" style="gap:24px;align-items:stretch;">
-      ${serviceCard('koerperpflege','<i class="fas fa-shower"></i>','Gro&szlig;e K&ouml;rperpflege','Baden / Duschen &middot; ca. 35 Min','Unterst&uuml;tzung beim Duschen oder Baden inkl. An- und Auskleiden, Zahnpflege und Mobilisierung im Bad.','35,00 &euro;','42,69 &euro;','Ambulanter Dienst','Sie sparen: 7,69 &euro; pro Einsatz')}
-      ${serviceCard('','<i class="fas fa-hands"></i>','Kleine K&ouml;rperpflege','&bdquo;Katzenw&auml;sche&ldquo; &middot; ca. 20 Min','K&ouml;rperpflege am Waschbecken morgens und/oder abends: Oberk&ouml;rper, R&uuml;cken, Intimbereich sowie Zahnpflege.','21,00 &euro;','28,55 &euro;','Ambulanter Dienst','Sie sparen: 7,55 &euro; pro Einsatz')}
-      ${serviceCard('einkauf','<i class="fas fa-shopping-bag"></i>','Einkauf','Immer frische Lebensmittel','Sie haben Schwierigkeiten beim Einkaufen? Lassen Sie uns schauen, was Sie brauchen &ndash; und Sie bekommen es!','15,00 &euro;','17,33 &euro;','je angef. Viertelstunde (amb. Dienst)','G&uuml;nstiger als ambulanter Dienst')}
-      ${serviceCard('betreuung','<i class="fas fa-hands-helping"></i>','Pflegerische Betreuung','Stets gut umsorgt','Gesellschaft beim Essen, Spazierg&auml;nge, Tagesausflu&szlig;e und vieles mehr. Was w&uuml;nschen Sie sich?','15,00 &euro;','17,33 &euro;','je angef. Viertelstunde (amb. Dienst)','G&uuml;nstiger als ambulanter Dienst')}
-      ${serviceCard('alltag','<i class="fas fa-calendar-alt"></i>','Alltagsorganisation','Im Alltag alles im Griff','Termine vereinbaren, Arztbesuche, Friseur, Beh&ouml;rdeng&auml;nge &ndash; und falls der Alltag im Chaos versinkt: Auxilium hilft.','15,00 &euro;','17,33 &euro;','je angef. Viertelstunde (amb. Dienst)','G&uuml;nstiger als ambulanter Dienst')}
+      ${cards}
       <article class="service-card" style="background:linear-gradient(135deg,#4A9B7F,#2D7A5E);border:none;">
         <div class="service-card__body" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:36px 28px;">
           <div style="font-size:2.2rem;margin-bottom:14px;color:white;" aria-hidden="true"><i class="fas fa-comments"></i></div>
@@ -518,7 +519,6 @@ app.get('/leistungen', (c) => {
     </div>
   </div>
 </section>
-
 <section class="section" aria-labelledby="who-heading">
   <div class="container">
     <div class="text-center mb-12">
@@ -690,34 +690,27 @@ app.get('/kontakt', (c) => {
   return c.html(layout('Kontakt &ndash; Auxilium Pflegeberatung Forst Baden', 'Nehmen Sie Kontakt mit Auxilium auf &ndash; kostenlose Erstberatung in Forst (Baden).', body))
 })
 
-// ─── Impressum ────────────────────────────────────────────────
-app.get('/impressum', (c) => {
+// ─── Impressum (aus DB) ───────────────────────────────────────
+app.get('/impressum', async (c) => {
+  const row = await c.env.DB.prepare("SELECT * FROM page_content WHERE page_key='impressum'").first<any>()
+  const content = row ? row.content : '<p>Impressum wird geladen...</p>'
   const body = pageHero('Rechtliches', 'Impressum', '', 'Impressum') + `
 <section class="section"><div class="container" style="max-width:760px;">
-  <article style="background:white;border-radius:16px;padding:44px;box-shadow:var(--shadow-md);border:1px solid var(--border);">
-    <h2 style="margin-bottom:22px;">Angaben gem&auml;&szlig; &sect; 5 TMG</h2>
-    <p style="margin-bottom:8px;"><strong>Kristina Bronner</strong></p>
-    <p style="margin-bottom:8px;">Auxilium &ndash; Pflegeberatung &amp; Pflegeleistungen</p>
-    <p style="margin-bottom:8px;">Forst (Baden)</p>
-    <p style="margin-bottom:24px;">Deutschland</p>
-    <h3 style="margin-bottom:10px;">Kontakt</h3>
-    <p>E-Mail: <a href="mailto:info@auxilium-forst.com" style="color:var(--accent);">info@auxilium-forst.com</a></p>
+  <article class="legal-content" style="background:white;border-radius:16px;padding:44px;box-shadow:var(--shadow-md);border:1px solid var(--border);">
+    ${content}
   </article>
 </div></section>`
   return c.html(layout('Impressum &ndash; Auxilium Forst Baden', 'Impressum von Auxilium Pflegeberatung in Forst Baden.', body))
 })
 
-// ─── Datenschutz ──────────────────────────────────────────────
-app.get('/datenschutz', (c) => {
+// ─── Datenschutz (aus DB) ─────────────────────────────────────
+app.get('/datenschutz', async (c) => {
+  const row = await c.env.DB.prepare("SELECT * FROM page_content WHERE page_key='datenschutz'").first<any>()
+  const content = row ? row.content : '<p>Datenschutzerkl&auml;rung wird geladen...</p>'
   const body = pageHero('Rechtliches', 'Datenschutzerkl&auml;rung', '', 'Datenschutz') + `
 <section class="section"><div class="container" style="max-width:760px;">
-  <article style="background:white;border-radius:16px;padding:44px;box-shadow:var(--shadow-md);border:1px solid var(--border);">
-    <h2 style="margin-bottom:16px;">Datenschutz auf einen Blick</h2>
-    <p style="margin-bottom:18px;">Die Betreiberin dieser Website nimmt den Schutz Ihrer pers&ouml;nlichen Daten ernst. Wir behandeln Ihre Daten vertraulich und entsprechend der gesetzlichen Datenschutzvorschriften.</p>
-    <h3 style="margin-bottom:10px;">Kontaktformular</h3>
-    <p style="margin-bottom:18px;">Wenn Sie uns per Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben zwecks Bearbeitung gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.</p>
-    <h3 style="margin-bottom:10px;">Verantwortliche Stelle</h3>
-    <p>Kristina Bronner, Auxilium, Forst (Baden) &ndash; <a href="mailto:info@auxilium-forst.com" style="color:var(--accent);">info@auxilium-forst.com</a></p>
+  <article class="legal-content" style="background:white;border-radius:16px;padding:44px;box-shadow:var(--shadow-md);border:1px solid var(--border);">
+    ${content}
   </article>
 </div></section>`
   return c.html(layout('Datenschutz &ndash; Auxilium Forst Baden', 'Datenschutzerkl&auml;rung von Auxilium Pflegeberatung Forst Baden.', body))
@@ -738,6 +731,370 @@ app.notFound((c) => {
   </div>
 </div>`
   return c.html(layout('404 &ndash; Seite nicht gefunden | Auxilium', '404 - Seite nicht gefunden.', body), 404)
+})
+
+// ═══════════════════════════════════════════════════════════════
+// ADMIN BACKEND
+// ═══════════════════════════════════════════════════════════════
+
+// Gemeinsames Admin-Layout
+function adminLayout(title: string, body: string, activeNav = ''): string {
+  const navItems = [
+    { href: '/admin', label: 'Dashboard', key: 'dashboard', icon: 'fa-tachometer-alt' },
+    { href: '/admin/leistungen', label: 'Leistungen', key: 'leistungen', icon: 'fa-list-alt' },
+    { href: '/admin/impressum', label: 'Impressum', key: 'impressum', icon: 'fa-file-alt' },
+    { href: '/admin/datenschutz', label: 'Datenschutz', key: 'datenschutz', icon: 'fa-shield-alt' },
+  ]
+  const nav = navItems.map(n =>
+    `<a href="${n.href}" class="adm-nav__item${activeNav === n.key ? ' active' : ''}">
+      <i class="fas ${n.icon}"></i><span>${n.label}</span>
+    </a>`).join('')
+  return `<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${title} – Auxilium Admin</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+<!-- Quill WYSIWYG -->
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:#F4F6F9;color:#2C2018;min-height:100vh;display:flex;}
+  .adm-sidebar{width:220px;background:#1A0D06;color:white;display:flex;flex-direction:column;flex-shrink:0;min-height:100vh;}
+  .adm-logo{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .adm-logo span{display:block;font-size:1.1rem;font-weight:700;color:#D98A2B;letter-spacing:0.05em;}
+  .adm-logo small{font-size:0.72rem;color:rgba(255,255,255,0.45);margin-top:2px;display:block;}
+  .adm-nav{padding:16px 0;flex:1;}
+  .adm-nav__item{display:flex;align-items:center;gap:10px;padding:11px 20px;color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.9rem;transition:background 0.15s,color 0.15s;}
+  .adm-nav__item:hover{background:rgba(255,255,255,0.06);color:white;}
+  .adm-nav__item.active{background:rgba(217,138,43,0.18);color:#D98A2B;border-left:3px solid #D98A2B;}
+  .adm-nav__item i{width:18px;text-align:center;}
+  .adm-logout{padding:16px 20px;border-top:1px solid rgba(255,255,255,0.08);}
+  .adm-logout a{color:rgba(255,255,255,0.45);font-size:0.82rem;text-decoration:none;display:flex;align-items:center;gap:8px;}
+  .adm-logout a:hover{color:white;}
+  .adm-main{flex:1;display:flex;flex-direction:column;overflow:auto;}
+  .adm-header{background:white;padding:18px 32px;border-bottom:1px solid #E8D9C5;display:flex;align-items:center;justify-content:space-between;}
+  .adm-header h1{font-size:1.25rem;font-weight:700;color:#2C2018;}
+  .adm-content{padding:32px;flex:1;}
+  .adm-card{background:white;border-radius:12px;padding:28px;box-shadow:0 2px 8px rgba(44,32,24,0.07);border:1px solid #E8D9C5;margin-bottom:24px;}
+  .adm-table{width:100%;border-collapse:collapse;}
+  .adm-table th{text-align:left;padding:10px 14px;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#7A6550;border-bottom:2px solid #E8D9C5;}
+  .adm-table td{padding:12px 14px;border-bottom:1px solid #F3EDE3;font-size:0.88rem;vertical-align:middle;}
+  .adm-table tr:hover td{background:#FAFAFA;}
+  .adm-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:0.85rem;font-weight:600;text-decoration:none;transition:opacity 0.15s;}
+  .adm-btn:hover{opacity:0.85;}
+  .adm-btn-primary{background:#D98A2B;color:white;}
+  .adm-btn-danger{background:#8B1A1A;color:white;}
+  .adm-btn-secondary{background:#E8D9C5;color:#2C2018;}
+  .adm-btn-green{background:#4A9B7F;color:white;}
+  .adm-form label{display:block;font-size:0.82rem;font-weight:600;color:#7A6550;margin-bottom:5px;margin-top:14px;}
+  .adm-form input,.adm-form select,.adm-form textarea{width:100%;padding:9px 12px;border:1px solid #E8D9C5;border-radius:8px;font-size:0.9rem;background:white;color:#2C2018;outline:none;}
+  .adm-form input:focus,.adm-form select:focus,.adm-form textarea:focus{border-color:#D98A2B;box-shadow:0 0 0 3px rgba(217,138,43,0.12);}
+  .adm-form .row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .adm-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;}
+  .adm-badge-green{background:#E6F5EF;color:#2D7A5E;}
+  .adm-badge-gray{background:#F3EDE3;color:#7A6550;}
+  .adm-alert{padding:12px 16px;border-radius:8px;margin-bottom:20px;font-size:0.88rem;}
+  .adm-alert-success{background:#E6F5EF;border:1px solid #89C4AE;color:#2D7A5E;}
+  .adm-alert-error{background:#F5E8E8;border:1px solid #D98A8A;color:#8B1A1A;}
+  .ql-container{font-family:'Inter',sans-serif;font-size:0.95rem;border-radius:0 0 8px 8px;}
+  .ql-toolbar{border-radius:8px 8px 0 0;border-color:#E8D9C5 !important;}
+  .ql-container{border-color:#E8D9C5 !important;}
+  .ql-editor{min-height:280px;}
+  .drag-handle{cursor:grab;color:#C5B8AA;font-size:0.9rem;}
+  @media(max-width:768px){.adm-sidebar{display:none;}.adm-content{padding:16px;}}
+</style>
+</head>
+<body>
+<aside class="adm-sidebar">
+  <div class="adm-logo">
+    <span>AUXILIUM</span>
+    <small>Backend-Verwaltung</small>
+  </div>
+  <nav class="adm-nav">${nav}</nav>
+  <div class="adm-logout"><a href="/admin/logout"><i class="fas fa-sign-out-alt"></i>Abmelden</a></div>
+</aside>
+<main class="adm-main">
+  <header class="adm-header">
+    <h1>${title}</h1>
+    <a href="/" target="_blank" style="font-size:0.82rem;color:#7A6550;text-decoration:none;display:flex;align-items:center;gap:6px;">
+      <i class="fas fa-external-link-alt"></i>Website anzeigen
+    </a>
+  </header>
+  <div class="adm-content">${body}</div>
+</main>
+</body>
+</html>`
+}
+
+// ─── Admin: Login ─────────────────────────────────────────────
+app.get('/admin/login', (c) => {
+  const msg = c.req.query('error') ? '<div class="adm-alert adm-alert-error"><i class="fas fa-exclamation-circle"></i> Falsches Passwort.</div>' : ''
+  return c.html(`<!DOCTYPE html>
+<html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Auxilium Admin – Login</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,#1A0D06,#2C2018);min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.login-box{background:white;border-radius:16px;padding:44px 40px;width:100%;max-width:400px;box-shadow:0 16px 48px rgba(0,0,0,0.3);}
+.login-logo{text-align:center;margin-bottom:28px;}.login-logo img{width:64px;height:64px;border-radius:10px;object-fit:cover;}
+.login-logo h1{font-size:1.4rem;font-weight:700;color:#2C2018;margin-top:12px;}
+.login-logo p{font-size:0.82rem;color:#7A6550;margin-top:4px;}
+label{display:block;font-size:0.82rem;font-weight:600;color:#7A6550;margin-bottom:5px;margin-top:16px;}
+input{width:100%;padding:10px 14px;border:1px solid #E8D9C5;border-radius:8px;font-size:0.95rem;outline:none;}
+input:focus{border-color:#D98A2B;box-shadow:0 0 0 3px rgba(217,138,43,0.12);}
+.adm-alert{padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:0.88rem;}
+.adm-alert-error{background:#F5E8E8;border:1px solid #D98A8A;color:#8B1A1A;}
+button{width:100%;margin-top:22px;padding:12px;background:#D98A2B;color:white;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;}
+button:hover{background:#B5701A;}</style>
+</head><body>
+<div class="login-box">
+  <div class="login-logo">
+    <img src="/static/logo.jpg" alt="Auxilium">
+    <h1>Admin-Bereich</h1>
+    <p>Auxilium – Backend-Verwaltung</p>
+  </div>
+  ${msg}
+  <form method="POST" action="/admin/login">
+    <label for="pw">Passwort</label>
+    <input type="password" id="pw" name="password" placeholder="••••••••" required autofocus>
+    <button type="submit"><i class="fas fa-sign-in-alt"></i> Anmelden</button>
+  </form>
+</div>
+</body></html>`)
+})
+
+app.post('/admin/login', async (c) => {
+  const body = await c.req.parseBody()
+  if (body.password !== ADMIN_PASSWORD) return c.redirect('/admin/login?error=1')
+  const token = crypto.randomUUID()
+  await c.env.DB.prepare('INSERT INTO admin_sessions (token) VALUES (?)').bind(token).run()
+  setCookie(c, SESSION_COOKIE, token, { path: '/', httpOnly: true, maxAge: 86400 * 7 })
+  return c.redirect('/admin')
+})
+
+app.get('/admin/logout', async (c) => {
+  const token = getCookie(c, SESSION_COOKIE)
+  if (token) await c.env.DB.prepare('DELETE FROM admin_sessions WHERE token=?').bind(token).run()
+  deleteCookie(c, SESSION_COOKIE, { path: '/' })
+  return c.redirect('/admin/login')
+})
+
+// ─── Admin: Dashboard ─────────────────────────────────────────
+app.get('/admin', async (c) => {
+  const leistungCount = await c.env.DB.prepare('SELECT COUNT(*) as n FROM leistungen WHERE active=1').first<any>()
+  const body = `
+  <div class="adm-card">
+    <h2 style="margin-bottom:16px;font-size:1rem;color:#7A6550;text-transform:uppercase;letter-spacing:0.08em;">Übersicht</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+      <div style="background:#FBF7F2;border-radius:10px;padding:20px;text-align:center;">
+        <div style="font-size:2rem;font-weight:700;color:#D98A2B;">${leistungCount?.n ?? 0}</div>
+        <div style="font-size:0.82rem;color:#7A6550;margin-top:4px;">Aktive Leistungen</div>
+      </div>
+      <div style="background:#FBF7F2;border-radius:10px;padding:20px;text-align:center;">
+        <div style="font-size:2rem;font-weight:700;color:#4A9B7F;">2</div>
+        <div style="font-size:0.82rem;color:#7A6550;margin-top:4px;">Rechtliche Seiten</div>
+      </div>
+      <div style="background:#FBF7F2;border-radius:10px;padding:20px;text-align:center;">
+        <div style="font-size:2rem;font-weight:700;color:#8B1A1A;"><i class="fas fa-check"></i></div>
+        <div style="font-size:0.82rem;color:#7A6550;margin-top:4px;">System bereit</div>
+      </div>
+    </div>
+  </div>
+  <div class="adm-card">
+    <h2 style="margin-bottom:12px;font-size:1rem;">Schnellzugriff</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;">
+      <a href="/admin/leistungen" class="adm-btn adm-btn-primary"><i class="fas fa-list-alt"></i>Leistungen verwalten</a>
+      <a href="/admin/leistungen/neu" class="adm-btn adm-btn-green"><i class="fas fa-plus"></i>Neue Leistung</a>
+      <a href="/admin/impressum" class="adm-btn adm-btn-secondary"><i class="fas fa-file-alt"></i>Impressum bearbeiten</a>
+      <a href="/admin/datenschutz" class="adm-btn adm-btn-secondary"><i class="fas fa-shield-alt"></i>Datenschutz bearbeiten</a>
+    </div>
+  </div>`
+  return c.html(adminLayout('Dashboard', body, 'dashboard'))
+})
+
+// ─── Admin: Leistungen Liste ──────────────────────────────────
+app.get('/admin/leistungen', async (c) => {
+  const msg = c.req.query('msg')
+  const alert = msg === 'saved' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Erfolgreich gespeichert.</div>'
+    : msg === 'deleted' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Leistung gelöscht.</div>' : ''
+  const { results } = await c.env.DB.prepare('SELECT * FROM leistungen ORDER BY sort_order').all<any>()
+  const rows = results.map((r: any) => `
+    <tr>
+      <td style="color:#C5B8AA;"><i class="fas fa-grip-vertical"></i></td>
+      <td><i class="fas ${r.icon}" style="color:#D98A2B;width:20px;"></i> ${r.title}</td>
+      <td style="color:#7A6550;font-size:0.82rem;">${r.subtitle}</td>
+      <td><strong style="color:#D98A2B;">${r.price_new}</strong></td>
+      <td>${r.active ? '<span class="adm-badge adm-badge-green">Aktiv</span>' : '<span class="adm-badge adm-badge-gray">Inaktiv</span>'}</td>
+      <td style="white-space:nowrap;">
+        <a href="/admin/leistungen/${r.id}" class="adm-btn adm-btn-secondary" style="padding:5px 12px;font-size:0.78rem;"><i class="fas fa-edit"></i>Bearbeiten</a>
+        <form method="POST" action="/admin/leistungen/${r.id}/delete" style="display:inline;" onsubmit="return confirm('Wirklich löschen?')">
+          <button class="adm-btn adm-btn-danger" style="padding:5px 12px;font-size:0.78rem;"><i class="fas fa-trash"></i>Löschen</button>
+        </form>
+      </td>
+    </tr>`).join('')
+  const body = `
+  ${alert}
+  <div class="adm-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <h2 style="font-size:1rem;">Alle Leistungen (${results.length})</h2>
+      <a href="/admin/leistungen/neu" class="adm-btn adm-btn-primary"><i class="fas fa-plus"></i>Neue Leistung</a>
+    </div>
+    <table class="adm-table">
+      <thead><tr><th></th><th>Titel</th><th>Untertitel</th><th>Preis</th><th>Status</th><th>Aktionen</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`
+  return c.html(adminLayout('Leistungen', body, 'leistungen'))
+})
+
+// ─── Admin: Neue Leistung ─────────────────────────────────────
+app.get('/admin/leistungen/neu', (c) => {
+  const body = leistungForm(null)
+  return c.html(adminLayout('Neue Leistung', body, 'leistungen'))
+})
+
+app.post('/admin/leistungen/neu', async (c) => {
+  const d = await c.req.parseBody()
+  await c.env.DB.prepare(`INSERT INTO leistungen 
+    (slug,title,subtitle,icon,description,price_new,price_old,price_note,savings,sort_order,active)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?)`
+  ).bind(d.slug||'', d.title||'', d.subtitle||'', d.icon||'fa-star', d.description||'',
+    d.price_new||'', d.price_old||'', d.price_note||'', d.savings||'',
+    Number(d.sort_order)||99, d.active ? 1 : 0).run()
+  return c.redirect('/admin/leistungen?msg=saved')
+})
+
+// ─── Admin: Leistung bearbeiten ───────────────────────────────
+app.get('/admin/leistungen/:id', async (c) => {
+  const row = await c.env.DB.prepare('SELECT * FROM leistungen WHERE id=?').bind(c.req.param('id')).first<any>()
+  if (!row) return c.redirect('/admin/leistungen')
+  const body = leistungForm(row)
+  return c.html(adminLayout('Leistung bearbeiten', body, 'leistungen'))
+})
+
+app.post('/admin/leistungen/:id', async (c) => {
+  const d = await c.req.parseBody()
+  await c.env.DB.prepare(`UPDATE leistungen SET
+    title=?,subtitle=?,icon=?,description=?,price_new=?,price_old=?,price_note=?,savings=?,sort_order=?,active=?,updated_at=CURRENT_TIMESTAMP
+    WHERE id=?`
+  ).bind(d.title||'', d.subtitle||'', d.icon||'fa-star', d.description||'',
+    d.price_new||'', d.price_old||'', d.price_note||'', d.savings||'',
+    Number(d.sort_order)||0, d.active ? 1 : 0, c.req.param('id')).run()
+  return c.redirect('/admin/leistungen?msg=saved')
+})
+
+app.post('/admin/leistungen/:id/delete', async (c) => {
+  await c.env.DB.prepare('DELETE FROM leistungen WHERE id=?').bind(c.req.param('id')).run()
+  return c.redirect('/admin/leistungen?msg=deleted')
+})
+
+// Formular-Helper Leistungen
+function leistungForm(r: any): string {
+  const v = (f: string) => r ? (r[f] ?? '') : ''
+  const icons = ['fa-shower','fa-hands','fa-hands-helping','fa-shopping-bag','fa-calendar-alt',
+    'fa-heart','fa-user','fa-home','fa-star','fa-medkit','fa-walking','fa-wheelchair',
+    'fa-comments','fa-phone','fa-clock','fa-shield-alt','fa-graduation-cap']
+  const iconOptions = icons.map(i =>
+    `<option value="${i}"${v('icon')===i?' selected':''}>${i}</option>`).join('')
+  return `
+  <div class="adm-card">
+    <form method="POST" class="adm-form">
+      ${r ? '' : `<div>
+        <label>Slug (URL-ID, z.B. koerperpflege)</label>
+        <input name="slug" value="${v('slug')}" required pattern="[a-z0-9-]+" placeholder="eindeutige-id">
+      </div>`}
+      <div class="row">
+        <div><label>Titel</label><input name="title" value="${v('title')}" required></div>
+        <div><label>Untertitel</label><input name="subtitle" value="${v('subtitle')}"></div>
+      </div>
+      <div class="row">
+        <div><label>Font-Awesome Icon (ohne fa-Prefix zeigen)</label>
+          <select name="icon">${iconOptions}</select>
+        </div>
+        <div><label>Reihenfolge</label><input type="number" name="sort_order" value="${v('sort_order')||0}"></div>
+      </div>
+      <label>Beschreibung</label>
+      <textarea name="description" rows="3">${v('description')}</textarea>
+      <div class="row">
+        <div><label>Preis (Auxilium)</label><input name="price_new" value="${v('price_new')}" placeholder="21,00 €"></div>
+        <div><label>Vergleichspreis</label><input name="price_old" value="${v('price_old')}" placeholder="28,55 €"></div>
+      </div>
+      <div class="row">
+        <div><label>Preishinweis</label><input name="price_note" value="${v('price_note')}" placeholder="Ambulanter Dienst"></div>
+        <div><label>Ersparnis-Text</label><input name="savings" value="${v('savings')}" placeholder="Sie sparen: ..."></div>
+      </div>
+      <div style="margin-top:16px;display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" id="active" name="active" style="width:auto;" ${v('active')||(!r)?'checked':''}>
+        <label for="active" style="margin:0;color:#2C2018;font-size:0.9rem;cursor:pointer;">Leistung aktiv (auf Website anzeigen)</label>
+      </div>
+      <div style="margin-top:24px;display:flex;gap:12px;">
+        <button type="submit" class="adm-btn adm-btn-primary"><i class="fas fa-save"></i>Speichern</button>
+        <a href="/admin/leistungen" class="adm-btn adm-btn-secondary"><i class="fas fa-arrow-left"></i>Abbrechen</a>
+      </div>
+    </form>
+  </div>`
+}
+
+// ─── Admin: Impressum & Datenschutz WYSIWYG ───────────────────
+function wysiwygPage(pageKey: string, pageTitle: string, row: any, activeNav: string) {
+  const content = row ? row.content : ''
+  const body = `
+  <div class="adm-card">
+    <form method="POST" class="adm-form" id="editorForm">
+      <p style="font-size:0.85rem;color:#7A6550;margin-bottom:16px;">Bearbeiten Sie den Inhalt mit dem Editor. HTML-Tags werden unterstützt.</p>
+      <div id="quillEditor" style="background:white;">${content}</div>
+      <input type="hidden" name="content" id="contentInput">
+      <div style="margin-top:20px;display:flex;gap:12px;">
+        <button type="submit" class="adm-btn adm-btn-primary" onclick="document.getElementById('contentInput').value=quill.root.innerHTML;return true;">
+          <i class="fas fa-save"></i>Speichern
+        </button>
+        <a href="/${pageKey}" target="_blank" class="adm-btn adm-btn-secondary"><i class="fas fa-external-link-alt"></i>Vorschau</a>
+      </div>
+    </form>
+  </div>
+  <script>
+    const quill = new Quill('#quillEditor', {
+      theme: 'snow',
+      modules: { toolbar: [
+        [{ header: [2,3,false] }],
+        ['bold','italic','underline'],
+        [{ list: 'ordered' },{ list: 'bullet' }],
+        ['link'],['clean']
+      ]}
+    });
+    document.getElementById('editorForm').addEventListener('submit', function() {
+      document.getElementById('contentInput').value = quill.root.innerHTML;
+    });
+  </script>`
+  return adminLayout(pageTitle, body, activeNav)
+}
+
+app.get('/admin/impressum', async (c) => {
+  const row = await c.env.DB.prepare("SELECT * FROM page_content WHERE page_key='impressum'").first<any>()
+  return c.html(wysiwygPage('impressum', 'Impressum bearbeiten', row, 'impressum'))
+})
+
+app.post('/admin/impressum', async (c) => {
+  const d = await c.req.parseBody()
+  await c.env.DB.prepare(`INSERT INTO page_content (page_key,title,content) VALUES ('impressum','Impressum',?)
+    ON CONFLICT(page_key) DO UPDATE SET content=excluded.content, updated_at=CURRENT_TIMESTAMP`
+  ).bind(d.content||'').run()
+  return c.redirect('/admin/impressum?msg=saved')
+})
+
+app.get('/admin/datenschutz', async (c) => {
+  const row = await c.env.DB.prepare("SELECT * FROM page_content WHERE page_key='datenschutz'").first<any>()
+  return c.html(wysiwygPage('datenschutz', 'Datenschutz bearbeiten', row, 'datenschutz'))
+})
+
+app.post('/admin/datenschutz', async (c) => {
+  const d = await c.req.parseBody()
+  await c.env.DB.prepare(`INSERT INTO page_content (page_key,title,content) VALUES ('datenschutz','Datenschutzerklärung',?)
+    ON CONFLICT(page_key) DO UPDATE SET content=excluded.content, updated_at=CURRENT_TIMESTAMP`
+  ).bind(d.content||'').run()
+  return c.redirect('/admin/datenschutz?msg=saved')
 })
 
 export default app
