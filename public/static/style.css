@@ -743,41 +743,48 @@ p  { color: var(--text-light); line-height: 1.75; }
 
 /* Preis-Block – sauber und ausgerichtet */
 .service-card__price {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto auto;
-  column-gap: 8px;
-  row-gap: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   padding: 12px 14px;
   background: var(--bg-soft);
   border-radius: 10px;
   margin-bottom: 12px;
   border: 1px solid var(--border);
+}
+.service-card__price .price-row {
+  display: flex;
   align-items: baseline;
+  gap: 8px;
+}
+.service-card__price .price-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  min-width: 84px;
+  flex-shrink: 0;
 }
 .service-card__price .price-new {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--primary);
   white-space: nowrap;
-  grid-column: 1;
-  grid-row: 1;
 }
 .service-card__price .price-compare {
-  font-size: 0.78rem;
+  font-size: 0.9rem;
   color: var(--text-light);
-  text-decoration: line-through;
   white-space: nowrap;
-  grid-column: 2;
-  grid-row: 1;
-  align-self: baseline;
+  /* KEIN line-through mehr */
+  text-decoration: none;
 }
 .service-card__price .price-note {
   font-size: 0.71rem;
   color: var(--text-light);
-  grid-column: 1 / -1;
-  grid-row: 2;
-  margin-top: 2px;
+  margin-top: 1px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
 }
 .service-card__savings {
   font-size: 0.78rem;

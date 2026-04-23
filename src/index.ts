@@ -154,6 +154,17 @@ app.get('/', async (c) => {
     'SELECT * FROM leistungen WHERE active=1 ORDER BY sort_order LIMIT 3'
   ).all<any>()
 
+  // Lade aktive FAQs aus der DB
+  const { results: dbFaqs } = await c.env.DB.prepare(
+    'SELECT * FROM faqs WHERE active=1 ORDER BY sort_order'
+  ).all<any>()
+
+  const faqItems = dbFaqs.map((f: any) => `
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false">${f.question}<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
+        <div class="accordion-body"><div class="accordion-body__inner">${f.answer}</div></div>
+      </div>`).join('\n')
+
   const homeServiceCards = dbLeistungen.map((r: any) => `
       <article class="service-card">
         <div class="service-card__header">
@@ -162,9 +173,13 @@ app.get('/', async (c) => {
         </div>
         <div class="service-card__body">
           <p class="service-card__text">${r.description}</p>
-          <div class="service-card__price"><span class="price-new">${r.price_new}</span><span class="price-compare">${r.price_old}</span><span class="price-note">${r.price_note}</span></div>
-          <div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>${r.savings}</div>
-          <a href="/leistungen#${r.slug}" class="btn btn-outline btn-full-width">Details ansehen</a>
+          <div class="service-card__price">
+            <div class="price-row"><span class="price-label">Auxilium</span><span class="price-new">${r.price_new}</span></div>
+            ${r.price_old ? `<div class="price-row"><span class="price-label">Vergleich</span><span class="price-compare">${r.price_old}</span></div>` : ''}
+            ${r.price_note ? `<div class="price-note">${r.price_note}</div>` : ''}
+          </div>
+          ${r.savings ? `<div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>${r.savings}</div>` : ''}
+          <a href="/leistungen#${r.slug}" class="btn btn-outline btn-full-width" style="margin-top:10px;">Details ansehen</a>
         </div>
       </article>`).join('\n')
 
@@ -308,26 +323,7 @@ app.get('/', async (c) => {
       <p style="max-width:520px;margin:14px auto 0;">Hier finden Sie die h&auml;ufigsten Fragen rund um Auxilium &ndash; schnell und &uuml;bersichtlich.</p>
     </div>
     <div class="accordion-list" style="max-width:720px;margin:0 auto;">
-      <div class="accordion-item">
-        <button class="accordion-toggle" aria-expanded="false">Wer kann Auxilium nutzen?<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
-        <div class="accordion-body"><div class="accordion-body__inner">Auxilium richtet sich an Pflegegeldempf&auml;nger, Personen die Verhinderungspflege oder den Entlastungsbetrag nutzen wollen, sowie Privatzahler/-innen.</div></div>
-      </div>
-      <div class="accordion-item">
-        <button class="accordion-toggle" aria-expanded="false">Ist das Erstgespr&auml;ch wirklich kostenlos?<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
-        <div class="accordion-body"><div class="accordion-body__inner">Ja, das Erstgespr&auml;ch ist vollst&auml;ndig kostenlos und unverbindlich. Es dient dazu, Ihre Bed&uuml;rfnisse kennenzulernen und die passende Unterst&uuml;tzung zu finden.</div></div>
-      </div>
-      <div class="accordion-item">
-        <button class="accordion-toggle" aria-expanded="false">Kann ich Auxilium &uuml;ber die Pflegekasse abrechnen?<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
-        <div class="accordion-body"><div class="accordion-body__inner">Ja! Auxilium kann &uuml;ber Verhinderungspflege und den Entlastungsbetrag abgerechnet werden. Ich zeige Ihnen alle M&ouml;glichkeiten und helfe Ihnen dabei.</div></div>
-      </div>
-      <div class="accordion-item">
-        <button class="accordion-toggle" aria-expanded="false">In welchen Bereichen ist Auxilium t&auml;tig?<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
-        <div class="accordion-body"><div class="accordion-body__inner">Auxilium ist in Forst (Baden) und der Umgebung t&auml;tig. Die Wegpauschale h&auml;ngt vom Einsatzort ab und wird vorab transparent kommuniziert.</div></div>
-      </div>
-      <div class="accordion-item">
-        <button class="accordion-toggle" aria-expanded="false">Wie unterscheidet sich Auxilium von einem ambulanten Pflegedienst?<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
-        <div class="accordion-body"><div class="accordion-body__inner">Auxilium ist g&uuml;nstiger als klassische ambulante Dienste, pers&ouml;nlicher und flexibler. Ich bin Ihr direkter Ansprechpartner &ndash; ohne Vermittlung, ohne Umwege.</div></div>
-      </div>
+      ${faqItems}
     </div>
   </div>
 </section>
@@ -473,8 +469,12 @@ app.get('/leistungen', async (c) => {
       </div>
       <div class="service-card__body">
         <p class="service-card__text">${r.description}</p>
-        <div class="service-card__price"><span class="price-new">${r.price_new}</span><span class="price-compare">${r.price_old}</span><span class="price-note">${r.price_note}</span></div>
-        <div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>${r.savings}</div>
+        <div class="service-card__price">
+          <div class="price-row"><span class="price-label">Auxilium</span><span class="price-new">${r.price_new}</span></div>
+          ${r.price_old ? `<div class="price-row"><span class="price-label">Vergleich</span><span class="price-compare">${r.price_old}</span></div>` : ''}
+          ${r.price_note ? `<div class="price-note">${r.price_note}</div>` : ''}
+        </div>
+        ${r.savings ? `<div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>${r.savings}</div>` : ''}
       </div>
     </article>`).join('\n')
   const body = hero + `
@@ -742,6 +742,7 @@ function adminLayout(title: string, body: string, activeNav = ''): string {
   const navItems = [
     { href: '/admin', label: 'Dashboard', key: 'dashboard', icon: 'fa-tachometer-alt' },
     { href: '/admin/leistungen', label: 'Leistungen', key: 'leistungen', icon: 'fa-list-alt' },
+    { href: '/admin/faq', label: 'FAQ', key: 'faq', icon: 'fa-question-circle' },
     { href: '/admin/impressum', label: 'Impressum', key: 'impressum', icon: 'fa-file-alt' },
     { href: '/admin/datenschutz', label: 'Datenschutz', key: 'datenschutz', icon: 'fa-shield-alt' },
   ]
@@ -759,10 +760,18 @@ function adminLayout(title: string, body: string, activeNav = ''): string {
 <!-- Quill WYSIWYG -->
 <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<!-- CodeMirror für HTML-Modus -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+<!-- SortableJS für Drag-&-Drop -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <style>
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   body{font-family:'Inter',system-ui,sans-serif;background:#F4F6F9;color:#2C2018;min-height:100vh;display:flex;}
-  .adm-sidebar{width:220px;background:#1A0D06;color:white;display:flex;flex-direction:column;flex-shrink:0;min-height:100vh;}
+  .adm-sidebar{width:230px;background:#1A0D06;color:white;display:flex;flex-direction:column;flex-shrink:0;min-height:100vh;}
   .adm-logo{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,0.08);}
   .adm-logo span{display:block;font-size:1.1rem;font-weight:700;color:#D98A2B;letter-spacing:0.05em;}
   .adm-logo small{font-size:0.72rem;color:rgba(255,255,255,0.45);margin-top:2px;display:block;}
@@ -774,36 +783,65 @@ function adminLayout(title: string, body: string, activeNav = ''): string {
   .adm-logout{padding:16px 20px;border-top:1px solid rgba(255,255,255,0.08);}
   .adm-logout a{color:rgba(255,255,255,0.45);font-size:0.82rem;text-decoration:none;display:flex;align-items:center;gap:8px;}
   .adm-logout a:hover{color:white;}
-  .adm-main{flex:1;display:flex;flex-direction:column;overflow:auto;}
+  .adm-main{flex:1;display:flex;flex-direction:column;overflow:auto;min-width:0;}
   .adm-header{background:white;padding:18px 32px;border-bottom:1px solid #E8D9C5;display:flex;align-items:center;justify-content:space-between;}
   .adm-header h1{font-size:1.25rem;font-weight:700;color:#2C2018;}
-  .adm-content{padding:32px;flex:1;}
-  .adm-card{background:white;border-radius:12px;padding:28px;box-shadow:0 2px 8px rgba(44,32,24,0.07);border:1px solid #E8D9C5;margin-bottom:24px;}
+  .adm-content{padding:28px 32px;flex:1;}
+  .adm-card{background:white;border-radius:12px;padding:24px;box-shadow:0 2px 8px rgba(44,32,24,0.07);border:1px solid #E8D9C5;margin-bottom:24px;}
+  /* Tabellen */
   .adm-table{width:100%;border-collapse:collapse;}
   .adm-table th{text-align:left;padding:10px 14px;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#7A6550;border-bottom:2px solid #E8D9C5;}
-  .adm-table td{padding:12px 14px;border-bottom:1px solid #F3EDE3;font-size:0.88rem;vertical-align:middle;}
+  .adm-table td{padding:10px 14px;border-bottom:1px solid #F3EDE3;font-size:0.88rem;vertical-align:middle;}
   .adm-table tr:hover td{background:#FAFAFA;}
-  .adm-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:0.85rem;font-weight:600;text-decoration:none;transition:opacity 0.15s;}
-  .adm-btn:hover{opacity:0.85;}
+  .adm-table tr.sortable-ghost td{background:#FFF8EE;opacity:0.6;}
+  /* Buttons */
+  .adm-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-size:0.84rem;font-weight:600;text-decoration:none;transition:opacity 0.15s,transform 0.1s;}
+  .adm-btn:hover{opacity:0.88;transform:translateY(-1px);}
   .adm-btn-primary{background:#D98A2B;color:white;}
   .adm-btn-danger{background:#8B1A1A;color:white;}
   .adm-btn-secondary{background:#E8D9C5;color:#2C2018;}
   .adm-btn-green{background:#4A9B7F;color:white;}
-  .adm-form label{display:block;font-size:0.82rem;font-weight:600;color:#7A6550;margin-bottom:5px;margin-top:14px;}
-  .adm-form input,.adm-form select,.adm-form textarea{width:100%;padding:9px 12px;border:1px solid #E8D9C5;border-radius:8px;font-size:0.9rem;background:white;color:#2C2018;outline:none;}
+  /* Formulare */
+  .adm-form label{display:block;font-size:0.82rem;font-weight:600;color:#7A6550;margin-bottom:5px;margin-top:12px;}
+  .adm-form label:first-child{margin-top:0;}
+  .adm-form input,.adm-form select,.adm-form textarea{width:100%;padding:8px 12px;border:1px solid #E8D9C5;border-radius:8px;font-size:0.9rem;background:white;color:#2C2018;outline:none;}
   .adm-form input:focus,.adm-form select:focus,.adm-form textarea:focus{border-color:#D98A2B;box-shadow:0 0 0 3px rgba(217,138,43,0.12);}
   .adm-form .row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  /* Badges & Alerts */
   .adm-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;}
   .adm-badge-green{background:#E6F5EF;color:#2D7A5E;}
   .adm-badge-gray{background:#F3EDE3;color:#7A6550;}
   .adm-alert{padding:12px 16px;border-radius:8px;margin-bottom:20px;font-size:0.88rem;}
   .adm-alert-success{background:#E6F5EF;border:1px solid #89C4AE;color:#2D7A5E;}
   .adm-alert-error{background:#F5E8E8;border:1px solid #D98A8A;color:#8B1A1A;}
-  .ql-container{font-family:'Inter',sans-serif;font-size:0.95rem;border-radius:0 0 8px 8px;}
-  .ql-toolbar{border-radius:8px 8px 0 0;border-color:#E8D9C5 !important;}
-  .ql-container{border-color:#E8D9C5 !important;}
-  .ql-editor{min-height:280px;}
-  .drag-handle{cursor:grab;color:#C5B8AA;font-size:0.9rem;}
+  /* Quill */
+  .ql-container{font-family:'Inter',sans-serif;font-size:0.95rem;}
+  .ql-toolbar{border-color:#E8D9C5 !important;border-radius:8px 8px 0 0;}
+  .ql-container{border-color:#E8D9C5 !important;border-radius:0 0 8px 8px;}
+  .ql-editor{min-height:260px;}
+  /* Editor-Tabs (WYSIWYG / HTML) */
+  .editor-tabs{display:flex;gap:0;margin-bottom:0;border-bottom:2px solid #E8D9C5;}
+  .editor-tab{padding:8px 18px;font-size:0.85rem;font-weight:600;cursor:pointer;border:1px solid #E8D9C5;border-bottom:none;background:#F4F6F9;color:#7A6550;border-radius:8px 8px 0 0;margin-right:4px;}
+  .editor-tab.active{background:white;color:#D98A2B;border-color:#E8D9C5;border-bottom:2px solid white;margin-bottom:-2px;}
+  .editor-panel{display:none;}.editor-panel.active{display:block;}
+  /* CodeMirror */
+  .CodeMirror{height:300px;border:1px solid #E8D9C5;border-radius:0 0 8px 8px;font-size:0.9rem;}
+  /* Icon-Vorschau */
+  .icon-picker{position:relative;}
+  .icon-input-row{display:flex;align-items:center;gap:10px;}
+  .icon-preview{font-size:1.6rem;color:#D98A2B;width:38px;text-align:center;flex-shrink:0;}
+  /* Leistungsformular: Split-Layout */
+  .form-split{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
+  /* Live-Preview Card */
+  .preview-card{background:#FBF7F2;border:1px solid #E8D9C5;border-radius:12px;padding:0;overflow:hidden;position:sticky;top:24px;}
+  .preview-card__header{background:white;padding:12px 18px;border-bottom:1px solid #E8D9C5;font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#7A6550;display:flex;align-items:center;gap:8px;}
+  .preview-card__body{padding:0;}
+  /* Drag-Handle */
+  .drag-handle{cursor:grab;color:#C5B8AA;font-size:1rem;padding:4px 8px;}
+  .drag-handle:active{cursor:grabbing;}
+  .sortable-chosen .drag-handle{cursor:grabbing;}
+  /* Responsive */
+  @media(max-width:1100px){.form-split{grid-template-columns:1fr;}}
   @media(max-width:768px){.adm-sidebar{display:none;}.adm-content{padding:16px;}}
 </style>
 </head>
@@ -884,20 +922,25 @@ app.get('/admin/logout', async (c) => {
 // ─── Admin: Dashboard ─────────────────────────────────────────
 app.get('/admin', async (c) => {
   const leistungCount = await c.env.DB.prepare('SELECT COUNT(*) as n FROM leistungen WHERE active=1').first<any>()
+  const faqCount = await c.env.DB.prepare('SELECT COUNT(*) as n FROM faqs WHERE active=1').first<any>()
   const body = `
   <div class="adm-card">
     <h2 style="margin-bottom:16px;font-size:1rem;color:#7A6550;text-transform:uppercase;letter-spacing:0.08em;">Übersicht</h2>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
       <div style="background:#FBF7F2;border-radius:10px;padding:20px;text-align:center;">
         <div style="font-size:2rem;font-weight:700;color:#D98A2B;">${leistungCount?.n ?? 0}</div>
         <div style="font-size:0.82rem;color:#7A6550;margin-top:4px;">Aktive Leistungen</div>
       </div>
       <div style="background:#FBF7F2;border-radius:10px;padding:20px;text-align:center;">
-        <div style="font-size:2rem;font-weight:700;color:#4A9B7F;">2</div>
+        <div style="font-size:2rem;font-weight:700;color:#4A9B7F;">${faqCount?.n ?? 0}</div>
+        <div style="font-size:0.82rem;color:#7A6550;margin-top:4px;">Aktive FAQs</div>
+      </div>
+      <div style="background:#FBF7F2;border-radius:10px;padding:20px;text-align:center;">
+        <div style="font-size:2rem;font-weight:700;color:#7A6550;">2</div>
         <div style="font-size:0.82rem;color:#7A6550;margin-top:4px;">Rechtliche Seiten</div>
       </div>
       <div style="background:#FBF7F2;border-radius:10px;padding:20px;text-align:center;">
-        <div style="font-size:2rem;font-weight:700;color:#8B1A1A;"><i class="fas fa-check"></i></div>
+        <div style="font-size:2rem;font-weight:700;color:#4A9B7F;"><i class="fas fa-check"></i></div>
         <div style="font-size:0.82rem;color:#7A6550;margin-top:4px;">System bereit</div>
       </div>
     </div>
@@ -907,46 +950,90 @@ app.get('/admin', async (c) => {
     <div style="display:flex;flex-wrap:wrap;gap:12px;">
       <a href="/admin/leistungen" class="adm-btn adm-btn-primary"><i class="fas fa-list-alt"></i>Leistungen verwalten</a>
       <a href="/admin/leistungen/neu" class="adm-btn adm-btn-green"><i class="fas fa-plus"></i>Neue Leistung</a>
-      <a href="/admin/impressum" class="adm-btn adm-btn-secondary"><i class="fas fa-file-alt"></i>Impressum bearbeiten</a>
-      <a href="/admin/datenschutz" class="adm-btn adm-btn-secondary"><i class="fas fa-shield-alt"></i>Datenschutz bearbeiten</a>
+      <a href="/admin/faq" class="adm-btn adm-btn-primary"><i class="fas fa-question-circle"></i>FAQ verwalten</a>
+      <a href="/admin/faq/neu" class="adm-btn adm-btn-green"><i class="fas fa-plus"></i>Neue FAQ</a>
+      <a href="/admin/impressum" class="adm-btn adm-btn-secondary"><i class="fas fa-file-alt"></i>Impressum</a>
+      <a href="/admin/datenschutz" class="adm-btn adm-btn-secondary"><i class="fas fa-shield-alt"></i>Datenschutz</a>
     </div>
   </div>`
   return c.html(adminLayout('Dashboard', body, 'dashboard'))
 })
 
-// ─── Admin: Leistungen Liste ──────────────────────────────────
+// ─── Admin: Leistungen Liste (mit Drag-&-Drop) ────────────────
 app.get('/admin/leistungen', async (c) => {
   const msg = c.req.query('msg')
   const alert = msg === 'saved' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Erfolgreich gespeichert.</div>'
     : msg === 'deleted' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Leistung gelöscht.</div>' : ''
   const { results } = await c.env.DB.prepare('SELECT * FROM leistungen ORDER BY sort_order').all<any>()
   const rows = results.map((r: any) => `
-    <tr>
-      <td style="color:#C5B8AA;"><i class="fas fa-grip-vertical"></i></td>
-      <td><i class="fas ${r.icon}" style="color:#D98A2B;width:20px;"></i> ${r.title}</td>
-      <td style="color:#7A6550;font-size:0.82rem;">${r.subtitle}</td>
+    <tr data-id="${r.id}">
+      <td class="drag-handle" title="Ziehen zum Sortieren"><i class="fas fa-grip-vertical"></i></td>
+      <td><i class="fas ${r.icon}" style="color:#D98A2B;width:20px;margin-right:6px;"></i><strong>${r.title}</strong></td>
+      <td style="color:#7A6550;font-size:0.82rem;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.subtitle}</td>
       <td><strong style="color:#D98A2B;">${r.price_new}</strong></td>
       <td>${r.active ? '<span class="adm-badge adm-badge-green">Aktiv</span>' : '<span class="adm-badge adm-badge-gray">Inaktiv</span>'}</td>
       <td style="white-space:nowrap;">
-        <a href="/admin/leistungen/${r.id}" class="adm-btn adm-btn-secondary" style="padding:5px 12px;font-size:0.78rem;"><i class="fas fa-edit"></i>Bearbeiten</a>
+        <a href="/admin/leistungen/${r.id}" class="adm-btn adm-btn-secondary" style="padding:5px 10px;font-size:0.78rem;"><i class="fas fa-edit"></i>Bearbeiten</a>
         <form method="POST" action="/admin/leistungen/${r.id}/delete" style="display:inline;" onsubmit="return confirm('Wirklich löschen?')">
-          <button class="adm-btn adm-btn-danger" style="padding:5px 12px;font-size:0.78rem;"><i class="fas fa-trash"></i>Löschen</button>
+          <button class="adm-btn adm-btn-danger" style="padding:5px 10px;font-size:0.78rem;"><i class="fas fa-trash"></i></button>
         </form>
       </td>
     </tr>`).join('')
   const body = `
   ${alert}
   <div class="adm-card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-      <h2 style="font-size:1rem;">Alle Leistungen (${results.length})</h2>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div>
+        <h2 style="font-size:1rem;margin-bottom:3px;">Alle Leistungen (${results.length})</h2>
+        <p style="font-size:0.78rem;color:#7A6550;"><i class="fas fa-grip-vertical" style="margin-right:4px;"></i>Zeilen per Drag &amp; Drop in die gewünschte Reihenfolge ziehen</p>
+      </div>
       <a href="/admin/leistungen/neu" class="adm-btn adm-btn-primary"><i class="fas fa-plus"></i>Neue Leistung</a>
     </div>
     <table class="adm-table">
-      <thead><tr><th></th><th>Titel</th><th>Untertitel</th><th>Preis</th><th>Status</th><th>Aktionen</th></tr></thead>
-      <tbody>${rows}</tbody>
+      <thead><tr><th style="width:36px;"></th><th>Titel</th><th>Untertitel</th><th>Preis</th><th>Status</th><th>Aktionen</th></tr></thead>
+      <tbody id="leistungenBody">${rows}</tbody>
     </table>
-  </div>`
+    <p id="sortSaveHint" style="display:none;margin-top:12px;font-size:0.82rem;color:#7A6550;"><i class="fas fa-spinner fa-spin" style="margin-right:5px;"></i>Reihenfolge wird gespeichert…</p>
+  </div>
+  <script>
+  (function(){
+    const tbody = document.getElementById('leistungenBody');
+    const hint = document.getElementById('sortSaveHint');
+    let saveTimer;
+    Sortable.create(tbody, {
+      handle: '.drag-handle',
+      animation: 150,
+      ghostClass: 'sortable-ghost',
+      onEnd: function() {
+        clearTimeout(saveTimer);
+        hint.style.display = 'block';
+        saveTimer = setTimeout(function() {
+          const ids = Array.from(tbody.querySelectorAll('tr[data-id]')).map(tr => tr.getAttribute('data-id'));
+          fetch('/admin/leistungen/sort', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ids})
+          }).then(r => {
+            hint.innerHTML = r.ok
+              ? '<i class="fas fa-check-circle" style="color:#2D7A5E;margin-right:5px;"></i>Reihenfolge gespeichert.'
+              : '<i class="fas fa-exclamation-circle" style="color:#8B1A1A;margin-right:5px;"></i>Fehler beim Speichern.';
+            setTimeout(() => { hint.style.display='none'; hint.innerHTML='<i class="fas fa-spinner fa-spin" style="margin-right:5px;"></i>Reihenfolge wird gespeichert…'; }, 2200);
+          });
+        }, 600);
+      }
+    });
+  })();
+  </script>`
   return c.html(adminLayout('Leistungen', body, 'leistungen'))
+})
+
+// ─── Admin: Sort-API (AJAX) ───────────────────────────────────
+app.post('/admin/leistungen/sort', async (c) => {
+  const { ids } = await c.req.json<{ ids: string[] }>()
+  for (let i = 0; i < ids.length; i++) {
+    await c.env.DB.prepare('UPDATE leistungen SET sort_order=? WHERE id=?').bind(i + 1, ids[i]).run()
+  }
+  return c.json({ ok: true })
 })
 
 // ─── Admin: Neue Leistung ─────────────────────────────────────
@@ -957,12 +1044,15 @@ app.get('/admin/leistungen/neu', (c) => {
 
 app.post('/admin/leistungen/neu', async (c) => {
   const d = await c.req.parseBody()
+  // sort_order: ans Ende (MAX + 1)
+  const maxRow = await c.env.DB.prepare('SELECT COALESCE(MAX(sort_order),0)+1 AS next_order FROM leistungen').first<any>()
+  const nextOrder = maxRow?.next_order ?? 99
   await c.env.DB.prepare(`INSERT INTO leistungen 
     (slug,title,subtitle,icon,description,price_new,price_old,price_note,savings,sort_order,active)
     VALUES (?,?,?,?,?,?,?,?,?,?,?)`
   ).bind(d.slug||'', d.title||'', d.subtitle||'', d.icon||'fa-star', d.description||'',
     d.price_new||'', d.price_old||'', d.price_note||'', d.savings||'',
-    Number(d.sort_order)||99, d.active ? 1 : 0).run()
+    nextOrder, d.active ? 1 : 0).run()
   return c.redirect('/admin/leistungen?msg=saved')
 })
 
@@ -977,11 +1067,11 @@ app.get('/admin/leistungen/:id', async (c) => {
 app.post('/admin/leistungen/:id', async (c) => {
   const d = await c.req.parseBody()
   await c.env.DB.prepare(`UPDATE leistungen SET
-    title=?,subtitle=?,icon=?,description=?,price_new=?,price_old=?,price_note=?,savings=?,sort_order=?,active=?,updated_at=CURRENT_TIMESTAMP
+    title=?,subtitle=?,icon=?,description=?,price_new=?,price_old=?,price_note=?,savings=?,active=?,updated_at=CURRENT_TIMESTAMP
     WHERE id=?`
   ).bind(d.title||'', d.subtitle||'', d.icon||'fa-star', d.description||'',
     d.price_new||'', d.price_old||'', d.price_note||'', d.savings||'',
-    Number(d.sort_order)||0, d.active ? 1 : 0, c.req.param('id')).run()
+    d.active ? 1 : 0, c.req.param('id')).run()
   return c.redirect('/admin/leistungen?msg=saved')
 })
 
@@ -990,83 +1080,262 @@ app.post('/admin/leistungen/:id/delete', async (c) => {
   return c.redirect('/admin/leistungen?msg=deleted')
 })
 
-// Formular-Helper Leistungen
+// Formular-Helper Leistungen (mit Live-Vorschau + freiem Icon-Input)
 function leistungForm(r: any): string {
-  const v = (f: string) => r ? (r[f] ?? '') : ''
-  const icons = ['fa-shower','fa-hands','fa-hands-helping','fa-shopping-bag','fa-calendar-alt',
-    'fa-heart','fa-user','fa-home','fa-star','fa-medkit','fa-walking','fa-wheelchair',
-    'fa-comments','fa-phone','fa-clock','fa-shield-alt','fa-graduation-cap']
-  const iconOptions = icons.map(i =>
-    `<option value="${i}"${v('icon')===i?' selected':''}>${i}</option>`).join('')
+  const v = (f: string) => {
+    if (!r) return ''
+    const val = r[f] ?? ''
+    // HTML-Entities für Attribute escapen
+    return String(val).replace(/&/g,'&amp;').replace(/"/g,'&quot;')
+  }
+  const vRaw = (f: string) => r ? (r[f] ?? '') : ''
+  const isNew = !r
+  const activeChecked = r ? (r.active ? 'checked' : '') : 'checked'
+
   return `
-  <div class="adm-card">
-    <form method="POST" class="adm-form">
-      ${r ? '' : `<div>
-        <label>Slug (URL-ID, z.B. koerperpflege)</label>
-        <input name="slug" value="${v('slug')}" required pattern="[a-z0-9-]+" placeholder="eindeutige-id">
-      </div>`}
-      <div class="row">
-        <div><label>Titel</label><input name="title" value="${v('title')}" required></div>
-        <div><label>Untertitel</label><input name="subtitle" value="${v('subtitle')}"></div>
-      </div>
-      <div class="row">
-        <div><label>Font-Awesome Icon (ohne fa-Prefix zeigen)</label>
-          <select name="icon">${iconOptions}</select>
+  <div class="form-split">
+    <!-- LINKE SPALTE: Formular -->
+    <div class="adm-card" style="margin-bottom:0;">
+      <form method="POST" class="adm-form" id="leistungForm">
+        ${isNew ? `<div>
+          <label>Slug <span style="font-weight:400;color:#7A6550;">(URL-ID, z.B. koerperpflege – nur a-z, 0-9, Bindestriche)</span></label>
+          <input name="slug" id="f_slug" value="${v('slug')}" required pattern="[a-z0-9-]+" placeholder="eindeutige-id" oninput="updatePreview()">
+        </div>` : ''}
+
+        <label>Titel</label>
+        <input name="title" id="f_title" value="${v('title')}" required oninput="updatePreview()" placeholder="z.B. Große Körperpflege">
+
+        <label>Untertitel <span style="font-weight:400;color:#7A6550;">(wird klein unter dem Titel angezeigt)</span></label>
+        <input name="subtitle" id="f_subtitle" value="${v('subtitle')}" oninput="updatePreview()" placeholder="z.B. Baden / Duschen · ca. 35 Min">
+
+        <label>
+          Font-Awesome Icon
+          <a href="https://fontawesome.com/icons?m=free" target="_blank" rel="noopener"
+             style="font-weight:400;color:#D98A2B;margin-left:8px;font-size:0.78rem;">
+            <i class="fas fa-external-link-alt" style="font-size:0.72rem;"></i> Icons durchsuchen (fontawesome.com)
+          </a>
+        </label>
+        <div class="icon-input-row">
+          <span class="icon-preview" id="iconPreview"><i class="fas ${vRaw('icon') || 'fa-star'}"></i></span>
+          <input name="icon" id="f_icon" value="${v('icon') || 'fa-star'}" placeholder="fa-shower"
+                 style="font-family:monospace;"
+                 oninput="updateIconPreview();updatePreview()"
+                 autocomplete="off">
         </div>
-        <div><label>Reihenfolge</label><input type="number" name="sort_order" value="${v('sort_order')||0}"></div>
+        <p style="font-size:0.75rem;color:#7A6550;margin-top:4px;">
+          Den Klassennamen aus fontawesome.com kopieren, z.B. <code style="background:#F3EDE3;padding:1px 5px;border-radius:4px;">fa-heart</code> oder <code style="background:#F3EDE3;padding:1px 5px;border-radius:4px;">fa-user-nurse</code>
+        </p>
+
+        <label>Beschreibung</label>
+        <textarea name="description" id="f_description" rows="3" oninput="updatePreview()" placeholder="Kurze Beschreibung der Leistung…">${vRaw('description')}</textarea>
+
+        <div class="row" style="margin-top:12px;">
+          <div>
+            <label>Auxilium-Preis</label>
+            <input name="price_new" id="f_price_new" value="${v('price_new')}" oninput="updatePreview()" placeholder="21,00 €">
+          </div>
+          <div>
+            <label>Vergleichspreis</label>
+            <input name="price_old" id="f_price_old" value="${v('price_old')}" oninput="updatePreview()" placeholder="28,55 € (Ambulanter Dienst)">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Preishinweis <span style="font-weight:400;color:#7A6550;">(Zeile unter Preisen)</span></label>
+            <input name="price_note" id="f_price_note" value="${v('price_note')}" oninput="updatePreview()" placeholder="je angef. Viertelstunde">
+          </div>
+          <div>
+            <label>Ersparnis-Text</label>
+            <input name="savings" id="f_savings" value="${v('savings')}" oninput="updatePreview()" placeholder="Sie sparen: 7,55 € pro Einsatz">
+          </div>
+        </div>
+
+        <div style="margin-top:14px;display:flex;align-items:center;gap:10px;">
+          <input type="checkbox" id="f_active" name="active" style="width:auto;" ${activeChecked} onchange="updatePreview()">
+          <label for="f_active" style="margin:0;color:#2C2018;font-size:0.9rem;cursor:pointer;font-weight:500;">Leistung aktiv (auf Website anzeigen)</label>
+        </div>
+
+        <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;">
+          <button type="submit" class="adm-btn adm-btn-primary"><i class="fas fa-save"></i>Speichern</button>
+          <a href="/admin/leistungen" class="adm-btn adm-btn-secondary"><i class="fas fa-arrow-left"></i>Abbrechen</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- RECHTE SPALTE: Live-Vorschau -->
+    <div class="preview-card">
+      <div class="preview-card__header">
+        <i class="fas fa-eye" style="color:#D98A2B;"></i> Live-Vorschau
+        <span style="margin-left:auto;font-size:0.72rem;color:#C5B8AA;font-weight:400;">Aktualisiert bei jeder Eingabe</span>
       </div>
-      <label>Beschreibung</label>
-      <textarea name="description" rows="3">${v('description')}</textarea>
-      <div class="row">
-        <div><label>Preis (Auxilium)</label><input name="price_new" value="${v('price_new')}" placeholder="21,00 €"></div>
-        <div><label>Vergleichspreis</label><input name="price_old" value="${v('price_old')}" placeholder="28,55 €"></div>
+      <div class="preview-card__body" id="previewContainer" style="padding:20px;">
+        <!-- wird per JS befüllt -->
       </div>
-      <div class="row">
-        <div><label>Preishinweis</label><input name="price_note" value="${v('price_note')}" placeholder="Ambulanter Dienst"></div>
-        <div><label>Ersparnis-Text</label><input name="savings" value="${v('savings')}" placeholder="Sie sparen: ..."></div>
-      </div>
-      <div style="margin-top:16px;display:flex;align-items:center;gap:10px;">
-        <input type="checkbox" id="active" name="active" style="width:auto;" ${v('active')||(!r)?'checked':''}>
-        <label for="active" style="margin:0;color:#2C2018;font-size:0.9rem;cursor:pointer;">Leistung aktiv (auf Website anzeigen)</label>
-      </div>
-      <div style="margin-top:24px;display:flex;gap:12px;">
-        <button type="submit" class="adm-btn adm-btn-primary"><i class="fas fa-save"></i>Speichern</button>
-        <a href="/admin/leistungen" class="adm-btn adm-btn-secondary"><i class="fas fa-arrow-left"></i>Abbrechen</a>
-      </div>
-    </form>
-  </div>`
+    </div>
+  </div>
+
+  <script>
+  // Icon-Vorschau
+  function updateIconPreview() {
+    const val = (document.getElementById('f_icon').value || 'fa-star').trim();
+    document.getElementById('iconPreview').innerHTML = '<i class="fas ' + val + '"></i>';
+  }
+
+  // Live-Vorschau der Service-Card
+  function g(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+  function gc(id) { const el = document.getElementById(id); return el ? el.checked : true; }
+
+  function updatePreview() {
+    const icon = (g('f_icon') || 'fa-star').trim();
+    const title = g('f_title') || '<em style="color:#C5B8AA;">Titel eingeben…</em>';
+    const subtitle = g('f_subtitle') || '';
+    const desc = g('f_description') || '';
+    const priceNew = g('f_price_new') || '–';
+    const priceOld = g('f_price_old') || '';
+    const priceNote = g('f_price_note') || '';
+    const savings = g('f_savings') || '';
+    const active = gc('f_active');
+
+    const statusBadge = active
+      ? '<span style="display:inline-block;padding:2px 8px;border-radius:20px;background:#E6F5EF;color:#2D7A5E;font-size:0.72rem;font-weight:700;margin-bottom:10px;">● Aktiv</span>'
+      : '<span style="display:inline-block;padding:2px 8px;border-radius:20px;background:#F3EDE3;color:#7A6550;font-size:0.72rem;font-weight:700;margin-bottom:10px;">○ Inaktiv</span>';
+
+    document.getElementById('previewContainer').innerHTML = \`
+      \${statusBadge}
+      <article style="background:white;border:1px solid #E8D9C5;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(44,32,24,0.07);">
+        <div style="display:flex;align-items:center;gap:14px;padding:16px 18px 14px;border-bottom:1px solid #F3EDE3;background:#FBF7F2;">
+          <div style="width:44px;height:44px;background:var(--primary-light,#FAF0DF);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="fas \${icon}" style="color:#D98A2B;font-size:1.15rem;"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.95rem;color:#2C2018;">\${title}</div>
+            \${subtitle ? \`<div style="font-size:0.78rem;color:#7A6550;margin-top:2px;">\${subtitle}</div>\` : ''}
+          </div>
+        </div>
+        <div style="padding:14px 18px 16px;">
+          \${desc ? \`<p style="font-size:0.875rem;color:#3A2C1E;line-height:1.7;margin-bottom:12px;">\${desc}</p>\` : ''}
+          <div style="background:#FBF7F2;border:1px solid #E8D9C5;border-radius:8px;padding:10px 12px;margin-bottom:10px;">
+            <div style="font-size:0.75rem;color:#7A6550;margin-bottom:4px;">Auxilium</div>
+            <div style="font-size:1.15rem;font-weight:700;color:#D98A2B;">\${priceNew}</div>
+            \${priceOld ? \`<div style="margin-top:4px;font-size:0.75rem;color:#7A6550;">Vergleich: \${priceOld}</div>\` : ''}
+            \${priceNote ? \`<div style="font-size:0.7rem;color:#7A6550;margin-top:2px;">\${priceNote}</div>\` : ''}
+          </div>
+          \${savings ? \`<div style="font-size:0.78rem;color:#2D7A3A;font-weight:600;"><i class="fas fa-check" style="margin-right:5px;"></i>\${savings}</div>\` : ''}
+        </div>
+      </article>
+      <p style="font-size:0.72rem;color:#C5B8AA;margin-top:10px;text-align:center;">Vorschau entspricht annähernd der Darstellung auf der Website.</p>
+    \`;
+  }
+
+  // Initial befüllen
+  updatePreview();
+  </script>`
 }
 
-// ─── Admin: Impressum & Datenschutz WYSIWYG ───────────────────
+// ─── Admin: Impressum & Datenschutz WYSIWYG + HTML-Modus ──────
 function wysiwygPage(pageKey: string, pageTitle: string, row: any, activeNav: string) {
   const content = row ? row.content : ''
+  // HTML-Content für Textarea escapen
+  const contentEscaped = content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  const savedMsg = ''
   const body = `
   <div class="adm-card">
     <form method="POST" class="adm-form" id="editorForm">
-      <p style="font-size:0.85rem;color:#7A6550;margin-bottom:16px;">Bearbeiten Sie den Inhalt mit dem Editor. HTML-Tags werden unterstützt.</p>
-      <div id="quillEditor" style="background:white;">${content}</div>
+      <!-- Tabs -->
+      <div style="margin-bottom:0;">
+        <div class="editor-tabs">
+          <button type="button" class="editor-tab active" id="tabWysiwyg" onclick="switchTab('wysiwyg')">
+            <i class="fas fa-pen" style="margin-right:6px;"></i>Visueller Editor
+          </button>
+          <button type="button" class="editor-tab" id="tabHtml" onclick="switchTab('html')">
+            <i class="fas fa-code" style="margin-right:6px;"></i>HTML-Modus
+          </button>
+        </div>
+      </div>
+
+      <!-- WYSIWYG-Panel -->
+      <div class="editor-panel active" id="panelWysiwyg" style="border:1px solid #E8D9C5;border-top:none;border-radius:0 0 8px 8px;">
+        <div id="quillEditor" style="background:white;">${content}</div>
+      </div>
+
+      <!-- HTML-Panel -->
+      <div class="editor-panel" id="panelHtml" style="border:1px solid #E8D9C5;border-top:none;border-radius:0 0 8px 8px;">
+        <textarea id="htmlTextarea" style="display:none;">${contentEscaped}</textarea>
+      </div>
+
       <input type="hidden" name="content" id="contentInput">
-      <div style="margin-top:20px;display:flex;gap:12px;">
-        <button type="submit" class="adm-btn adm-btn-primary" onclick="document.getElementById('contentInput').value=quill.root.innerHTML;return true;">
+
+      <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+        <button type="submit" class="adm-btn adm-btn-primary" id="saveBtn">
           <i class="fas fa-save"></i>Speichern
         </button>
-        <a href="/${pageKey}" target="_blank" class="adm-btn adm-btn-secondary"><i class="fas fa-external-link-alt"></i>Vorschau</a>
+        <a href="/${pageKey}" target="_blank" class="adm-btn adm-btn-secondary">
+          <i class="fas fa-external-link-alt"></i>Vorschau öffnen
+        </a>
+        <span style="font-size:0.78rem;color:#7A6550;margin-left:auto;">
+          <i class="fas fa-info-circle" style="margin-right:4px;"></i>
+          Im HTML-Modus: Syntax-Highlighting mit CodeMirror. Wechsel zwischen Modi synchronisiert den Inhalt.
+        </span>
       </div>
     </form>
   </div>
+
   <script>
-    const quill = new Quill('#quillEditor', {
-      theme: 'snow',
-      modules: { toolbar: [
-        [{ header: [2,3,false] }],
-        ['bold','italic','underline'],
-        [{ list: 'ordered' },{ list: 'bullet' }],
-        ['link'],['clean']
-      ]}
-    });
-    document.getElementById('editorForm').addEventListener('submit', function() {
-      document.getElementById('contentInput').value = quill.root.innerHTML;
-    });
+  let quill, cm, currentTab = 'wysiwyg';
+
+  // Quill initialisieren
+  quill = new Quill('#quillEditor', {
+    theme: 'snow',
+    modules: { toolbar: [
+      [{ header: [1,2,3,false] }],
+      ['bold','italic','underline','strike'],
+      [{ color: [] },{ background: [] }],
+      [{ list: 'ordered' },{ list: 'bullet' }],
+      ['link','blockquote'],
+      ['clean']
+    ]}
+  });
+
+  // CodeMirror initialisieren
+  const htmlTA = document.getElementById('htmlTextarea');
+  cm = CodeMirror.fromTextArea(htmlTA, {
+    mode: 'htmlmixed',
+    theme: 'dracula',
+    lineNumbers: true,
+    lineWrapping: true,
+    indentWithTabs: true,
+    tabSize: 2,
+    extraKeys: { 'Ctrl-Space': 'autocomplete' }
+  });
+  cm.setSize('100%', '350px');
+
+  function switchTab(tab) {
+    if (tab === currentTab) return;
+    if (tab === 'html') {
+      // WYSIWYG → HTML
+      cm.setValue(quill.root.innerHTML);
+      document.getElementById('panelWysiwyg').classList.remove('active');
+      document.getElementById('panelHtml').classList.add('active');
+      document.getElementById('tabWysiwyg').classList.remove('active');
+      document.getElementById('tabHtml').classList.add('active');
+      setTimeout(() => cm.refresh(), 10);
+    } else {
+      // HTML → WYSIWYG
+      quill.root.innerHTML = cm.getValue();
+      document.getElementById('panelHtml').classList.remove('active');
+      document.getElementById('panelWysiwyg').classList.add('active');
+      document.getElementById('tabHtml').classList.remove('active');
+      document.getElementById('tabWysiwyg').classList.add('active');
+    }
+    currentTab = tab;
+  }
+
+  // Beim Speichern: aktuellen Inhalt je nach Tab holen
+  document.getElementById('editorForm').addEventListener('submit', function(e) {
+    const content = currentTab === 'html' ? cm.getValue() : quill.root.innerHTML;
+    document.getElementById('contentInput').value = content;
+  });
   </script>`
   return adminLayout(pageTitle, body, activeNav)
 }
@@ -1095,6 +1364,149 @@ app.post('/admin/datenschutz', async (c) => {
     ON CONFLICT(page_key) DO UPDATE SET content=excluded.content, updated_at=CURRENT_TIMESTAMP`
   ).bind(d.content||'').run()
   return c.redirect('/admin/datenschutz?msg=saved')
+})
+
+// ═══════════════════════════════════════════════════════════════
+// ADMIN: FAQ
+// ═══════════════════════════════════════════════════════════════
+
+// ─── FAQ-Liste mit Drag-&-Drop ────────────────────────────────
+app.get('/admin/faq', async (c) => {
+  const msg = c.req.query('msg')
+  const alert = msg === 'saved' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> FAQ gespeichert.</div>'
+    : msg === 'deleted' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> FAQ gelöscht.</div>' : ''
+  const { results } = await c.env.DB.prepare('SELECT * FROM faqs ORDER BY sort_order').all<any>()
+  const rows = results.map((r: any) => `
+    <tr data-id="${r.id}">
+      <td class="drag-handle" title="Ziehen zum Sortieren"><i class="fas fa-grip-vertical"></i></td>
+      <td style="max-width:340px;"><strong>${r.question}</strong></td>
+      <td style="max-width:220px;font-size:0.82rem;color:#7A6550;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.answer.substring(0,80)}${r.answer.length > 80 ? '…' : ''}</td>
+      <td>${r.active ? '<span class="adm-badge adm-badge-green">Aktiv</span>' : '<span class="adm-badge adm-badge-gray">Inaktiv</span>'}</td>
+      <td style="white-space:nowrap;">
+        <a href="/admin/faq/${r.id}" class="adm-btn adm-btn-secondary" style="padding:5px 10px;font-size:0.78rem;"><i class="fas fa-edit"></i>Bearbeiten</a>
+        <form method="POST" action="/admin/faq/${r.id}/delete" style="display:inline;" onsubmit="return confirm('FAQ wirklich löschen?')">
+          <button class="adm-btn adm-btn-danger" style="padding:5px 10px;font-size:0.78rem;"><i class="fas fa-trash"></i></button>
+        </form>
+      </td>
+    </tr>`).join('')
+  const body = `
+  ${alert}
+  <div class="adm-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div>
+        <h2 style="font-size:1rem;margin-bottom:3px;">Häufige Fragen (${results.length})</h2>
+        <p style="font-size:0.78rem;color:#7A6550;"><i class="fas fa-grip-vertical" style="margin-right:4px;"></i>Zeilen per Drag &amp; Drop sortieren</p>
+      </div>
+      <a href="/admin/faq/neu" class="adm-btn adm-btn-primary"><i class="fas fa-plus"></i>Neue FAQ</a>
+    </div>
+    <table class="adm-table">
+      <thead><tr><th style="width:36px;"></th><th>Frage</th><th>Antwort (Vorschau)</th><th>Status</th><th>Aktionen</th></tr></thead>
+      <tbody id="faqBody">${rows}</tbody>
+    </table>
+    <p id="faqSortHint" style="display:none;margin-top:12px;font-size:0.82rem;color:#7A6550;"><i class="fas fa-spinner fa-spin" style="margin-right:5px;"></i>Reihenfolge wird gespeichert…</p>
+  </div>
+  <script>
+  (function(){
+    const tbody = document.getElementById('faqBody');
+    const hint = document.getElementById('faqSortHint');
+    let saveTimer;
+    Sortable.create(tbody, {
+      handle: '.drag-handle',
+      animation: 150,
+      ghostClass: 'sortable-ghost',
+      onEnd: function() {
+        clearTimeout(saveTimer);
+        hint.style.display = 'block';
+        saveTimer = setTimeout(function() {
+          const ids = Array.from(tbody.querySelectorAll('tr[data-id]')).map(tr => tr.getAttribute('data-id'));
+          fetch('/admin/faq/sort', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ids})
+          }).then(r => {
+            hint.innerHTML = r.ok
+              ? '<i class="fas fa-check-circle" style="color:#2D7A5E;margin-right:5px;"></i>Reihenfolge gespeichert.'
+              : '<i class="fas fa-exclamation-circle" style="color:#8B1A1A;margin-right:5px;"></i>Fehler.';
+            setTimeout(() => { hint.style.display='none'; hint.innerHTML='<i class="fas fa-spinner fa-spin" style="margin-right:5px;"></i>Reihenfolge wird gespeichert…'; }, 2200);
+          });
+        }, 600);
+      }
+    });
+  })();
+  </script>`
+  return c.html(adminLayout('FAQ verwalten', body, 'faq'))
+})
+
+// ─── FAQ Sort-API ─────────────────────────────────────────────
+app.post('/admin/faq/sort', async (c) => {
+  const { ids } = await c.req.json<{ ids: string[] }>()
+  for (let i = 0; i < ids.length; i++) {
+    await c.env.DB.prepare('UPDATE faqs SET sort_order=? WHERE id=?').bind(i + 1, ids[i]).run()
+  }
+  return c.json({ ok: true })
+})
+
+// ─── FAQ-Formular-Helper ──────────────────────────────────────
+function faqForm(r: any): string {
+  const isNew = !r
+  const question = r ? (r.question || '') : ''
+  const answer = r ? (r.answer || '') : ''
+  const activeChecked = r ? (r.active ? 'checked' : '') : 'checked'
+  const qEsc = question.replace(/&/g,'&amp;').replace(/"/g,'&quot;')
+  const aEsc = answer.replace(/&/g,'&amp;').replace(/"/g,'&quot;')
+
+  return `
+  <div class="adm-card" style="max-width:800px;">
+    <form method="POST" class="adm-form">
+      <label>Frage <span style="color:#8B1A1A;">*</span></label>
+      <input name="question" value="${qEsc}" required placeholder="z.B. Ist das Erstgespräch kostenlos?" style="font-size:0.95rem;">
+
+      <label style="margin-top:16px;">Antwort <span style="color:#8B1A1A;">*</span></label>
+      <textarea name="answer" rows="5" required placeholder="Ausführliche Antwort auf die Frage…" style="font-size:0.95rem;line-height:1.6;">${aEsc}</textarea>
+
+      <div style="margin-top:14px;display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" id="faq_active" name="active" style="width:auto;" ${activeChecked}>
+        <label for="faq_active" style="margin:0;color:#2C2018;font-size:0.9rem;cursor:pointer;font-weight:500;">FAQ aktiv (auf Website anzeigen)</label>
+      </div>
+
+      <div style="margin-top:20px;display:flex;gap:12px;">
+        <button type="submit" class="adm-btn adm-btn-primary"><i class="fas fa-save"></i>Speichern</button>
+        <a href="/admin/faq" class="adm-btn adm-btn-secondary"><i class="fas fa-arrow-left"></i>Abbrechen</a>
+      </div>
+    </form>
+  </div>`
+}
+
+// ─── Neue FAQ ─────────────────────────────────────────────────
+app.get('/admin/faq/neu', (c) => {
+  return c.html(adminLayout('Neue FAQ', faqForm(null), 'faq'))
+})
+
+app.post('/admin/faq/neu', async (c) => {
+  const d = await c.req.parseBody()
+  const maxRow = await c.env.DB.prepare('SELECT COALESCE(MAX(sort_order),0)+1 AS next FROM faqs').first<any>()
+  await c.env.DB.prepare('INSERT INTO faqs (question,answer,sort_order,active) VALUES (?,?,?,?)')
+    .bind(d.question||'', d.answer||'', maxRow?.next ?? 99, d.active ? 1 : 0).run()
+  return c.redirect('/admin/faq?msg=saved')
+})
+
+// ─── FAQ bearbeiten ───────────────────────────────────────────
+app.get('/admin/faq/:id', async (c) => {
+  const row = await c.env.DB.prepare('SELECT * FROM faqs WHERE id=?').bind(c.req.param('id')).first<any>()
+  if (!row) return c.redirect('/admin/faq')
+  return c.html(adminLayout('FAQ bearbeiten', faqForm(row), 'faq'))
+})
+
+app.post('/admin/faq/:id', async (c) => {
+  const d = await c.req.parseBody()
+  await c.env.DB.prepare('UPDATE faqs SET question=?,answer=?,active=?,updated_at=CURRENT_TIMESTAMP WHERE id=?')
+    .bind(d.question||'', d.answer||'', d.active ? 1 : 0, c.req.param('id')).run()
+  return c.redirect('/admin/faq?msg=saved')
+})
+
+app.post('/admin/faq/:id/delete', async (c) => {
+  await c.env.DB.prepare('DELETE FROM faqs WHERE id=?').bind(c.req.param('id')).run()
+  return c.redirect('/admin/faq?msg=deleted')
 })
 
 export default app
