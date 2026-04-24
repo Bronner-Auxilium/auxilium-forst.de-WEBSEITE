@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "webapp",
+  "name": "auxilium-forst",
   "compatibility_date": "2026-04-13",
   "pages_build_output_dir": "./dist",
   "compatibility_flags": [
@@ -10,7 +10,7 @@
     {
       "binding": "DB",
       "database_name": "auxilium-production",
-      "database_id": "local-auxilium-db"
+      "database_id": "bcab4d11-9f48-4a86-92d1-946581c71e97"
     }
   ]
 }
