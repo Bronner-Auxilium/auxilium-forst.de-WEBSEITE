@@ -745,7 +745,7 @@ p  { color: var(--text-light); line-height: 1.75; }
 .service-card__price {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
   padding: 12px 14px;
   background: var(--bg-soft);
   border-radius: 10px;
@@ -767,17 +767,18 @@ p  { color: var(--text-light); line-height: 1.75; }
   flex-shrink: 0;
 }
 .service-card__price .price-new {
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-size: 1.45rem;
+  font-weight: 800;
   color: var(--primary);
   white-space: nowrap;
+  line-height: 1.1;
 }
 .service-card__price .price-compare {
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   color: var(--text-light);
   white-space: nowrap;
-  /* KEIN line-through mehr */
-  text-decoration: none;
+  text-decoration: line-through;
+  text-decoration-color: var(--text-light);
 }
 .service-card__price .price-note {
   font-size: 0.71rem;

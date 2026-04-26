@@ -25,8 +25,11 @@ app.use('/admin/*', requireAdmin)
 app.use('/static/*', serveStatic({ root: './' }))
 
 // ─── Layout helper ────────────────────────────────────────────
-function layout(title: string, description: string, body: string): string {
+function layout(title: string, description: string, body: string, S: Record<string,string> = {}): string {
   const year = new Date().getFullYear()
+  const loc   = S.contact_location || 'Forst (Baden) &amp; Umgebung'
+  const email = S.contact_email    || 'info@auxilium-forst.com'
+  const hours = S.contact_hours    || 'Mo&ndash;Fr &middot; 8:00 &ndash; 18:00 Uhr'
   return `<!DOCTYPE html>
 <html lang="de">
 <head>
@@ -108,9 +111,9 @@ ${body}
       <div>
         <p class="footer__heading">Kontakt</p>
         <ul class="footer__links" style="display:flex;flex-direction:column;gap:10px;">
-          <li style="color:rgba(255,255,255,0.62);font-size:0.875rem;"><i class="fas fa-map-marker-alt" style="color:var(--primary);margin-right:7px;width:14px;" aria-hidden="true"></i>Forst (Baden) &amp; Umgebung</li>
-          <li style="font-size:0.875rem;"><i class="fas fa-envelope" style="color:var(--primary);margin-right:7px;width:14px;" aria-hidden="true"></i><a href="mailto:info@auxilium-forst.com" style="color:rgba(255,255,255,0.62);">info@auxilium-forst.com</a></li>
-          <li style="color:rgba(255,255,255,0.62);font-size:0.875rem;"><i class="fas fa-clock" style="color:var(--primary);margin-right:7px;width:14px;" aria-hidden="true"></i>Mo&ndash;Fr &middot; 8:00 &ndash; 18:00 Uhr</li>
+          <li style="color:rgba(255,255,255,0.62);font-size:0.875rem;"><i class="fas fa-map-marker-alt" style="color:var(--primary);margin-right:7px;width:14px;" aria-hidden="true"></i>${loc}</li>
+          <li style="font-size:0.875rem;"><i class="fas fa-envelope" style="color:var(--primary);margin-right:7px;width:14px;" aria-hidden="true"></i><a href="mailto:${email}" style="color:rgba(255,255,255,0.62);">${email}</a></li>
+          <li style="color:rgba(255,255,255,0.62);font-size:0.875rem;"><i class="fas fa-clock" style="color:var(--primary);margin-right:7px;width:14px;" aria-hidden="true"></i>${hours}</li>
         </ul>
       </div>
     </div>
@@ -148,6 +151,14 @@ function pageHero(label: string, title: string, subtitle: string, breadcrumb: st
 }
 
 // ─── HOME ─────────────────────────────────────────────────────
+// Hilfsfunktion: alle Settings als Objekt laden
+async function loadSettings(db: D1Database): Promise<Record<string,string>> {
+  const { results } = await db.prepare('SELECT key, value FROM settings').all<any>()
+  const map: Record<string,string> = {}
+  for (const r of results) map[r.key] = r.value
+  return map
+}
+
 app.get('/', async (c) => {
   // Lade die ersten 3 aktiven Leistungen für die Startseite aus der DB
   const { results: dbLeistungen } = await c.env.DB.prepare(
@@ -158,6 +169,9 @@ app.get('/', async (c) => {
   const { results: dbFaqs } = await c.env.DB.prepare(
     'SELECT * FROM faqs WHERE active=1 ORDER BY sort_order'
   ).all<any>()
+
+  // Lade Einstellungen
+  const S = await loadSettings(c.env.DB)
 
   const faqItems = dbFaqs.map((f: any) => `
       <div class="accordion-item">
@@ -174,8 +188,8 @@ app.get('/', async (c) => {
         <div class="service-card__body">
           <p class="service-card__text">${r.description}</p>
           <div class="service-card__price">
-            <div class="price-row"><span class="price-label">Auxilium</span><span class="price-new">${r.price_new}</span></div>
-            ${r.price_old ? `<div class="price-row"><span class="price-label">Vergleich</span><span class="price-compare">${r.price_old}</span></div>` : ''}
+            <span class="price-new">${r.price_new}</span>
+            ${r.price_old ? `<span class="price-compare">${r.price_old}</span>` : ''}
             ${r.price_note ? `<div class="price-note">${r.price_note}</div>` : ''}
           </div>
           ${r.savings ? `<div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>${r.savings}</div>` : ''}
@@ -299,10 +313,10 @@ app.get('/', async (c) => {
     </div>
     <div class="grid-2" style="align-items:stretch;gap:28px;">
       <article class="funding-box">
-        <span class="section-label">Verhinderungspflege + Kurzzeitpflege</span>
-        <div class="funding-box__amount">3.539 &euro;</div>
-        <p class="funding-box__label">J&auml;hrlicher Anspruch pro Person</p>
-        <p class="funding-box__note">Dieser Betrag ist zweckgebunden und kann vollst&auml;ndig f&uuml;r Auxilium-Leistungen genutzt werden.</p>
+        <span class="section-label">${S.funding_title||'VERHINDERUNGSPFLEGE + KURZZEITPFLEGE'}</span>
+        <div class="funding-box__amount">${S.funding_amount||'3.539 €'}</div>
+        <p class="funding-box__label">${S.funding_label||'Jährlicher Anspruch pro Person'}</p>
+        <p class="funding-box__note">${S.funding_note||'Dieser Betrag ist zweckgebunden und kann vollständig für Auxilium-Leistungen genutzt werden.'}</p>
         <a href="/beratung" class="btn btn-accent mt-6"><i class="fas fa-info-circle" aria-hidden="true"></i>Mehr erfahren</a>
       </article>
       <div style="display:flex;flex-direction:column;gap:14px;">
@@ -338,11 +352,12 @@ app.get('/', async (c) => {
     </div>
   </div>
 </section>`
-  return c.html(layout('Auxilium &ndash; Ihre St&uuml;tze in der Pflege | Forst Baden', 'Auxilium bietet individuelle Pflegeberatung und ambulante Pflegeleistungen in Forst Baden.', body))
+  return c.html(layout('Auxilium &ndash; Ihre St&uuml;tze in der Pflege | Forst Baden', 'Auxilium bietet individuelle Pflegeberatung und ambulante Pflegeleistungen in Forst Baden.', body, S))
 })
 
 // ─── ÜBER AUXILIUM ────────────────────────────────────────────
-app.get('/ueber-auxilium', (c) => {
+app.get('/ueber-auxilium', async (c) => {
+  const S = await loadSettings(c.env.DB)
   const hero = pageHero('&Uuml;ber uns', 'Herzlich willkommen &ndash; ich bin Kristina Bronner', 'Gr&uuml;nderin von Auxilium &ndash; Ihrer pers&ouml;nlichen St&uuml;tze in der Pflege.', '&Uuml;ber Auxilium')
   const body = hero + `
 <section class="section" aria-labelledby="person-heading">
@@ -452,11 +467,12 @@ app.get('/ueber-auxilium', (c) => {
     </div>
   </div>
 </section>`
-  return c.html(layout('&Uuml;ber Auxilium &ndash; Kristina Bronner | Pflegeberatung Forst Baden', 'Lernen Sie Kristina Bronner und die Philosophie von Auxilium kennen.', body))
+  return c.html(layout('&Uuml;ber Auxilium &ndash; Kristina Bronner | Pflegeberatung Forst Baden', 'Lernen Sie Kristina Bronner und die Philosophie von Auxilium kennen.', body, S))
 })
 
 // ─── LEISTUNGEN (aus DB) ──────────────────────────────────────
 app.get('/leistungen', async (c) => {
+  const S = await loadSettings(c.env.DB)
   const hero = pageHero('Leistungen', 'Transparente Preise &ndash; faire Leistungen', 'Alle Leistungen von Auxilium im &Uuml;berblick &ndash; mit ehrlichem Preisvergleich.', 'Leistungen &amp; Kosten')
   const { results } = await c.env.DB.prepare(
     'SELECT * FROM leistungen WHERE active=1 ORDER BY sort_order'
@@ -470,8 +486,8 @@ app.get('/leistungen', async (c) => {
       <div class="service-card__body">
         <p class="service-card__text">${r.description}</p>
         <div class="service-card__price">
-          <div class="price-row"><span class="price-label">Auxilium</span><span class="price-new">${r.price_new}</span></div>
-          ${r.price_old ? `<div class="price-row"><span class="price-label">Vergleich</span><span class="price-compare">${r.price_old}</span></div>` : ''}
+          <span class="price-new">${r.price_new}</span>
+          ${r.price_old ? `<span class="price-compare">${r.price_old}</span>` : ''}
           ${r.price_note ? `<div class="price-note">${r.price_note}</div>` : ''}
         </div>
         ${r.savings ? `<div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>${r.savings}</div>` : ''}
@@ -491,10 +507,10 @@ app.get('/leistungen', async (c) => {
         </div>
       </div>
       <article class="funding-box">
-        <span class="section-label">Ihr Vorteil</span>
-        <div class="funding-box__amount">3.539 &euro;</div>
-        <p class="funding-box__label">J&auml;hrlicher Anspruch (Verhinderungs- + Kurzzeitpflege)</p>
-        <p style="font-size:0.875rem;color:var(--text-light);margin:14px 0 10px;line-height:1.7;">Wenn Sie Pflegegeld beziehen, steht Ihnen dieser Betrag zweckgebunden zur Verf&uuml;gung.</p>
+        <span class="section-label">${S.funding_title||'VERHINDERUNGSPFLEGE + KURZZEITPFLEGE'}</span>
+        <div class="funding-box__amount">${S.funding_amount||'3.539 €'}</div>
+        <p class="funding-box__label">${S.funding_label||'Jährlicher Anspruch pro Person'}</p>
+        <p class="funding-box__note">${S.funding_note||'Dieser Betrag ist zweckgebunden und kann vollständig für Auxilium-Leistungen genutzt werden.'}</p>
         <a href="/beratung" class="btn btn-accent mt-6"><i class="fas fa-info-circle" aria-hidden="true"></i>Beratung anfragen</a>
       </article>
     </div>
@@ -535,11 +551,12 @@ app.get('/leistungen', async (c) => {
     </div>
   </div>
 </section>`
-  return c.html(layout('Leistungen &amp; Kosten &ndash; Auxilium Forst Baden', 'Alle Pflegeleistungen von Auxilium auf einen Blick &ndash; transparent und fair.', body))
+  return c.html(layout('Leistungen &amp; Kosten &ndash; Auxilium Forst Baden', 'Alle Pflegeleistungen von Auxilium auf einen Blick &ndash; transparent und fair.', body, S))
 })
 
 // ─── BERATUNG ─────────────────────────────────────────────────
-app.get('/beratung', (c) => {
+app.get('/beratung', async (c) => {
+  const S = await loadSettings(c.env.DB)
   const hero = pageHero('Pflegeberatung', 'Kennen Sie alle Ihre Anspr&uuml;che?', 'Die Pflegeversicherung bietet viele M&ouml;glichkeiten &ndash; ich helfe Ihnen, sie zu verstehen.', 'Beratung')
   const body = hero + `
 <section class="section" aria-labelledby="advice-heading">
@@ -622,11 +639,12 @@ app.get('/beratung', (c) => {
     <a href="/kontakt" class="btn btn-green-solid"><i class="fas fa-calendar-check" aria-hidden="true"></i>Jetzt Beratungstermin anfragen</a>
   </div>
 </section>`
-  return c.html(layout('Pflegeberatung &ndash; Auxilium Forst Baden', 'Kostenlose Pflegeberatung in Forst (Baden): Pflegeversicherung, Entlastungsbetrag und mehr.', body))
+  return c.html(layout('Pflegeberatung &ndash; Auxilium Forst Baden', 'Kostenlose Pflegeberatung in Forst (Baden): Pflegeversicherung, Entlastungsbetrag und mehr.', body, S))
 })
 
 // ─── KONTAKT ──────────────────────────────────────────────────
-app.get('/kontakt', (c) => {
+app.get('/kontakt', async (c) => {
+  const S = await loadSettings(c.env.DB)
   const hero = pageHero('Kontakt', 'Wie kann Auxilium Ihnen helfen?', 'Das Erstgespr&auml;ch ist kostenlos und unverbindlich.', 'Kontakt')
   const body = hero + `
 <section class="section" aria-labelledby="contact-heading">
@@ -637,9 +655,9 @@ app.get('/kontakt', (c) => {
         <h2 id="contact-heading">Ich freue mich auf Ihre Nachricht</h2>
         <p style="margin:14px 0 28px;">Egal ob Fragen zu Leistungen, Beratungswunsch oder allgemeine Informationen &ndash; schreiben Sie mir!</p>
         <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:36px;">
-          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></div><div><div class="info-label">Einsatzgebiet</div><div class="info-value">Forst (Baden) und Umgebung</div></div></div>
-          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-envelope" aria-hidden="true"></i></div><div><div class="info-label">E-Mail</div><div class="info-value"><a href="mailto:info@auxilium-forst.com" style="color:var(--accent);">info@auxilium-forst.com</a></div></div></div>
-          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-clock" aria-hidden="true"></i></div><div><div class="info-label">Erreichbarkeit</div><div class="info-value">Mo&ndash;Fr, 8:00 &ndash; 18:00 Uhr</div></div></div>
+          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></div><div><div class="info-label">Einsatzgebiet</div><div class="info-value">${S.contact_location||'Forst (Baden) und Umgebung'}</div></div></div>
+          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-envelope" aria-hidden="true"></i></div><div><div class="info-label">E-Mail</div><div class="info-value"><a href="mailto:${S.contact_email||'info@auxilium-forst.com'}" style="color:var(--accent);">${S.contact_email||'info@auxilium-forst.com'}</a></div></div></div>
+          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-clock" aria-hidden="true"></i></div><div><div class="info-label">Erreichbarkeit</div><div class="info-value">${S.contact_hours||'Mo–Fr, 8:00 – 18:00 Uhr'}</div></div></div>
           <div class="contact-info-item"><div class="info-icon"><i class="fas fa-comments" aria-hidden="true"></i></div><div><div class="info-label">Erstgespr&auml;ch</div><div class="info-value">Kostenlos &amp; unverbindlich</div></div></div>
         </div>
         <p style="font-size:0.9rem;color:var(--text-light);line-height:1.7;">Haben Sie weitere Fragen? Auf der <a href="/" style="color:var(--accent);font-weight:600;">Startseite</a> finden Sie h&auml;ufige Fragen &ndash; oder schreiben Sie mir direkt &uuml;ber das Formular.</p>
@@ -687,11 +705,12 @@ app.get('/kontakt', (c) => {
     </div>
   </div>
 </section>`
-  return c.html(layout('Kontakt &ndash; Auxilium Pflegeberatung Forst Baden', 'Nehmen Sie Kontakt mit Auxilium auf &ndash; kostenlose Erstberatung in Forst (Baden).', body))
+  return c.html(layout('Kontakt &ndash; Auxilium Pflegeberatung Forst Baden', 'Nehmen Sie Kontakt mit Auxilium auf &ndash; kostenlose Erstberatung in Forst (Baden).', body, S))
 })
 
 // ─── Impressum (aus DB) ───────────────────────────────────────
 app.get('/impressum', async (c) => {
+  const S = await loadSettings(c.env.DB)
   const row = await c.env.DB.prepare("SELECT * FROM page_content WHERE page_key='impressum'").first<any>()
   const content = row ? row.content : '<p>Impressum wird geladen...</p>'
   const body = pageHero('Rechtliches', 'Impressum', '', 'Impressum') + `
@@ -700,11 +719,12 @@ app.get('/impressum', async (c) => {
     ${content}
   </article>
 </div></section>`
-  return c.html(layout('Impressum &ndash; Auxilium Forst Baden', 'Impressum von Auxilium Pflegeberatung in Forst Baden.', body))
+  return c.html(layout('Impressum &ndash; Auxilium Forst Baden', 'Impressum von Auxilium Pflegeberatung in Forst Baden.', body, S))
 })
 
 // ─── Datenschutz (aus DB) ─────────────────────────────────────
 app.get('/datenschutz', async (c) => {
+  const S = await loadSettings(c.env.DB)
   const row = await c.env.DB.prepare("SELECT * FROM page_content WHERE page_key='datenschutz'").first<any>()
   const content = row ? row.content : '<p>Datenschutzerkl&auml;rung wird geladen...</p>'
   const body = pageHero('Rechtliches', 'Datenschutzerkl&auml;rung', '', 'Datenschutz') + `
@@ -713,7 +733,7 @@ app.get('/datenschutz', async (c) => {
     ${content}
   </article>
 </div></section>`
-  return c.html(layout('Datenschutz &ndash; Auxilium Forst Baden', 'Datenschutzerkl&auml;rung von Auxilium Pflegeberatung Forst Baden.', body))
+  return c.html(layout('Datenschutz &ndash; Auxilium Forst Baden', 'Datenschutzerkl&auml;rung von Auxilium Pflegeberatung Forst Baden.', body, S))
 })
 
 // ─── 404 ──────────────────────────────────────────────────────
@@ -743,6 +763,7 @@ function adminLayout(title: string, body: string, activeNav = ''): string {
     { href: '/admin', label: 'Dashboard', key: 'dashboard', icon: 'fa-tachometer-alt' },
     { href: '/admin/leistungen', label: 'Leistungen', key: 'leistungen', icon: 'fa-list-alt' },
     { href: '/admin/faq', label: 'FAQ', key: 'faq', icon: 'fa-question-circle' },
+    { href: '/admin/einstellungen', label: 'Einstellungen', key: 'einstellungen', icon: 'fa-sliders-h' },
     { href: '/admin/impressum', label: 'Impressum', key: 'impressum', icon: 'fa-file-alt' },
     { href: '/admin/datenschutz', label: 'Datenschutz', key: 'datenschutz', icon: 'fa-shield-alt' },
   ]
@@ -830,6 +851,19 @@ function adminLayout(title: string, body: string, activeNav = ''): string {
   .icon-picker{position:relative;}
   .icon-input-row{display:flex;align-items:center;gap:10px;}
   .icon-preview{font-size:1.6rem;color:#D98A2B;width:38px;text-align:center;flex-shrink:0;}
+  /* Einstellungen: Section-Cards */
+  .adm-section-card{background:white;border:1px solid #E8D9C5;border-radius:12px;overflow:hidden;}
+  .adm-section-card__head{display:flex;align-items:flex-start;gap:14px;padding:18px 22px;background:#FBF7F2;border-bottom:1px solid #E8D9C5;font-size:1.35rem;color:#D98A2B;}
+  .adm-section-card__head > div {flex:1;}
+  .adm-section-card__title{font-size:1rem;font-weight:700;color:#2C2018;margin:0 0 2px;}
+  .adm-section-card__sub{font-size:0.8rem;color:#7A6550;margin:0;}
+  .adm-section-card__body{padding:20px 22px;display:flex;flex-direction:column;gap:14px;}
+  .adm-form-group{display:flex;flex-direction:column;gap:5px;}
+  .adm-label{font-size:0.82rem;font-weight:600;color:#2C2018;}
+  .adm-hint{font-size:0.73rem;color:#7A6550;}
+  .adm-input{border:1px solid #E8D9C5;border-radius:7px;padding:9px 12px;font-size:0.9rem;color:#2C2018;font-family:inherit;width:100%;box-sizing:border-box;background:#FDFAF6;}
+  .adm-input:focus{outline:none;border-color:#D98A2B;box-shadow:0 0 0 3px rgba(217,138,43,0.12);}
+  .adm-textarea{resize:vertical;min-height:80px;}
   /* Leistungsformular: Split-Layout */
   .form-split{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
   /* Live-Preview Card */
@@ -952,6 +986,7 @@ app.get('/admin', async (c) => {
       <a href="/admin/leistungen/neu" class="adm-btn adm-btn-green"><i class="fas fa-plus"></i>Neue Leistung</a>
       <a href="/admin/faq" class="adm-btn adm-btn-primary"><i class="fas fa-question-circle"></i>FAQ verwalten</a>
       <a href="/admin/faq/neu" class="adm-btn adm-btn-green"><i class="fas fa-plus"></i>Neue FAQ</a>
+      <a href="/admin/einstellungen" class="adm-btn adm-btn-secondary"><i class="fas fa-sliders-h"></i>Einstellungen</a>
       <a href="/admin/impressum" class="adm-btn adm-btn-secondary"><i class="fas fa-file-alt"></i>Impressum</a>
       <a href="/admin/datenschutz" class="adm-btn adm-btn-secondary"><i class="fas fa-shield-alt"></i>Datenschutz</a>
     </div>
@@ -1216,10 +1251,9 @@ function leistungForm(r: any): string {
         <div style="padding:14px 18px 16px;">
           \${desc ? \`<p style="font-size:0.875rem;color:#3A2C1E;line-height:1.7;margin-bottom:12px;">\${desc}</p>\` : ''}
           <div style="background:#FBF7F2;border:1px solid #E8D9C5;border-radius:8px;padding:10px 12px;margin-bottom:10px;">
-            <div style="font-size:0.75rem;color:#7A6550;margin-bottom:4px;">Auxilium</div>
-            <div style="font-size:1.15rem;font-weight:700;color:#D98A2B;">\${priceNew}</div>
-            \${priceOld ? \`<div style="margin-top:4px;font-size:0.75rem;color:#7A6550;">Vergleich: \${priceOld}</div>\` : ''}
-            \${priceNote ? \`<div style="font-size:0.7rem;color:#7A6550;margin-top:2px;">\${priceNote}</div>\` : ''}
+            <div style="font-size:1.45rem;font-weight:800;color:#D98A2B;line-height:1.1;">\${priceNew}</div>
+            \${priceOld ? \`<div style="margin-top:3px;font-size:0.82rem;color:#7A6550;text-decoration:line-through;">\${priceOld}</div>\` : ''}
+            \${priceNote ? \`<div style="font-size:0.7rem;color:#7A6550;margin-top:4px;">\${priceNote}</div>\` : ''}
           </div>
           \${savings ? \`<div style="font-size:0.78rem;color:#2D7A3A;font-weight:600;"><i class="fas fa-check" style="margin-right:5px;"></i>\${savings}</div>\` : ''}
         </div>
@@ -1507,6 +1541,91 @@ app.post('/admin/faq/:id', async (c) => {
 app.post('/admin/faq/:id/delete', async (c) => {
   await c.env.DB.prepare('DELETE FROM faqs WHERE id=?').bind(c.req.param('id')).run()
   return c.redirect('/admin/faq?msg=deleted')
+})
+
+// ─── Admin: Einstellungen ──────────────────────────────────────
+app.get('/admin/einstellungen', async (c) => {
+  const S = await loadSettings(c.env.DB)
+  const msg = c.req.query('msg')
+  const alert = msg === 'saved'
+    ? `<div class="adm-alert adm-alert--success"><i class="fas fa-check-circle"></i> Einstellungen gespeichert.</div>`
+    : ''
+
+  // Hilfsfunktion: Eingabefeld
+  function field(key: string, label: string, hint = '', multiline = false) {
+    const val = (S[key] || '').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    if (multiline) {
+      return `<div class="adm-form-group">
+        <label class="adm-label">${label}</label>
+        <textarea name="${key}" rows="3" class="adm-input adm-textarea">${(S[key]||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
+        ${hint ? `<small class="adm-hint">${hint}</small>` : ''}
+      </div>`
+    }
+    return `<div class="adm-form-group">
+      <label class="adm-label">${label}</label>
+      <input type="text" name="${key}" value="${val}" class="adm-input">
+      ${hint ? `<small class="adm-hint">${hint}</small>` : ''}
+    </div>`
+  }
+
+  const body = `
+${alert}
+<form method="POST" action="/admin/einstellungen">
+
+  <div class="adm-section-card">
+    <div class="adm-section-card__head">
+      <i class="fas fa-piggy-bank"></i>
+      <div>
+        <h2 class="adm-section-card__title">Förder-Box</h2>
+        <p class="adm-section-card__sub">Erscheint identisch auf Startseite und Leistungsseite</p>
+      </div>
+    </div>
+    <div class="adm-section-card__body">
+      ${field('funding_title',  'Überschrift (klein, oben)',  'z. B. VERHINDERUNGSPFLEGE + KURZZEITPFLEGE')}
+      ${field('funding_amount', 'Betrag (groß)',              'z. B. 3.539 €')}
+      ${field('funding_label',  'Beschriftung unter Betrag', 'z. B. Jährlicher Anspruch pro Person')}
+      ${field('funding_note',   'Hinweistext',               'z. B. Dieser Betrag ist zweckgebunden …', true)}
+    </div>
+  </div>
+
+  <div class="adm-section-card" style="margin-top:24px;">
+    <div class="adm-section-card__head">
+      <i class="fas fa-address-card"></i>
+      <div>
+        <h2 class="adm-section-card__title">Kontaktdaten</h2>
+        <p class="adm-section-card__sub">Erscheint in Footer, Kontaktseite und überall, wo Kontaktinfos angezeigt werden</p>
+      </div>
+    </div>
+    <div class="adm-section-card__body">
+      ${field('contact_location', 'Standort / Einsatzgebiet', 'z. B. Forst (Baden) &amp; Umgebung')}
+      ${field('contact_email',    'E-Mail-Adresse',           'z. B. info@auxilium-forst.com')}
+      ${field('contact_hours',    'Öffnungszeiten',           'z. B. Mo–Fr · 8:00 – 18:00 Uhr')}
+    </div>
+  </div>
+
+  <div style="margin-top:24px;display:flex;gap:12px;align-items:center;">
+    <button type="submit" class="adm-btn adm-btn--primary"><i class="fas fa-save"></i> Speichern</button>
+    <a href="/" target="_blank" class="adm-btn adm-btn--secondary" style="text-decoration:none;"><i class="fas fa-eye"></i> Website ansehen</a>
+  </div>
+</form>`
+
+  return c.html(adminLayout('Einstellungen', body, 'einstellungen'))
+})
+
+app.post('/admin/einstellungen', async (c) => {
+  const d = await c.req.parseBody()
+  const keys = [
+    'funding_title','funding_amount','funding_label','funding_note',
+    'contact_location','contact_email','contact_hours'
+  ]
+  for (const key of keys) {
+    const val = (d[key] as string) || ''
+    await c.env.DB.prepare(
+      `INSERT INTO settings (key, value, label) VALUES (?, ?, ?)
+       ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=CURRENT_TIMESTAMP`
+    ).bind(key, val, key).run()
+  }
+  return c.redirect('/admin/einstellungen?msg=saved')
 })
 
 export default app
