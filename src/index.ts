@@ -461,8 +461,8 @@ app.get('/ueber-auxilium', async (c) => {
       <div style="display:flex;flex-direction:column;gap:14px;">
         <div class="contact-info-item"><div class="info-icon"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></div><div><div class="info-label">Einsatzgebiet</div><div class="info-value">Forst (Baden) und Umgebung</div></div></div>
         <div class="contact-info-item"><div class="info-icon"><i class="fas fa-clock" aria-hidden="true"></i></div><div><div class="info-label">Erreichbarkeit</div><div class="info-value">Montag&ndash;Freitag, 8:00&ndash;18:00 Uhr</div></div></div>
-        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-comments" aria-hidden="true"></i></div><div><div class="info-label">Erstgespr&auml;ch</div><div class="info-value">Kostenlos &amp; unverbindlich</div></div></div>
-        <a href="/kontakt" class="btn btn-accent" style="align-self:flex-start;margin-top:4px;"><i class="fas fa-calendar" aria-hidden="true"></i>Termin anfragen</a>
+        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-comments" aria-hidden="true"></i></div><div><div class="info-label">Erstgespr&auml;ch</div><div class="info-value">Pers&ouml;nlich &amp; unverbindlich</div></div></div>
+        <a href="/kontakt" class="btn btn-accent" style="align-self:flex-start;margin-top:4px;"><i class="fas fa-envelope" aria-hidden="true"></i>Kontakt aufnehmen</a>
       </div>
     </div>
   </div>
@@ -571,7 +571,7 @@ app.get('/beratung', async (c) => {
       </div>
       <div style="display:flex;flex-direction:column;gap:14px;">
         <div class="contact-info-item"><div class="info-icon"><i class="fas fa-lightbulb" aria-hidden="true"></i></div><div><div class="info-label">Vorteil</div><div class="info-value">Individuelle Finanzierungsberatung inklusive</div></div></div>
-        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-phone" aria-hidden="true"></i></div><div><div class="info-label">Erstkontakt</div><div class="info-value">Kostenlos und unverbindlich</div></div></div>
+        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-phone" aria-hidden="true"></i></div><div><div class="info-label">Erstkontakt</div><div class="info-value">Pers&ouml;nlich und unverbindlich</div></div></div>
         <div class="contact-info-item"><div class="info-icon"><i class="fas fa-home" aria-hidden="true"></i></div><div><div class="info-label">Ort</div><div class="info-value">Bei Ihnen zu Hause oder telefonisch</div></div></div>
       </div>
     </div>
@@ -645,8 +645,29 @@ app.get('/beratung', async (c) => {
 // ─── KONTAKT ──────────────────────────────────────────────────
 app.get('/kontakt', async (c) => {
   const S = await loadSettings(c.env.DB)
-  const hero = pageHero('Kontakt', 'Wie kann Auxilium Ihnen helfen?', 'Das Erstgespr&auml;ch ist kostenlos und unverbindlich.', 'Kontakt')
+  // Dynamische Betreff-Optionen aus DB (Zeilenumbruch-getrennt)
+  const subjectOptions = (S.form_subjects || 'Persönliches Erstgespräch\nPflegeberatung\nFrage zu Leistungen & Preisen\nVerhinderungspflege\nAllgemeines')
+    .split('\n')
+    .map(s => s.trim())
+    .filter(Boolean)
+    .map(s => {
+      const val = s.toLowerCase()
+        .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+        .replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')
+      return `<option value="${val}">${s}</option>`
+    })
+    .join('\n                ')
+  // reCAPTCHA Site Key (leer = kein reCAPTCHA)
+  const siteKey = (S.recaptcha_site_key || '').trim()
+  const recaptchaScript = siteKey
+    ? `<script src="https://www.google.com/recaptcha/api.js?render=${siteKey}" defer></script>`
+    : ''
+  const recaptchaField = siteKey
+    ? `<input type="hidden" id="recaptchaToken" name="recaptchaToken" value="">`
+    : ''
+  const hero = pageHero('Kontakt', 'Wie kann ich Ihnen helfen?', 'Ich freue mich auf Ihre Nachricht &ndash; pers&ouml;nlich und unverbindlich.', 'Kontakt')
   const body = hero + `
+${recaptchaScript}
 <section class="section" aria-labelledby="contact-heading">
   <div class="container">
     <div class="grid-2" style="gap:56px;align-items:start;">
@@ -657,8 +678,8 @@ app.get('/kontakt', async (c) => {
         <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:36px;">
           <div class="contact-info-item"><div class="info-icon"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></div><div><div class="info-label">Einsatzgebiet</div><div class="info-value">${S.contact_location||'Forst (Baden) und Umgebung'}</div></div></div>
           <div class="contact-info-item"><div class="info-icon"><i class="fas fa-envelope" aria-hidden="true"></i></div><div><div class="info-label">E-Mail</div><div class="info-value"><a href="mailto:${S.contact_email||'info@auxilium-forst.com'}" style="color:var(--accent);">${S.contact_email||'info@auxilium-forst.com'}</a></div></div></div>
-          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-clock" aria-hidden="true"></i></div><div><div class="info-label">Erreichbarkeit</div><div class="info-value">${S.contact_hours||'Mo–Fr, 8:00 – 18:00 Uhr'}</div></div></div>
-          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-comments" aria-hidden="true"></i></div><div><div class="info-label">Erstgespr&auml;ch</div><div class="info-value">Kostenlos &amp; unverbindlich</div></div></div>
+          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-clock" aria-hidden="true"></i></div><div><div class="info-label">Erreichbarkeit</div><div class="info-value">${S.contact_hours||'Mo&ndash;Fr, 8:00 &ndash; 18:00 Uhr'}</div></div></div>
+          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-comments" aria-hidden="true"></i></div><div><div class="info-label">Erstgespr&auml;ch</div><div class="info-value">Pers&ouml;nlich &amp; unverbindlich</div></div></div>
         </div>
         <p style="font-size:0.9rem;color:var(--text-light);line-height:1.7;">Haben Sie weitere Fragen? Auf der <a href="/" style="color:var(--accent);font-weight:600;">Startseite</a> finden Sie h&auml;ufige Fragen &ndash; oder schreiben Sie mir direkt &uuml;ber das Formular.</p>
       </div>
@@ -666,7 +687,7 @@ app.get('/kontakt', async (c) => {
         <div class="contact-form">
           <h3 style="margin-bottom:6px;">Nachricht senden</h3>
           <p style="margin-bottom:24px;font-size:0.875rem;color:var(--text-light);">F&uuml;llen Sie das Formular aus &ndash; ich melde mich so schnell wie m&ouml;glich.</p>
-          <form id="contactForm" novalidate>
+          <form id="contactForm" novalidate data-site-key="${siteKey}">
             <div class="form-row">
               <div class="form-group"><label class="form-label" for="firstName">Vorname *</label><input class="form-input" id="firstName" name="firstName" type="text" placeholder="Max" required></div>
               <div class="form-group"><label class="form-label" for="lastName">Nachname *</label><input class="form-input" id="lastName" name="lastName" type="text" placeholder="Mustermann" required></div>
@@ -680,10 +701,7 @@ app.get('/kontakt', async (c) => {
               <label class="form-label" for="subject">Betreff</label>
               <select class="form-select" id="subject" name="subject">
                 <option value="">Bitte w&auml;hlen&hellip;</option>
-                <option value="erstgespraech">Kostenloses Erstgespr&auml;ch</option>
-                <option value="beratung">Pflegeberatung</option>
-                <option value="leistungen">Frage zu Leistungen &amp; Preisen</option>
-                <option value="sonstiges">Sonstiges</option>
+                ${subjectOptions}
               </select>
             </div>
             <div class="form-group"><label class="form-label" for="message">Ihre Nachricht *</label><textarea class="form-textarea" id="message" name="message" placeholder="Wie kann Auxilium Ihnen helfen?" rows="5" required></textarea></div>
@@ -691,21 +709,128 @@ app.get('/kontakt', async (c) => {
               <input type="checkbox" id="privacy" name="privacy" required style="margin-top:3px;accent-color:var(--accent);width:16px;height:16px;flex-shrink:0;">
               <label for="privacy" style="font-size:0.8rem;color:var(--text-light);cursor:pointer;">Ich stimme der Verarbeitung meiner Daten gem&auml;&szlig; der <a href="/datenschutz" style="color:var(--accent);">Datenschutzerkl&auml;rung</a> zu. *</label>
             </div>
+            ${recaptchaField}
             <button type="submit" class="btn btn-accent w-full" style="justify-content:center;font-size:0.95rem;">
               <i class="fas fa-paper-plane" aria-hidden="true"></i>Nachricht senden
             </button>
           </form>
-          <div id="formSuccess" class="form-success">
+          <div id="formSuccess" class="form-success" style="display:none;">
             <div style="font-size:2.2rem;margin-bottom:10px;" aria-hidden="true">&#x2705;</div>
             <h4 style="color:#166534;margin-bottom:6px;">Vielen Dank!</h4>
             <p style="font-size:0.875rem;">Ihre Nachricht wurde &uuml;bermittelt. Ich melde mich so bald wie m&ouml;glich!</p>
+          </div>
+          <div id="formError" class="form-success" style="display:none;background:#fef2f2;border-color:#fca5a5;">
+            <div style="font-size:2rem;margin-bottom:10px;" aria-hidden="true">&#x26A0;&#xFE0F;</div>
+            <h4 style="color:#991b1b;margin-bottom:6px;">Fehler beim Senden</h4>
+            <p id="formErrorMsg" style="font-size:0.875rem;color:#7f1d1d;">Bitte versuchen Sie es erneut oder schreiben Sie uns direkt per E-Mail.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>`
-  return c.html(layout('Kontakt &ndash; Auxilium Pflegeberatung Forst Baden', 'Nehmen Sie Kontakt mit Auxilium auf &ndash; kostenlose Erstberatung in Forst (Baden).', body, S))
+  return c.html(layout('Kontakt &ndash; Auxilium Pflegeberatung Forst Baden', 'Nehmen Sie Kontakt mit Auxilium auf &ndash; pers&ouml;nliche Erstberatung in Forst (Baden).', body, S))
+})
+
+// ─── API: Kontaktformular (POST /api/contact) ─────────────────
+app.post('/api/contact', async (c) => {
+  const S = await loadSettings(c.env.DB)
+
+  let body: Record<string, string>
+  try {
+    body = await c.req.json<Record<string, string>>()
+  } catch {
+    return c.json({ ok: false, error: 'Ungültige Anfrage.' }, 400)
+  }
+
+  const { firstName, lastName, city, phone, email, subject, message, privacy, recaptchaToken } = body
+
+  // Pflichtfelder prüfen
+  if (!firstName || !lastName || !email || !message || privacy !== 'true') {
+    return c.json({ ok: false, error: 'Bitte füllen Sie alle Pflichtfelder aus.' }, 400)
+  }
+
+  // E-Mail-Format prüfen
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return c.json({ ok: false, error: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.' }, 400)
+  }
+
+  // reCAPTCHA v3 verifizieren (nur wenn Secret Key konfiguriert)
+  const secretKey = (S.recaptcha_secret_key || '').trim()
+  if (secretKey) {
+    if (!recaptchaToken) {
+      return c.json({ ok: false, error: 'reCAPTCHA-Verifikation fehlgeschlagen.' }, 400)
+    }
+    try {
+      const verifyRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `secret=${encodeURIComponent(secretKey)}&response=${encodeURIComponent(recaptchaToken)}`
+      })
+      const verifyJson = await verifyRes.json<{ success: boolean; score: number }>()
+      if (!verifyJson.success || verifyJson.score < 0.4) {
+        return c.json({ ok: false, error: 'Sicherheitsprüfung fehlgeschlagen. Bitte versuchen Sie es erneut.' }, 400)
+      }
+    } catch {
+      return c.json({ ok: false, error: 'reCAPTCHA-Überprüfung nicht möglich.' }, 500)
+    }
+  }
+
+  // E-Mail zusammenstellen
+  const recipientEmail = (S.form_recipient_email || 'info@auxilium-forst.com').trim()
+  const recipientName  = (S.form_recipient_name  || 'Auxilium – Kristina Bronner').trim()
+  const subjectLine    = subject
+    ? `Kontaktanfrage: ${subject}`
+    : 'Neue Kontaktanfrage über auxilium-forst.com'
+
+  const emailText = [
+    `Neue Kontaktanfrage von auxilium-forst.com`,
+    ``,
+    `Name:        ${firstName} ${lastName}`,
+    city    ? `Wohnort:     ${city}`    : '',
+    phone   ? `Telefon:     ${phone}`   : '',
+    `E-Mail:      ${email}`,
+    subject ? `Betreff:     ${subject}` : '',
+    ``,
+    `Nachricht:`,
+    message,
+    ``,
+    `---`,
+    `Datenschutz-Einwilligung erteilt: Ja`,
+  ].filter(l => l !== undefined).join('\n')
+
+  // Versand via Cloudflare MailChannels (kostenlos für Pages/Workers)
+  try {
+    const mailRes = await fetch('https://api.mailchannels.net/tx/v1/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        personalizations: [{
+          to: [{ email: recipientEmail, name: recipientName }]
+        }],
+        from: {
+          email: 'noreply@auxilium-forst.com',
+          name: `${firstName} ${lastName} (via Kontaktformular)`
+        },
+        reply_to: { email, name: `${firstName} ${lastName}` },
+        subject: subjectLine,
+        content: [{ type: 'text/plain', value: emailText }]
+      })
+    })
+
+    // MailChannels: 202 = Erfolg
+    if (mailRes.status === 202 || mailRes.status === 200) {
+      return c.json({ ok: true })
+    }
+
+    // Fehler-Details loggen (nicht an Client senden)
+    const errText = await mailRes.text().catch(() => '')
+    console.error('MailChannels Fehler:', mailRes.status, errText)
+    return c.json({ ok: false, error: 'E-Mail konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.' }, 500)
+  } catch (err) {
+    console.error('Fetch-Fehler beim E-Mail-Versand:', err)
+    return c.json({ ok: false, error: 'Netzwerkfehler beim Versand. Bitte versuchen Sie es später erneut.' }, 500)
+  }
 })
 
 // ─── Impressum (aus DB) ───────────────────────────────────────
@@ -1598,8 +1723,44 @@ ${alert}
     </div>
     <div class="adm-section-card__body">
       ${field('contact_location', 'Standort / Einsatzgebiet', 'z. B. Forst (Baden) &amp; Umgebung')}
-      ${field('contact_email',    'E-Mail-Adresse',           'z. B. info@auxilium-forst.com')}
+      ${field('contact_email',    'E-Mail-Adresse (öffentlich sichtbar)', 'z. B. info@auxilium-forst.com')}
       ${field('contact_hours',    'Öffnungszeiten',           'z. B. Mo–Fr · 8:00 – 18:00 Uhr')}
+    </div>
+  </div>
+
+  <div class="adm-section-card" style="margin-top:24px;">
+    <div class="adm-section-card__head">
+      <i class="fas fa-paper-plane"></i>
+      <div>
+        <h2 class="adm-section-card__title">Kontaktformular</h2>
+        <p class="adm-section-card__sub">Wohin werden Formular-Nachrichten gesendet? Welche Betreffs stehen zur Wahl?</p>
+      </div>
+    </div>
+    <div class="adm-section-card__body">
+      ${field('form_recipient_email', 'Empfänger E-Mail', 'Alle Formular-Nachrichten werden an diese Adresse gesendet')}
+      ${field('form_recipient_name',  'Empfänger Name',   'z. B. Auxilium – Kristina Bronner')}
+      ${field('form_subjects', 'Betreff-Optionen (eine pro Zeile)', 'Jede Zeile = eine Auswahloption im Formular', true)}
+    </div>
+  </div>
+
+  <div class="adm-section-card" style="margin-top:24px;">
+    <div class="adm-section-card__head">
+      <i class="fas fa-shield-alt"></i>
+      <div>
+        <h2 class="adm-section-card__title">Google reCAPTCHA v3</h2>
+        <p class="adm-section-card__sub">Schützt das Kontaktformular vor Spam. Schlüssel unter <a href="https://www.google.com/recaptcha/admin" target="_blank" style="color:#D98A2B;">recaptcha.google.com</a> erstellen.</p>
+      </div>
+    </div>
+    <div class="adm-section-card__body">
+      ${field('recaptcha_site_key',   'Site Key (öffentlich – in JS eingebunden)',   'Beginnt meist mit 6L...')}
+      ${field('recaptcha_secret_key', 'Secret Key (geheim – nur serverseitig)',       'Wird nur auf dem Server verwendet, niemals im Frontend sichtbar')}
+      <div style="background:#FBF7F2;border:1px solid #E8D9C5;border-radius:8px;padding:12px 14px;font-size:0.8rem;color:#7A6550;line-height:1.7;">
+        <strong style="color:#2C2018;">So geht's:</strong><br>
+        1. Auf <a href="https://www.google.com/recaptcha/admin" target="_blank" style="color:#D98A2B;">recaptcha.google.com</a> einloggen<br>
+        2. Neue Site anlegen → Typ: <strong>reCAPTCHA v3</strong><br>
+        3. Domain <strong>auxilium-forst.pages.dev</strong> (und ggf. Ihre eigene Domain) eintragen<br>
+        4. Site Key und Secret Key hier eintragen und speichern
+      </div>
     </div>
   </div>
 
@@ -1616,7 +1777,9 @@ app.post('/admin/einstellungen', async (c) => {
   const d = await c.req.parseBody()
   const keys = [
     'funding_title','funding_amount','funding_label','funding_note',
-    'contact_location','contact_email','contact_hours'
+    'contact_location','contact_email','contact_hours',
+    'form_recipient_email','form_recipient_name','form_subjects',
+    'recaptcha_site_key','recaptcha_secret_key'
   ]
   for (const key of keys) {
     const val = (d[key] as string) || ''

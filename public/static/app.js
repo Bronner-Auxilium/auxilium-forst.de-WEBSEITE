@@ -133,24 +133,79 @@
   if (contactForm) {
     contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const btn = contactForm.querySelector('button[type="submit"]');
-      const successMsg = document.getElementById('formSuccess');
+      const btn      = contactForm.querySelector('button[type="submit"]');
+      const successEl = document.getElementById('formSuccess');
+      const errorEl   = document.getElementById('formError');
+      const errorMsg  = document.getElementById('formErrorMsg');
 
-      const originalText = btn.textContent;
-      btn.textContent = 'Wird gesendet…';
+      // Button sperren
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Wird gesendet…';
       btn.disabled = true;
+      if (errorEl) errorEl.style.display = 'none';
 
-      // Simulate sending (replace with real API call)
-      await new Promise(resolve => setTimeout(resolve, 1200));
+      // Formulardaten sammeln
+      const data = {
+        firstName:  contactForm.querySelector('#firstName')?.value  || '',
+        lastName:   contactForm.querySelector('#lastName')?.value   || '',
+        city:       contactForm.querySelector('#city')?.value       || '',
+        phone:      contactForm.querySelector('#phone')?.value      || '',
+        email:      contactForm.querySelector('#email')?.value      || '',
+        subject:    contactForm.querySelector('#subject')?.value    || '',
+        message:    contactForm.querySelector('#message')?.value    || '',
+        privacy:    String(contactForm.querySelector('#privacy')?.checked || false),
+        recaptchaToken: ''
+      };
 
-      contactForm.style.display = 'none';
-      if (successMsg) {
-        successMsg.style.display = 'block';
+      // reCAPTCHA v3 Token holen (falls Site Key im data-Attribut)
+      const siteKey = contactForm.getAttribute('data-site-key');
+      if (siteKey && typeof grecaptcha !== 'undefined') {
+        try {
+          data.recaptchaToken = await new Promise((resolve, reject) => {
+            grecaptcha.ready(() => {
+              grecaptcha.execute(siteKey, { action: 'contact_form' })
+                .then(resolve).catch(reject);
+            });
+          });
+        } catch {
+          // reCAPTCHA-Fehler: trotzdem senden (Server entscheidet)
+        }
+      }
+
+      // API-Call
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const json = await res.json();
+
+        if (json.ok) {
+          contactForm.style.display = 'none';
+          if (successEl) successEl.style.display = 'block';
+        } else {
+          // Fehler anzeigen, Button wieder aktivieren
+          btn.innerHTML = originalHTML;
+          btn.disabled = false;
+          if (errorEl) {
+            if (errorMsg) errorMsg.textContent = json.error || 'Ein Fehler ist aufgetreten.';
+            errorEl.style.display = 'block';
+            errorEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }
+      } catch {
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+        if (errorEl) {
+          if (errorMsg) errorMsg.textContent = 'Verbindungsfehler. Bitte prüfen Sie Ihre Internetverbindung.';
+          errorEl.style.display = 'block';
+        }
       }
     });
   }
 
-  /* ─── Counter animation ──────────────────────────────────── */
+  /* ─── Counter animation (count-up with prefix/suffix) ────── */
   const counters = document.querySelectorAll('[data-count]');
   if (counters.length) {
     const countObserver = new IntersectionObserver(
@@ -158,17 +213,24 @@
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const el = entry.target;
-            const target = parseInt(el.getAttribute('data-count'), 10);
-            const suffix = el.getAttribute('data-suffix') || '';
+            const targetRaw = parseFloat(el.getAttribute('data-count'));
+            const prefix  = el.getAttribute('data-prefix')  || '';
+            const suffix  = el.getAttribute('data-suffix')  || '';
+            const isDecimal = String(el.getAttribute('data-count')).includes('.');
             const duration = 1800;
             const start = Date.now();
 
             const tick = () => {
-              const elapsed = Date.now() - start;
+              const elapsed  = Date.now() - start;
               const progress = Math.min(elapsed / duration, 1);
-              const ease = 1 - Math.pow(1 - progress, 3);
-              el.textContent = Math.round(target * ease) + suffix;
+              const ease     = 1 - Math.pow(1 - progress, 3);
+              const value    = targetRaw * ease;
+              const display  = isDecimal
+                ? value.toFixed(1).replace('.', ',')
+                : Math.round(value);
+              el.textContent = prefix + display + suffix;
               if (progress < 1) requestAnimationFrame(tick);
+              else el.textContent = prefix + (isDecimal ? String(targetRaw).replace('.', ',') : targetRaw) + suffix;
             };
             tick();
             countObserver.unobserve(el);
