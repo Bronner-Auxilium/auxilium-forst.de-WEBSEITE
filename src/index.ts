@@ -203,22 +203,22 @@ app.get('/', async (c) => {
     <div class="shape shape-1"></div>
     <div class="shape shape-2"></div>
     <div class="shape shape-3"></div>
+    <div class="bokeh bokeh-1"></div>
+    <div class="bokeh bokeh-2"></div>
+    <div class="bokeh bokeh-3"></div>
   </div>
   <div class="hero__inner">
     <div class="hero__content animate-fade-in">
       <div class="hero__badge"><span class="badge-dot"></span>Individuelle Pflege in Forst (Baden) &amp; Umgebung</div>
       <h1 id="hero-heading" class="hero__title">Ihre pers&ouml;nliche<br><span class="highlight">St&uuml;tze</span> &ndash;<br><span class="highlight-amber">wenn Sie sie brauchen</span></h1>
-      <p class="hero__text">Auxilium begleitet pflegebed&uuml;rftige Menschen und ihre Angeh&ouml;rigen mit Fachkenntnis, Einf&uuml;hlungsverm&ouml;gen und echter Leidenschaft. Professionell. G&uuml;nstig. Menschlich.</p>
+      <p class="hero__text">Mit langjähriger Erfahrung in der Pflege begleite ich pflegebedürftige Menschen und ihre Angehörigen – persönlich, kompetent und mit echtem Herz. Jeder Mensch verdient individuelle Aufmerksamkeit.</p>
       <div class="hero__actions">
-        <a href="/kontakt" class="btn btn-accent"><i class="fas fa-calendar-check" aria-hidden="true"></i>Kostenloses Erstgespr&auml;ch</a>
+        <a href="/kontakt" class="btn btn-accent"><i class="fas fa-envelope" aria-hidden="true"></i>Kontakt aufnehmen</a>
         <a href="/leistungen" class="btn btn-outline"><i class="fas fa-list" aria-hidden="true"></i>Alle Leistungen</a>
       </div>
-
     </div>
     <div class="hero__visual animate-fade-in-delay-1">
-      <div class="logo-hero-card animate-float">
-        <img src="/static/logo.jpg" alt="Auxilium &ndash; Schmetterling Logo">
-      </div>
+      <img src="/static/logo.jpg" alt="Auxilium &ndash; Schmetterling &amp; Hand Logo" class="hero__logo-free">
     </div>
   </div>
 </section>
@@ -255,10 +255,10 @@ app.get('/', async (c) => {
 <div class="stats-banner" role="complementary">
   <div class="container">
     <div class="stats-banner__grid">
-      <div class="text-center"><span class="stats-banner__number">ca. 6 Mio.</span><p class="stats-banner__label">Pflegebed&uuml;rftige in Deutschland</p></div>
-      <div class="text-center"><span class="stats-banner__number">80+ %</span><p class="stats-banner__label">werden zu Hause versorgt</p></div>
-      <div class="text-center"><span class="stats-banner__number">3,1 Mio.</span><p class="stats-banner__label">ausschlie&szlig;lich durch Angeh&ouml;rige betreut</p></div>
-      <div class="text-center"><span class="stats-banner__number">125 &euro;</span><p class="stats-banner__label">mtl. Entlastungsbetrag &ndash; direkt nutzbar</p></div>
+      <div class="text-center"><span class="stats-banner__number" data-count="6" data-prefix="ca. " data-suffix=" Mio.">ca. 6 Mio.</span><p class="stats-banner__label">Pflegebed&uuml;rftige in Deutschland</p></div>
+      <div class="text-center"><span class="stats-banner__number" data-count="80" data-suffix="+ %">80+ %</span><p class="stats-banner__label">werden zu Hause versorgt</p></div>
+      <div class="text-center"><span class="stats-banner__number" data-count="3.1" data-suffix=" Mio.">3,1 Mio.</span><p class="stats-banner__label">ausschlie&szlig;lich durch Angeh&ouml;rige betreut</p></div>
+      <div class="text-center"><span class="stats-banner__number" data-count="131" data-suffix=" &euro;">131 &euro;</span><p class="stats-banner__label">mtl. Entlastungsbetrag &ndash; direkt nutzbar</p></div>
     </div>
   </div>
 </div>
@@ -321,8 +321,8 @@ app.get('/', async (c) => {
       </article>
       <div style="display:flex;flex-direction:column;gap:14px;">
         <div class="contact-info-item"><div class="info-icon"><i class="fas fa-wallet" aria-hidden="true"></i></div><div><div class="info-label">Pflegegeld</div><div class="info-value">Geld- oder Sachleistung flexibel nutzen</div></div></div>
-        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-hand-holding-heart" aria-hidden="true"></i></div><div><div class="info-label">Entlastungsbetrag</div><div class="info-value">bis zu 125 &euro; monatlich f&uuml;r Betreuung</div></div></div>
-        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-hospital" aria-hidden="true"></i></div><div><div class="info-label">Kurzzeitpflege</div><div class="info-value">&Uuml;berbr&uuml;ckung bei Krankenhausaufenthalt</div></div></div>
+        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-hand-holding-heart" aria-hidden="true"></i></div><div><div class="info-label">Entlastungsbetrag</div><div class="info-value">bis zu 131 &euro; monatlich f&uuml;r Betreuung</div></div></div>
+        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-umbrella-beach" aria-hidden="true"></i></div><div><div class="info-label">Kurzzeitpflege &amp; Verhinderungspflege</div><div class="info-value">F&uuml;r Urlaub, Erholung oder Sonstiges nutzen</div></div></div>
         <div class="contact-info-item"><div class="info-icon"><i class="fas fa-tools" aria-hidden="true"></i></div><div><div class="info-label">Hilfsmittel &amp; Umbau</div><div class="info-value">Zusch&uuml;sse f&uuml;r wohnumfeldverbessernde Ma&szlig;nahmen</div></div></div>
       </div>
     </div>
@@ -344,10 +344,10 @@ app.get('/', async (c) => {
 
 <section class="cta-section-green" aria-labelledby="cta-heading">
   <div class="container text-center">
-    <h2 id="cta-heading" class="cta-section-green__title">Bereit f&uuml;r das erste Gespr&auml;ch?</h2>
-    <p class="cta-section-green__text">Das Erstgespr&auml;ch ist kostenlos und unverbindlich. Gemeinsam finden wir heraus, wie Auxilium Ihnen am besten helfen kann.</p>
+    <h2 id="cta-heading" class="cta-section-green__title">Nehmen Sie Kontakt auf</h2>
+    <p class="cta-section-green__text">Gemeinsam finden wir beim Erstgespr&auml;ch heraus, wie Auxilium Ihnen am besten helfen kann.</p>
     <div class="flex justify-center gap-4 flex-wrap">
-      <a href="/kontakt" class="btn btn-green-solid"><i class="fas fa-calendar-check" aria-hidden="true"></i>Termin vereinbaren</a>
+      <a href="/kontakt" class="btn btn-green-solid"><i class="fas fa-envelope" aria-hidden="true"></i>Kontakt aufnehmen</a>
       <a href="/leistungen" class="btn btn-green-ghost"><i class="fas fa-list" aria-hidden="true"></i>Leistungen ansehen</a>
     </div>
   </div>
@@ -358,7 +358,7 @@ app.get('/', async (c) => {
 // ─── ÜBER AUXILIUM ────────────────────────────────────────────
 app.get('/ueber-auxilium', async (c) => {
   const S = await loadSettings(c.env.DB)
-  const hero = pageHero('&Uuml;ber uns', 'Herzlich willkommen &ndash; ich bin Kristina Bronner', 'Gr&uuml;nderin von Auxilium &ndash; Ihrer pers&ouml;nlichen St&uuml;tze in der Pflege.', '&Uuml;ber Auxilium')
+  const hero = pageHero('&Uuml;ber uns', 'Herzlich willkommen &ndash;<br>ich bin Kristina Bronner', 'Gr&uuml;nderin von Auxilium &ndash; Ihrer pers&ouml;nlichen St&uuml;tze in der Pflege.', '&Uuml;ber Auxilium')
   const body = hero + `
 <section class="section" aria-labelledby="person-heading">
   <div class="container">
@@ -423,7 +423,7 @@ app.get('/ueber-auxilium', async (c) => {
             </div>
           </div>
         </div>
-        <a href="/kontakt" class="btn btn-accent" style="margin-top:8px;"><i class="fas fa-calendar-check" aria-hidden="true"></i>Kostenloses Erstgespr&auml;ch</a>
+        <a href="/kontakt" class="btn btn-accent" style="margin-top:8px;"><i class="fas fa-envelope" aria-hidden="true"></i>Jetzt Kontakt aufnehmen</a>
       </div>
     </div>
   </div>
@@ -452,7 +452,7 @@ app.get('/ueber-auxilium', async (c) => {
         <h2 id="process-heading">So arbeite ich mit Ihnen</h2>
         <p style="margin:14px 0 28px;">Vom ersten Kontakt bis zur laufenden Betreuung &ndash; Auxilium begleitet Sie Schritt f&uuml;r Schritt.</p>
         <div style="display:flex;flex-direction:column;gap:20px;">
-          <div class="step-item"><div class="step-number">1</div><div class="step-content"><div class="step-title">Kostenloses Erstgespr&auml;ch</div><div class="step-text">Wir lernen uns kennen, ich h&ouml;re Ihnen zu und verstehe Ihre Bed&uuml;rfnisse.</div></div></div>
+          <div class="step-item"><div class="step-number">1</div><div class="step-content"><div class="step-title">Pers&ouml;nliches Erstgespr&auml;ch</div><div class="step-text">Wir lernen uns kennen, ich h&ouml;re Ihnen zu und verstehe Ihre Bed&uuml;rfnisse.</div></div></div>
           <div class="step-item"><div class="step-number">2</div><div class="step-content"><div class="step-title">Individuelle Bedarfsanalyse</div><div class="step-text">Gemeinsam erkunden wir Ihre Ressourcen und M&ouml;glichkeiten.</div></div></div>
           <div class="step-item"><div class="step-number">3</div><div class="step-content"><div class="step-title">Pflegeplan erstellen</div><div class="step-text">Ein ma&szlig;geschneiderter Plan, der sich nach Ihrem Leben richtet &ndash; nicht umgekehrt.</div></div></div>
           <div class="step-item"><div class="step-number">4</div><div class="step-content"><div class="step-title">Regelm&auml;&szlig;ige Betreuung</div><div class="step-text">Zuverl&auml;ssige Unterst&uuml;tzung im Alltag &ndash; mit Anpassung bei Bedarf.</div></div></div>
@@ -474,10 +474,34 @@ app.get('/ueber-auxilium', async (c) => {
 app.get('/leistungen', async (c) => {
   const S = await loadSettings(c.env.DB)
   const hero = pageHero('Leistungen', 'Transparente Preise &ndash; faire Leistungen', 'Alle Leistungen von Auxilium im &Uuml;berblick &ndash; mit ehrlichem Preisvergleich.', 'Leistungen &amp; Kosten')
-  const { results } = await c.env.DB.prepare(
-    'SELECT * FROM leistungen WHERE active=1 ORDER BY sort_order'
+
+  // Leistungen mit Kategorie-Infos laden
+  const { results } = await c.env.DB.prepare(`
+    SELECT l.*, k.name as kat_name, k.icon as kat_icon, k.description as kat_desc
+    FROM leistungen l
+    LEFT JOIN kategorien k ON k.slug = l.kategorie_slug
+    WHERE l.active = 1
+    ORDER BY k.sort_order, l.sort_order
+  `).all<any>()
+
+  // Aktive Kategorien laden (für Navigations-Tabs)
+  const { results: katList } = await c.env.DB.prepare(
+    'SELECT * FROM kategorien WHERE active=1 ORDER BY sort_order'
   ).all<any>()
-  const cards = results.map((r: any) => `
+
+  // Leistungen nach Kategorie gruppieren
+  const byKat: Record<string, any[]> = {}
+  const uncategorized: any[] = []
+  for (const r of results) {
+    if (r.kategorie_slug) {
+      if (!byKat[r.kategorie_slug]) byKat[r.kategorie_slug] = []
+      byKat[r.kategorie_slug].push(r)
+    } else {
+      uncategorized.push(r)
+    }
+  }
+
+  const renderCard = (r: any) => `
     <article class="service-card" id="${r.slug}">
       <div class="service-card__header">
         <div class="service-card__icon" aria-hidden="true"><i class="fas ${r.icon}"></i></div>
@@ -492,7 +516,45 @@ app.get('/leistungen', async (c) => {
         </div>
         ${r.savings ? `<div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>${r.savings}</div>` : ''}
       </div>
-    </article>`).join('\n')
+    </article>`
+
+  // Kategorie-Sektionen rendern
+  let katSections = ''
+  for (const kat of katList) {
+    const items = byKat[kat.slug] || []
+    if (items.length === 0) continue
+    katSections += `
+    <div class="leistungen-kat-section" id="kat-${kat.slug}">
+      <div class="leistungen-kat-header">
+        <div class="leistungen-kat-icon"><i class="fas ${kat.icon}" aria-hidden="true"></i></div>
+        <div>
+          <h3 class="leistungen-kat-title">${kat.name}</h3>
+          ${kat.kat_desc||kat.description ? `<p class="leistungen-kat-desc">${kat.kat_desc||kat.description}</p>` : ''}
+        </div>
+      </div>
+      <div class="grid-2" style="gap:20px;">
+        ${items.map(renderCard).join('\n')}
+      </div>
+    </div>`
+  }
+  // Nicht kategorisierte Leistungen
+  if (uncategorized.length > 0) {
+    katSections += `
+    <div class="leistungen-kat-section" id="kat-sonstiges">
+      <div class="leistungen-kat-header">
+        <div class="leistungen-kat-icon"><i class="fas fa-ellipsis-h" aria-hidden="true"></i></div>
+        <div><h3 class="leistungen-kat-title">Weitere Leistungen</h3></div>
+      </div>
+      <div class="grid-2" style="gap:20px;">${uncategorized.map(renderCard).join('\n')}</div>
+    </div>`
+  }
+
+  // Kategorie-Navigations-Tabs
+  const katTabs = katList
+    .filter((k: any) => (byKat[k.slug]||[]).length > 0)
+    .map((k: any) => `<a href="#kat-${k.slug}" class="kat-tab-btn"><i class="fas ${k.icon}"></i>${k.name}</a>`)
+    .join('')
+
   const body = hero + `
 <section class="section" aria-labelledby="intro-heading">
   <div class="container">
@@ -507,7 +569,7 @@ app.get('/leistungen', async (c) => {
         </div>
       </div>
       <article class="funding-box">
-        <span class="section-label">${S.funding_title||'VERHINDERUNGSPFLEGE + KURZZEITPFLEGE'}</span>
+        <span class="section-label">${S.funding_title||'KURZZEITPFLEGE &amp; VERHINDERUNGSPFLEGE'}</span>
         <div class="funding-box__amount">${S.funding_amount||'3.539 €'}</div>
         <p class="funding-box__label">${S.funding_label||'Jährlicher Anspruch pro Person'}</p>
         <p class="funding-box__note">${S.funding_note||'Dieser Betrag ist zweckgebunden und kann vollständig für Auxilium-Leistungen genutzt werden.'}</p>
@@ -521,17 +583,14 @@ app.get('/leistungen', async (c) => {
     <div class="text-center mb-12">
       <span class="section-label">Alle Leistungen</span>
       <h2 id="services-detail-heading">Was Auxilium f&uuml;r Sie tut</h2>
+      ${katTabs ? `<div class="kat-tabs" style="margin-top:20px;">${katTabs}</div>` : ''}
     </div>
-    <div class="grid-2" style="gap:24px;align-items:stretch;">
-      ${cards}
-      <article class="service-card" style="background:linear-gradient(135deg,#4A9B7F,#2D7A5E);border:none;">
-        <div class="service-card__body" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:36px 28px;">
-          <div style="font-size:2.2rem;margin-bottom:14px;color:white;" aria-hidden="true"><i class="fas fa-comments"></i></div>
-          <h3 style="color:white;margin-bottom:10px;font-size:1.1rem;">Nicht das Richtige dabei?</h3>
-          <p style="color:rgba(220,255,240,0.90);font-size:0.875rem;margin-bottom:22px;line-height:1.7;">Haben Sie individuelle W&uuml;nsche? Sprechen Sie mich an &ndash; gemeinsam finden wir eine L&ouml;sung.</p>
-          <a href="/kontakt" class="btn btn-green-solid"><i class="fas fa-phone" aria-hidden="true"></i>Jetzt anfragen</a>
-        </div>
-      </article>
+    ${katSections}
+    <div class="leistungen-kat-section" style="background:linear-gradient(135deg,#4A9B7F,#2D7A5E);border:none;border-radius:var(--radius-lg);padding:36px 28px;text-align:center;margin-top:24px;">
+      <div style="font-size:2.2rem;margin-bottom:14px;color:white;" aria-hidden="true"><i class="fas fa-comments"></i></div>
+      <h3 style="color:white;margin-bottom:10px;font-size:1.1rem;">Nicht das Richtige dabei?</h3>
+      <p style="color:rgba(220,255,240,0.90);font-size:0.875rem;margin-bottom:22px;line-height:1.7;">Haben Sie individuelle W&uuml;nsche? Sprechen Sie mich an &ndash; gemeinsam finden wir eine L&ouml;sung.</p>
+      <a href="/kontakt" class="btn btn-green-solid"><i class="fas fa-phone" aria-hidden="true"></i>Jetzt anfragen</a>
     </div>
   </div>
 </section>
@@ -1122,14 +1181,25 @@ app.get('/admin', async (c) => {
 // ─── Admin: Leistungen Liste (mit Drag-&-Drop) ────────────────
 app.get('/admin/leistungen', async (c) => {
   const msg = c.req.query('msg')
+  const filterKat = c.req.query('kat') || ''
   const alert = msg === 'saved' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Erfolgreich gespeichert.</div>'
     : msg === 'deleted' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Leistung gelöscht.</div>' : ''
-  const { results } = await c.env.DB.prepare('SELECT * FROM leistungen ORDER BY sort_order').all<any>()
+  const { results: katList } = await c.env.DB.prepare('SELECT * FROM kategorien ORDER BY sort_order').all<any>()
+  const query = filterKat
+    ? 'SELECT l.*, k.name as kat_name FROM leistungen l LEFT JOIN kategorien k ON k.slug=l.kategorie_slug WHERE l.kategorie_slug=? ORDER BY l.sort_order'
+    : 'SELECT l.*, k.name as kat_name FROM leistungen l LEFT JOIN kategorien k ON k.slug=l.kategorie_slug ORDER BY l.kategorie_slug, l.sort_order'
+  const { results } = filterKat
+    ? await c.env.DB.prepare(query).bind(filterKat).all<any>()
+    : await c.env.DB.prepare(query).all<any>()
+  const katFilterBtns = katList.map((k: any) =>
+    `<a href="/admin/leistungen?kat=${k.slug}" class="adm-btn ${filterKat===k.slug ? 'adm-btn-primary' : 'adm-btn-secondary'}" style="padding:4px 10px;font-size:0.78rem;"><i class="fas ${k.icon}"></i>${k.name}</a>`
+  ).join('')
   const rows = results.map((r: any) => `
     <tr data-id="${r.id}">
       <td class="drag-handle" title="Ziehen zum Sortieren"><i class="fas fa-grip-vertical"></i></td>
       <td><i class="fas ${r.icon}" style="color:#D98A2B;width:20px;margin-right:6px;"></i><strong>${r.title}</strong></td>
-      <td style="color:#7A6550;font-size:0.82rem;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.subtitle}</td>
+      <td style="color:#7A6550;font-size:0.82rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.subtitle}</td>
+      <td><span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;background:#FBF7F2;border:1px solid #E8D9C5;font-size:0.75rem;color:#7A6550;">${r.kat_name || '–'}</span></td>
       <td><strong style="color:#D98A2B;">${r.price_new}</strong></td>
       <td>${r.active ? '<span class="adm-badge adm-badge-green">Aktiv</span>' : '<span class="adm-badge adm-badge-gray">Inaktiv</span>'}</td>
       <td style="white-space:nowrap;">
@@ -1141,16 +1211,21 @@ app.get('/admin/leistungen', async (c) => {
     </tr>`).join('')
   const body = `
   ${alert}
+  <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
+    <a href="/admin/leistungen" class="adm-btn ${!filterKat ? 'adm-btn-primary' : 'adm-btn-secondary'}" style="padding:4px 10px;font-size:0.78rem;"><i class="fas fa-list"></i>Alle</a>
+    ${katFilterBtns}
+    <a href="/admin/kategorien" class="adm-btn adm-btn-secondary" style="padding:4px 10px;font-size:0.78rem;margin-left:auto;"><i class="fas fa-folder"></i>Kategorien verwalten</a>
+  </div>
   <div class="adm-card">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <div>
-        <h2 style="font-size:1rem;margin-bottom:3px;">Alle Leistungen (${results.length})</h2>
+        <h2 style="font-size:1rem;margin-bottom:3px;">Leistungen (${results.length})</h2>
         <p style="font-size:0.78rem;color:#7A6550;"><i class="fas fa-grip-vertical" style="margin-right:4px;"></i>Zeilen per Drag &amp; Drop in die gewünschte Reihenfolge ziehen</p>
       </div>
       <a href="/admin/leistungen/neu" class="adm-btn adm-btn-primary"><i class="fas fa-plus"></i>Neue Leistung</a>
     </div>
     <table class="adm-table">
-      <thead><tr><th style="width:36px;"></th><th>Titel</th><th>Untertitel</th><th>Preis</th><th>Status</th><th>Aktionen</th></tr></thead>
+      <thead><tr><th style="width:36px;"></th><th>Titel</th><th>Untertitel</th><th>Kategorie</th><th>Preis</th><th>Status</th><th>Aktionen</th></tr></thead>
       <tbody id="leistungenBody">${rows}</tbody>
     </table>
     <p id="sortSaveHint" style="display:none;margin-top:12px;font-size:0.82rem;color:#7A6550;"><i class="fas fa-spinner fa-spin" style="margin-right:5px;"></i>Reihenfolge wird gespeichert…</p>
@@ -1197,22 +1272,22 @@ app.post('/admin/leistungen/sort', async (c) => {
 })
 
 // ─── Admin: Neue Leistung ─────────────────────────────────────
-app.get('/admin/leistungen/neu', (c) => {
-  const body = leistungForm(null)
+app.get('/admin/leistungen/neu', async (c) => {
+  const { results: kats } = await c.env.DB.prepare('SELECT * FROM kategorien ORDER BY sort_order').all<any>()
+  const body = leistungForm(null, kats)
   return c.html(adminLayout('Neue Leistung', body, 'leistungen'))
 })
 
 app.post('/admin/leistungen/neu', async (c) => {
   const d = await c.req.parseBody()
-  // sort_order: ans Ende (MAX + 1)
   const maxRow = await c.env.DB.prepare('SELECT COALESCE(MAX(sort_order),0)+1 AS next_order FROM leistungen').first<any>()
   const nextOrder = maxRow?.next_order ?? 99
   await c.env.DB.prepare(`INSERT INTO leistungen 
-    (slug,title,subtitle,icon,description,price_new,price_old,price_note,savings,sort_order,active)
-    VALUES (?,?,?,?,?,?,?,?,?,?,?)`
+    (slug,title,subtitle,icon,description,price_new,price_old,price_note,savings,sort_order,active,kategorie_slug)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`
   ).bind(d.slug||'', d.title||'', d.subtitle||'', d.icon||'fa-star', d.description||'',
     d.price_new||'', d.price_old||'', d.price_note||'', d.savings||'',
-    nextOrder, d.active ? 1 : 0).run()
+    nextOrder, d.active ? 1 : 0, d.kategorie_slug||'').run()
   return c.redirect('/admin/leistungen?msg=saved')
 })
 
@@ -1220,18 +1295,19 @@ app.post('/admin/leistungen/neu', async (c) => {
 app.get('/admin/leistungen/:id', async (c) => {
   const row = await c.env.DB.prepare('SELECT * FROM leistungen WHERE id=?').bind(c.req.param('id')).first<any>()
   if (!row) return c.redirect('/admin/leistungen')
-  const body = leistungForm(row)
+  const { results: kats } = await c.env.DB.prepare('SELECT * FROM kategorien ORDER BY sort_order').all<any>()
+  const body = leistungForm(row, kats)
   return c.html(adminLayout('Leistung bearbeiten', body, 'leistungen'))
 })
 
 app.post('/admin/leistungen/:id', async (c) => {
   const d = await c.req.parseBody()
   await c.env.DB.prepare(`UPDATE leistungen SET
-    title=?,subtitle=?,icon=?,description=?,price_new=?,price_old=?,price_note=?,savings=?,active=?,updated_at=CURRENT_TIMESTAMP
+    title=?,subtitle=?,icon=?,description=?,price_new=?,price_old=?,price_note=?,savings=?,active=?,kategorie_slug=?,updated_at=CURRENT_TIMESTAMP
     WHERE id=?`
   ).bind(d.title||'', d.subtitle||'', d.icon||'fa-star', d.description||'',
     d.price_new||'', d.price_old||'', d.price_note||'', d.savings||'',
-    d.active ? 1 : 0, c.req.param('id')).run()
+    d.active ? 1 : 0, d.kategorie_slug||'', c.req.param('id')).run()
   return c.redirect('/admin/leistungen?msg=saved')
 })
 
@@ -1240,17 +1316,137 @@ app.post('/admin/leistungen/:id/delete', async (c) => {
   return c.redirect('/admin/leistungen?msg=deleted')
 })
 
-// Formular-Helper Leistungen (mit Live-Vorschau + freiem Icon-Input)
-function leistungForm(r: any): string {
+// ─── Admin: Kategorien verwalten ──────────────────────────────
+app.get('/admin/kategorien', async (c) => {
+  const msg = c.req.query('msg')
+  const alert = msg === 'saved'   ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Gespeichert.</div>'
+              : msg === 'deleted' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Kategorie gelöscht.</div>' : ''
+  const { results } = await c.env.DB.prepare('SELECT k.*, COUNT(l.id) as anz FROM kategorien k LEFT JOIN leistungen l ON l.kategorie_slug=k.slug GROUP BY k.id ORDER BY k.sort_order').all<any>()
+  const rows = results.map((k: any) => `
+    <tr data-id="${k.id}">
+      <td class="drag-handle"><i class="fas fa-grip-vertical"></i></td>
+      <td><i class="fas ${k.icon}" style="color:#D98A2B;width:20px;margin-right:6px;"></i><strong>${k.name}</strong></td>
+      <td style="font-family:monospace;font-size:0.82rem;color:#7A6550;">${k.slug}</td>
+      <td><span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;background:#FBF7F2;border:1px solid #E8D9C5;font-size:0.78rem;">${k.anz} Leistung${k.anz!==1?'en':''}</span></td>
+      <td>${k.active ? '<span class="adm-badge adm-badge-green">Aktiv</span>' : '<span class="adm-badge adm-badge-gray">Inaktiv</span>'}</td>
+      <td style="white-space:nowrap;">
+        <a href="/admin/kategorien/${k.id}" class="adm-btn adm-btn-secondary" style="padding:5px 10px;font-size:0.78rem;"><i class="fas fa-edit"></i>Bearbeiten</a>
+        ${k.anz === 0 ? `<form method="POST" action="/admin/kategorien/${k.id}/delete" style="display:inline;" onsubmit="return confirm('Kategorie löschen?')"><button class="adm-btn adm-btn-danger" style="padding:5px 10px;font-size:0.78rem;"><i class="fas fa-trash"></i></button></form>` : ''}
+      </td>
+    </tr>`).join('')
+  const body = `
+  ${alert}
+  <div class="adm-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div>
+        <h2 style="font-size:1rem;margin-bottom:3px;">Kategorien (${results.length})</h2>
+        <p style="font-size:0.78rem;color:#7A6550;">Leistungen können je einer Kategorie zugeordnet werden</p>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <a href="/admin/leistungen" class="adm-btn adm-btn-secondary"><i class="fas fa-arrow-left"></i>Zu Leistungen</a>
+        <a href="/admin/kategorien/neu" class="adm-btn adm-btn-primary"><i class="fas fa-plus"></i>Neue Kategorie</a>
+      </div>
+    </div>
+    <table class="adm-table">
+      <thead><tr><th style="width:36px;"></th><th>Name</th><th>Slug</th><th>Leistungen</th><th>Status</th><th>Aktionen</th></tr></thead>
+      <tbody id="katBody">${rows}</tbody>
+    </table>
+  </div>
+  <script>
+  (function(){
+    const tbody = document.getElementById('katBody');
+    Sortable.create(tbody, {
+      handle: '.drag-handle', animation: 150, ghostClass: 'sortable-ghost',
+      onEnd: function() {
+        const ids = Array.from(tbody.querySelectorAll('tr[data-id]')).map(tr => tr.getAttribute('data-id'));
+        fetch('/admin/kategorien/sort', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ids})});
+      }
+    });
+  })();
+  </script>`
+  return c.html(adminLayout('Kategorien', body, 'leistungen'))
+})
+
+app.post('/admin/kategorien/sort', async (c) => {
+  const { ids } = await c.req.json<{ ids: string[] }>()
+  for (let i = 0; i < ids.length; i++) {
+    await c.env.DB.prepare('UPDATE kategorien SET sort_order=? WHERE id=?').bind(i+1, ids[i]).run()
+  }
+  return c.json({ ok: true })
+})
+
+app.get('/admin/kategorien/neu', (c) => {
+  return c.html(adminLayout('Neue Kategorie', kategorieForm(null), 'leistungen'))
+})
+
+app.post('/admin/kategorien/neu', async (c) => {
+  const d = await c.req.parseBody()
+  const maxRow = await c.env.DB.prepare('SELECT COALESCE(MAX(sort_order),0)+1 AS next FROM kategorien').first<any>()
+  await c.env.DB.prepare('INSERT INTO kategorien (slug,name,icon,description,sort_order,active) VALUES (?,?,?,?,?,?)')
+    .bind(d.slug||'', d.name||'', d.icon||'fa-folder', d.description||'', maxRow?.next??99, d.active?1:0).run()
+  return c.redirect('/admin/kategorien?msg=saved')
+})
+
+app.get('/admin/kategorien/:id', async (c) => {
+  const row = await c.env.DB.prepare('SELECT * FROM kategorien WHERE id=?').bind(c.req.param('id')).first<any>()
+  if (!row) return c.redirect('/admin/kategorien')
+  return c.html(adminLayout('Kategorie bearbeiten', kategorieForm(row), 'leistungen'))
+})
+
+app.post('/admin/kategorien/:id', async (c) => {
+  const d = await c.req.parseBody()
+  await c.env.DB.prepare('UPDATE kategorien SET name=?,icon=?,description=?,active=? WHERE id=?')
+    .bind(d.name||'', d.icon||'fa-folder', d.description||'', d.active?1:0, c.req.param('id')).run()
+  return c.redirect('/admin/kategorien?msg=saved')
+})
+
+app.post('/admin/kategorien/:id/delete', async (c) => {
+  await c.env.DB.prepare('DELETE FROM kategorien WHERE id=?').bind(c.req.param('id')).run()
+  return c.redirect('/admin/kategorien?msg=deleted')
+})
+
+function kategorieForm(r: any): string {
+  const v = (f: string) => r ? String(r[f]??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;') : ''
+  const isNew = !r
+  return `
+  <div class="adm-card">
+    <form method="POST" class="adm-form">
+      ${isNew ? `<div><label>Slug <span style="font-weight:400;color:#7A6550;">(z.B. koerperpflege – nur a-z, Bindestriche)</span></label>
+        <input name="slug" value="${v('slug')}" required pattern="[a-z0-9-]+" placeholder="kategorie-slug"></div>` : ''}
+      <label>Name</label>
+      <input name="name" value="${v('name')}" required placeholder="z.B. Körperpflege">
+      <label>Font-Awesome Icon</label>
+      <div class="icon-input-row">
+        <span class="icon-preview" id="katIconPrev"><i class="fas ${r?.icon||'fa-folder'}"></i></span>
+        <input name="icon" id="katIconInput" value="${v('icon')||'fa-folder'}" placeholder="fa-folder" style="font-family:monospace;" oninput="document.getElementById('katIconPrev').innerHTML='<i class=\'fas \'+this.value+'\' style=\'color:#D98A2B;\'></i>';" autocomplete="off">
+      </div>
+      <label>Beschreibung <span style="font-weight:400;color:#7A6550;">(intern, optional)</span></label>
+      <textarea name="description" rows="2" placeholder="Kurze Beschreibung…">${r?.description||''}</textarea>
+      <div style="margin-top:14px;display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" id="kat_active" name="active" style="width:auto;" ${r?.active!==0?'checked':''} >
+        <label for="kat_active" style="margin:0;font-size:0.9rem;cursor:pointer;">Kategorie aktiv</label>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:12px;">
+        <button type="submit" class="adm-btn adm-btn-primary"><i class="fas fa-save"></i>Speichern</button>
+        <a href="/admin/kategorien" class="adm-btn adm-btn-secondary"><i class="fas fa-arrow-left"></i>Abbrechen</a>
+      </div>
+    </form>
+  </div>`
+}
+
+// Formular-Helper Leistungen (mit Live-Vorschau + freiem Icon-Input + Kategorien)
+function leistungForm(r: any, kats: any[] = []): string {
   const v = (f: string) => {
     if (!r) return ''
     const val = r[f] ?? ''
-    // HTML-Entities für Attribute escapen
     return String(val).replace(/&/g,'&amp;').replace(/"/g,'&quot;')
   }
   const vRaw = (f: string) => r ? (r[f] ?? '') : ''
   const isNew = !r
   const activeChecked = r ? (r.active ? 'checked' : '') : 'checked'
+  const katOptions = kats.map((k: any) =>
+    `<option value="${k.slug}" ${(r?.kategorie_slug||'')=== k.slug ? 'selected' : ''}>${k.name}</option>`
+  ).join('')
 
   return `
   <div class="form-split">
@@ -1285,6 +1481,12 @@ function leistungForm(r: any): string {
         <p style="font-size:0.75rem;color:#7A6550;margin-top:4px;">
           Den Klassennamen aus fontawesome.com kopieren, z.B. <code style="background:#F3EDE3;padding:1px 5px;border-radius:4px;">fa-heart</code> oder <code style="background:#F3EDE3;padding:1px 5px;border-radius:4px;">fa-user-nurse</code>
         </p>
+
+        <label>Kategorie</label>
+        <select name="kategorie_slug" id="f_kategorie" style="width:100%;padding:9px 12px;border:1.5px solid #E8D9C5;border-radius:8px;font-size:0.9rem;background:white;color:#3A2C1E;">
+          <option value="">– keine Kategorie –</option>
+          ${katOptions}
+        </select>
 
         <label>Beschreibung</label>
         <textarea name="description" id="f_description" rows="3" oninput="updatePreview()" placeholder="Kurze Beschreibung der Leistung…">${vRaw('description')}</textarea>
