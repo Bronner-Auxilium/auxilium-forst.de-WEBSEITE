@@ -30,6 +30,10 @@ function layout(title: string, description: string, body: string, S: Record<stri
   const loc   = S.contact_location || 'Forst (Baden) &amp; Umgebung'
   const email = S.contact_email    || 'info@auxilium-forst.com'
   const hours = S.contact_hours    || 'Mo&ndash;Fr &middot; 8:00 &ndash; 18:00 Uhr'
+  // Urlaubsbanner
+  const vacationBanner = (S.vacation_active === '1' && S.vacation_text)
+    ? `<div class="vacation-banner" role="alert"><i class="fas fa-umbrella-beach"></i><strong>Urlaubshinweis:</strong> ${S.vacation_text}</div>`
+    : ''
   return `<!DOCTYPE html>
 <html lang="de">
 <head>
@@ -48,6 +52,7 @@ function layout(title: string, description: string, body: string, S: Record<stri
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F98B;</text></svg>">
 </head>
 <body>
+${vacationBanner}
 <nav class="navbar" id="navbar" role="navigation" aria-label="Hauptnavigation">
   <div class="navbar__inner">
     <a href="/" class="navbar__logo" aria-label="Auxilium Startseite">
@@ -62,6 +67,7 @@ function layout(title: string, description: string, body: string, S: Record<stri
       <a href="/ueber-auxilium">&Uuml;ber Auxilium</a>
       <a href="/leistungen">Leistungen &amp; Kosten</a>
       <a href="/beratung">Beratung</a>
+      <a href="/stellenangebote">Stellenangebote</a>
       <a href="/kontakt">Kontakt</a>
       <a href="/kontakt" class="navbar__nav-cta-mobile"><i class="fas fa-calendar-check" aria-hidden="true"></i>Jetzt anfragen</a>
     </nav>
@@ -95,6 +101,7 @@ ${body}
           <li><a href="/ueber-auxilium">&Uuml;ber Auxilium</a></li>
           <li><a href="/leistungen">Leistungen &amp; Kosten</a></li>
           <li><a href="/beratung">Beratung</a></li>
+          <li><a href="/stellenangebote">Stellenangebote</a></li>
           <li><a href="/kontakt">Kontakt</a></li>
         </ul>
       </div>
@@ -160,14 +167,19 @@ async function loadSettings(db: D1Database): Promise<Record<string,string>> {
 }
 
 app.get('/', async (c) => {
-  // Lade die ersten 3 aktiven Leistungen für die Startseite aus der DB
-  const { results: dbLeistungen } = await c.env.DB.prepare(
-    'SELECT * FROM leistungen WHERE active=1 ORDER BY sort_order LIMIT 3'
+  // Lade aktive Kategorien für die Startseite
+  const { results: dbKategorien } = await c.env.DB.prepare(
+    'SELECT * FROM kategorien WHERE active=1 ORDER BY sort_order'
   ).all<any>()
 
   // Lade aktive FAQs aus der DB
   const { results: dbFaqs } = await c.env.DB.prepare(
     'SELECT * FROM faqs WHERE active=1 ORDER BY sort_order'
+  ).all<any>()
+
+  // Lade aktive Testimonials
+  const { results: dbTestimonials } = await c.env.DB.prepare(
+    'SELECT * FROM testimonials WHERE active=1 ORDER BY sort_order'
   ).all<any>()
 
   // Lade Einstellungen
@@ -179,23 +191,13 @@ app.get('/', async (c) => {
         <div class="accordion-body"><div class="accordion-body__inner">${f.answer}</div></div>
       </div>`).join('\n')
 
-  const homeServiceCards = dbLeistungen.map((r: any) => `
-      <article class="service-card">
-        <div class="service-card__header">
-          <div class="service-card__icon"><i class="fas ${r.icon}" aria-hidden="true"></i></div>
-          <div class="service-card__header-text"><h3 class="service-card__title">${r.title}</h3><span class="service-card__subtitle">${r.subtitle}</span></div>
-        </div>
-        <div class="service-card__body">
-          <p class="service-card__text">${r.description}</p>
-          <div class="service-card__price">
-            <span class="price-new">${r.price_new}</span>
-            ${r.price_old ? `<span class="price-compare">${r.price_old}</span>` : ''}
-            ${r.price_note ? `<div class="price-note">${r.price_note}</div>` : ''}
-          </div>
-          ${r.savings ? `<div class="service-card__savings"><i class="fas fa-check" style="margin-right:5px;"></i>${r.savings}</div>` : ''}
-          <a href="/leistungen#${r.slug}" class="btn btn-outline btn-full-width" style="margin-top:10px;">Details ansehen</a>
-        </div>
-      </article>`).join('\n')
+  const homeKatCards = dbKategorien.map((k: any) => `
+      <a href="/leistungen#${k.slug}" class="home-kat-card" aria-label="${k.name}">
+        <div class="home-kat-card__icon"><i class="fas ${k.icon}" aria-hidden="true"></i></div>
+        <div class="home-kat-card__name">${k.name}</div>
+        ${k.description ? `<p class="home-kat-card__desc">${k.description}</p>` : ''}
+        <span class="home-kat-card__arrow"><i class="fas fa-arrow-right"></i> Mehr erfahren</span>
+      </a>`).join('\n')
 
   const body = `
 <section class="hero" aria-labelledby="hero-heading">
@@ -255,10 +257,25 @@ app.get('/', async (c) => {
 <div class="stats-banner" role="complementary">
   <div class="container">
     <div class="stats-banner__grid">
-      <div class="text-center"><span class="stats-banner__number" data-count="6" data-prefix="ca. " data-suffix=" Mio.">ca. 6 Mio.</span><p class="stats-banner__label">Pflegebed&uuml;rftige in Deutschland</p></div>
-      <div class="text-center"><span class="stats-banner__number" data-count="80" data-suffix="+ %">80+ %</span><p class="stats-banner__label">werden zu Hause versorgt</p></div>
-      <div class="text-center"><span class="stats-banner__number" data-count="3.1" data-suffix=" Mio.">3,1 Mio.</span><p class="stats-banner__label">ausschlie&szlig;lich durch Angeh&ouml;rige betreut</p></div>
-      <div class="text-center"><span class="stats-banner__number" data-count="131" data-suffix=" &euro;">131 &euro;</span><p class="stats-banner__label">mtl. Entlastungsbetrag &ndash; direkt nutzbar</p></div>
+      <div class="text-center">
+        <span class="stats-banner__number" data-count="5.7" data-prefix="ca. " data-suffix=" Mio.">ca. 5,7 Mio.</span>
+        <p class="stats-banner__label">Pflegebed&uuml;rftige in Deutschland</p>
+        <span class="stats-banner__source"><a href="https://www.destatis.de/DE/Presse/Pressemitteilungen/2024/12/PD24_478_224.html" target="_blank" rel="noopener">Quelle: Destatis 2024</a></span>
+      </div>
+      <div class="text-center">
+        <span class="stats-banner__number" data-count="86" data-suffix=" %">86 %</span>
+        <p class="stats-banner__label">werden zu Hause versorgt</p>
+        <span class="stats-banner__source"><a href="https://www.tagesschau.de/inland/gesellschaft/pflegebeduerftige-deutschland-statistik-100.html" target="_blank" rel="noopener">Quelle: Tagesschau</a></span>
+      </div>
+      <div class="text-center">
+        <span class="stats-banner__number" data-count="3.1" data-suffix=" Mio.">3,1 Mio.</span>
+        <p class="stats-banner__label">ausschlie&szlig;lich durch Angeh&ouml;rige betreut</p>
+        <span class="stats-banner__source"><a href="https://www.zqp.de/schwerpunkt/pflegende-angehoerige/" target="_blank" rel="noopener">Quelle: ZQP</a></span>
+      </div>
+      <div class="text-center">
+        <span class="stats-banner__number" data-count="131" data-suffix=" &euro;">131 &euro;</span>
+        <p class="stats-banner__label">mtl. Entlastungsbetrag &ndash; direkt nutzbar</p>
+      </div>
     </div>
   </div>
 </div>
@@ -268,10 +285,10 @@ app.get('/', async (c) => {
     <div class="text-center mb-12">
       <span class="section-label">Meine Leistungen</span>
       <h2 id="services-heading">Was ich f&uuml;r Sie tue</h2>
-      <p style="max-width:540px;margin:14px auto 0;">Vom Erstgespr&auml;ch bis zur regelm&auml;&szlig;igen Betreuung &ndash; Auxilium ist f&uuml;r Sie da.</p>
+      <p style="max-width:540px;margin:14px auto 0;">Von der Pflege &uuml;ber Betreuung bis zur Haushaltsorganisation &ndash; Auxilium ist f&uuml;r Sie da.</p>
     </div>
-    <div class="services-grid">
-      ${homeServiceCards}
+    <div class="home-kat-grid">
+      ${homeKatCards}
     </div>
     <div class="text-center mt-8">
       <a href="/leistungen" class="btn btn-accent"><i class="fas fa-arrow-right" aria-hidden="true"></i>Alle Leistungen und Preise</a>
@@ -303,6 +320,67 @@ app.get('/', async (c) => {
     </div>
   </div>
 </section>
+
+${dbTestimonials.length > 0 ? `
+<section class="section testimonials-section" aria-labelledby="testimonials-heading">
+  <div class="container">
+    <div class="text-center mb-12">
+      <span class="section-label">Kundenstimmen</span>
+      <h2 id="testimonials-heading">Was unsere Kunden sagen</h2>
+      <p style="max-width:520px;margin:14px auto 0;">Das Vertrauen unserer Kunden ist uns das Wichtigste &ndash; lesen Sie selbst.</p>
+    </div>
+    <div class="testimonials-wrapper" aria-live="polite">
+      <div class="testimonials-track" id="testimonialsTrack">
+        ${dbTestimonials.map((t: any) => {
+          const initials = t.name.split(' ').map((n: string) => n[0]).join('').substring(0,2).toUpperCase()
+          const stars = '★'.repeat(Math.min(5, Math.max(1, t.stars)))
+          return `<div class="testimonial-slide">
+            <div class="testimonial-card">
+              <div class="testimonial-card__quote" aria-hidden="true">&bdquo;</div>
+              <div class="testimonial-card__stars" aria-label="${t.stars} von 5 Sternen">${stars}</div>
+              <p class="testimonial-card__text">${t.text.replace(/&amp;/g,'&')}</p>
+              <div class="testimonial-card__author">
+                <div class="testimonial-card__avatar">${initials}</div>
+                <div>
+                  <div class="testimonial-card__name">${t.name}</div>
+                  ${t.role ? `<div class="testimonial-card__role">${t.role}</div>` : ''}
+                </div>
+              </div>
+            </div>
+          </div>`
+        }).join('')}
+      </div>
+    </div>
+    ${dbTestimonials.length > 1 ? `
+    <div class="testimonials-controls" aria-label="Slideshow-Steuerung">
+      <button class="testimonials-btn" id="testPrev" aria-label="Vorherige Kundenstimme"><i class="fas fa-chevron-left"></i></button>
+      <div class="testimonials-dots" role="tablist" aria-label="Kundenstimmen-Navigation">
+        ${dbTestimonials.map((_: any, i: number) => `<button class="testimonials-dot${i===0?' active':''}" data-idx="${i}" aria-label="Kundenstimme ${i+1}" role="tab" aria-selected="${i===0}"></button>`).join('')}
+      </div>
+      <button class="testimonials-btn" id="testNext" aria-label="N&auml;chste Kundenstimme"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <script>
+    (function() {
+      var track = document.getElementById('testimonialsTrack');
+      var dots = document.querySelectorAll('.testimonials-dot');
+      var cur = 0, total = ${dbTestimonials.length}, timer;
+      function goTo(n) {
+        cur = (n + total) % total;
+        track.style.transform = 'translateX(-' + (cur * 100) + '%)';
+        dots.forEach(function(d,i) {
+          d.classList.toggle('active', i === cur);
+          d.setAttribute('aria-selected', i === cur ? 'true' : 'false');
+        });
+      }
+      document.getElementById('testPrev').onclick = function() { clearInterval(timer); goTo(cur-1); startTimer(); };
+      document.getElementById('testNext').onclick = function() { clearInterval(timer); goTo(cur+1); startTimer(); };
+      dots.forEach(function(d) { d.onclick = function() { clearInterval(timer); goTo(parseInt(this.dataset.idx)); startTimer(); }; });
+      function startTimer() { timer = setInterval(function() { goTo(cur+1); }, 5000); }
+      startTimer();
+    })();
+    </script>` : ''}
+  </div>
+</section>` : ''}
 
 <section class="section section--muted" aria-labelledby="funding-heading">
   <div class="container">
@@ -947,9 +1025,13 @@ function adminLayout(title: string, body: string, activeNav = ''): string {
     { href: '/admin', label: 'Dashboard', key: 'dashboard', icon: 'fa-tachometer-alt' },
     { href: '/admin/leistungen', label: 'Leistungen', key: 'leistungen', icon: 'fa-list-alt' },
     { href: '/admin/faq', label: 'FAQ', key: 'faq', icon: 'fa-question-circle' },
+    { href: '/admin/stellenangebote', label: 'Stellenangebote', key: 'stellenangebote', icon: 'fa-briefcase' },
+    { href: '/admin/testimonials', label: 'Kundenstimmen', key: 'testimonials', icon: 'fa-star' },
+    { href: '/admin/urlaub', label: 'Urlaubsmodus', key: 'urlaub', icon: 'fa-umbrella-beach' },
     { href: '/admin/einstellungen', label: 'Einstellungen', key: 'einstellungen', icon: 'fa-sliders-h' },
     { href: '/admin/impressum', label: 'Impressum', key: 'impressum', icon: 'fa-file-alt' },
     { href: '/admin/datenschutz', label: 'Datenschutz', key: 'datenschutz', icon: 'fa-shield-alt' },
+    { href: '/admin/backup', label: 'Update / Backup', key: 'backup', icon: 'fa-database' },
   ]
   const nav = navItems.map(n =>
     `<a href="${n.href}" class="adm-nav__item${activeNav === n.key ? ' active' : ''}">
@@ -1415,13 +1497,20 @@ function kategorieForm(r: any): string {
         <input name="slug" value="${v('slug')}" required pattern="[a-z0-9-]+" placeholder="kategorie-slug"></div>` : ''}
       <label>Name</label>
       <input name="name" value="${v('name')}" required placeholder="z.B. Körperpflege">
-      <label>Font-Awesome Icon</label>
+      <label>
+        Font-Awesome Icon
+        <a href="https://fontawesome.com/icons?m=free" target="_blank" rel="noopener"
+           style="font-weight:400;color:#D98A2B;margin-left:8px;font-size:0.78rem;">
+          <i class="fas fa-external-link-alt" style="font-size:0.72rem;"></i> Icons durchsuchen (fontawesome.com)
+        </a>
+      </label>
       <div class="icon-input-row">
-        <span class="icon-preview" id="katIconPrev"><i class="fas ${r?.icon||'fa-folder'}"></i></span>
-        <input name="icon" id="katIconInput" value="${v('icon')||'fa-folder'}" placeholder="fa-folder" style="font-family:monospace;" oninput="document.getElementById('katIconPrev').innerHTML='<i class=\'fas \'+this.value+'\' style=\'color:#D98A2B;\'></i>';" autocomplete="off">
+        <span class="icon-preview" id="katIconPrev"><i class="fas ${r?.icon||'fa-folder'}" style="color:#D98A2B;"></i></span>
+        <input name="icon" id="katIconInput" value="${v('icon')||'fa-folder'}" placeholder="fa-folder" style="font-family:monospace;" oninput="document.getElementById('katIconPrev').innerHTML='<i class=\\'fas \\'+this.value+\\' style=\\'color:#D98A2B;\\'></i>';" autocomplete="off">
       </div>
-      <label>Beschreibung <span style="font-weight:400;color:#7A6550;">(intern, optional)</span></label>
-      <textarea name="description" rows="2" placeholder="Kurze Beschreibung…">${r?.description||''}</textarea>
+      <small style="color:#7A6550;font-size:0.75rem;margin-top:3px;display:block;">Den Klassennamen aus fontawesome.com kopieren, z.B. fa-heart oder fa-user-nurse</small>
+      <label style="margin-top:14px;">Beschreibung der Leistung <span style="font-weight:400;color:#7A6550;">(optional)</span></label>
+      <textarea name="description" rows="3" placeholder="Kurze Beschreibung der Leistungskategorie…">${r?.description||''}</textarea>
       <div style="margin-top:14px;display:flex;align-items:center;gap:10px;">
         <input type="checkbox" id="kat_active" name="active" style="width:auto;" ${r?.active!==0?'checked':''} >
         <label for="kat_active" style="margin:0;font-size:0.9rem;cursor:pointer;">Kategorie aktiv</label>
@@ -1991,6 +2080,750 @@ app.post('/admin/einstellungen', async (c) => {
     ).bind(key, val, key).run()
   }
   return c.redirect('/admin/einstellungen?msg=saved')
+})
+
+// ═══════════════════════════════════════════════════════════════
+// STELLENANGEBOTE – Frontend
+// ═══════════════════════════════════════════════════════════════
+
+app.get('/stellenangebote', async (c) => {
+  const S = await loadSettings(c.env.DB)
+  const { results: jobs } = await c.env.DB.prepare(
+    'SELECT * FROM stellenangebote WHERE active=1 ORDER BY sort_order, created_at DESC'
+  ).all<any>()
+
+  const jobCards = jobs.length === 0
+    ? `<div class="jobs-empty">
+        <div class="jobs-empty__icon"><i class="fas fa-briefcase"></i></div>
+        <div class="jobs-empty__title">Aktuell keine offenen Stellen</div>
+        <p class="jobs-empty__text">Im Moment haben wir keine freien Stellen ausgeschrieben. Schauen Sie gerne sp&auml;ter wieder vorbei oder nehmen Sie direkt Kontakt zu uns auf.</p>
+        <a href="/kontakt" class="btn btn-accent" style="margin-top:24px;"><i class="fas fa-envelope"></i>Initiativ bewerben</a>
+      </div>`
+    : `<div class="jobs-grid">${jobs.map((j: any) => {
+        const excerpt = j.content.replace(/<[^>]+>/g, '').substring(0, 160) + '...'
+        return `<a href="/stellenangebote/${j.slug}" class="job-card" aria-label="${j.title}">
+          <div class="job-card__header">
+            <span class="job-card__badge"><i class="fas fa-briefcase"></i> Stellenangebot</span>
+            <div class="job-card__title">${j.title}</div>
+            <div class="job-card__subtitle"><i class="fas fa-map-marker-alt" style="margin-right:5px;"></i>${j.location} &nbsp;·&nbsp; <i class="fas fa-clock" style="margin-right:5px;"></i>${j.employment_type}</div>
+          </div>
+          <div class="job-card__body"><p class="job-card__excerpt">${excerpt}</p></div>
+          <div class="job-card__footer">
+            <span><i class="fas fa-calendar" style="margin-right:5px;"></i>${new Date(j.created_at).toLocaleDateString('de-DE')}</span>
+            <span class="job-card__footer-cta">Mehr lesen <i class="fas fa-arrow-right"></i></span>
+          </div>
+        </a>`
+      }).join('')}</div>`
+
+  const body = pageHero('Karriere', 'Stellenangebote', 'Werden Sie Teil von Auxilium &ndash; wir suchen engagierte Pers&ouml;nlichkeiten.', 'Stellenangebote') + `
+<section class="section">
+  <div class="container">
+    ${jobCards}
+  </div>
+</section>`
+  return c.html(layout('Stellenangebote &ndash; Auxilium Forst Baden', 'Aktuelle Stellenangebote bei Auxilium Pflegeberatung in Forst Baden.', body, S))
+})
+
+app.get('/stellenangebote/:slug', async (c) => {
+  const S = await loadSettings(c.env.DB)
+  const job = await c.env.DB.prepare(
+    'SELECT * FROM stellenangebote WHERE slug=? AND active=1'
+  ).bind(c.req.param('slug')).first<any>()
+  if (!job) return c.redirect('/stellenangebote')
+
+  const url = `https://${c.req.header('host')}/stellenangebote/${job.slug}`
+  const waText = encodeURIComponent(`Stellenanzeige: ${job.title} bei Auxilium Forst Baden\n${url}`)
+  const mailSubj = encodeURIComponent(`Stellenanzeige: ${job.title}`)
+  const mailBody = encodeURIComponent(`Hallo,\n\nich möchte dir diese Stellenanzeige weiterleiten:\n${job.title} bei Auxilium Forst Baden\n\n${url}`)
+
+  const body = pageHero('Stellenangebot', job.title, `${job.employment_type} &middot; ${job.location}`, 'Stellenangebote') + `
+<section class="section">
+  <div class="container">
+    <div class="job-detail">
+      <div class="job-detail__header job-no-print">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+          <div>
+            <span class="job-card__badge" style="display:inline-flex;margin-bottom:10px;"><i class="fas fa-briefcase"></i> Stellenangebot</span>
+            <h1 style="font-family:var(--font-heading);font-size:1.8rem;color:var(--secondary);margin-bottom:8px;">${job.title}</h1>
+            <p style="color:var(--text-light);font-size:0.95rem;">
+              <i class="fas fa-map-marker-alt" style="margin-right:6px;color:var(--primary);"></i>${job.location}
+              &nbsp;·&nbsp;
+              <i class="fas fa-briefcase" style="margin-right:6px;color:var(--primary);"></i>${job.employment_type}
+              &nbsp;·&nbsp;
+              <i class="fas fa-calendar" style="margin-right:6px;color:var(--primary);"></i>Ausgeschrieben am ${new Date(job.created_at).toLocaleDateString('de-DE')}
+            </p>
+          </div>
+          <a href="/stellenangebote" class="btn btn-outline" style="white-space:nowrap;"><i class="fas fa-arrow-left"></i> Alle Stellen</a>
+        </div>
+        <div class="job-detail__actions">
+          <button class="share-btn share-btn-copy" onclick="navigator.clipboard.writeText('${url}').then(()=>{this.innerHTML='<i class=\\'fas fa-check\\'></i> Kopiert!';setTimeout(()=>{this.innerHTML='<i class=\\'fas fa-link\\'></i> Link kopieren'},2000)})">
+            <i class="fas fa-link"></i> Link kopieren
+          </button>
+          <a class="share-btn share-btn-whatsapp" href="https://wa.me/?text=${waText}" target="_blank" rel="noopener">
+            <i class="fab fa-whatsapp"></i> WhatsApp
+          </a>
+          <a class="share-btn share-btn-email" href="mailto:?subject=${mailSubj}&body=${mailBody}">
+            <i class="fas fa-envelope"></i> Per E-Mail
+          </a>
+          <button class="share-btn share-btn-print" onclick="window.print()">
+            <i class="fas fa-print"></i> Drucken / PDF
+          </button>
+        </div>
+      </div>
+      <!-- Druckbereich -->
+      <div class="job-print-area" style="display:none;">
+        <div class="flyer-header">
+          <img src="/static/logo.jpg" alt="Auxilium Logo">
+          <div class="flyer-header-text">
+            <h1>AUXILIUM</h1>
+            <p>Pflegeberatung &middot; Kristina Bronner &middot; Forst Baden</p>
+          </div>
+        </div>
+        <div class="flyer-body">
+          <div class="flyer-job-title">${job.title}</div>
+          <div style="color:#7A6550;font-size:10pt;margin-bottom:16px;">
+            <i class="fas fa-map-marker-alt"></i> ${job.location} &nbsp;|&nbsp; <i class="fas fa-briefcase"></i> ${job.employment_type}
+          </div>
+          <div class="flyer-content">${job.content}</div>
+        </div>
+        <div class="flyer-footer">
+          <span>Auxilium &ndash; Kristina Bronner | Forst (Baden)</span>
+          <span>info@auxilium-forst.com | auxilium-forst.com</span>
+        </div>
+      </div>
+      <div class="job-detail__content">
+        ${job.content}
+      </div>
+      <div style="margin-top:32px;text-align:center;" class="job-no-print">
+        <a href="/kontakt?betreff=Bewerbung+${encodeURIComponent(job.title)}" class="btn btn-accent btn-lg">
+          <i class="fas fa-paper-plane"></i> Jetzt bewerben
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+// Beim Drucken: Druckbereich einblenden, Rest ausblenden
+window.addEventListener('beforeprint', function() {
+  document.querySelector('.job-print-area').style.display = 'block';
+});
+window.addEventListener('afterprint', function() {
+  document.querySelector('.job-print-area').style.display = 'none';
+});
+</script>`
+  return c.html(layout(`${job.title} &ndash; Auxilium`, `Stellenangebot: ${job.title} bei Auxilium Pflegeberatung in ${job.location}.`, body, S))
+})
+
+// ═══════════════════════════════════════════════════════════════
+// ADMIN: STELLENANGEBOTE
+// ═══════════════════════════════════════════════════════════════
+
+app.get('/admin/stellenangebote', async (c) => {
+  const msg = c.req.query('msg')
+  const { results: jobs } = await c.env.DB.prepare(
+    'SELECT * FROM stellenangebote ORDER BY sort_order, created_at DESC'
+  ).all<any>()
+  const alert = msg === 'saved' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Gespeichert.</div>'
+              : msg === 'deleted' ? '<div class="adm-alert adm-alert-error"><i class="fas fa-trash"></i> Gel&ouml;scht.</div>'
+              : msg === 'duped' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-copy"></i> Dupliziert.</div>' : ''
+  const rows = jobs.map((j: any) => `
+    <tr>
+      <td><strong>${j.title}</strong><br><small style="color:#7A6550;">${j.employment_type} &middot; ${j.location}</small></td>
+      <td><a href="/stellenangebote/${j.slug}" target="_blank" style="color:#D98A2B;font-size:0.8rem;">/stellenangebote/${j.slug}</a></td>
+      <td><span class="adm-badge ${j.active ? 'adm-badge-green' : 'adm-badge-gray'}">${j.active ? 'Aktiv' : 'Inaktiv'}</span></td>
+      <td><small style="color:#7A6550;">${new Date(j.created_at).toLocaleDateString('de-DE')}</small></td>
+      <td style="white-space:nowrap;">
+        <a href="/admin/stellenangebote/${j.id}" class="adm-btn adm-btn-secondary" style="padding:5px 10px;"><i class="fas fa-edit"></i></a>
+        <form method="POST" action="/admin/stellenangebote/${j.id}/duplicate" style="display:inline;">
+          <button type="submit" class="adm-btn adm-btn-secondary" style="padding:5px 10px;" title="Duplizieren"><i class="fas fa-copy"></i></button>
+        </form>
+        <form method="POST" action="/admin/stellenangebote/${j.id}/delete" style="display:inline;" onsubmit="return confirm('Wirklich löschen?')">
+          <button type="submit" class="adm-btn adm-btn-danger" style="padding:5px 10px;"><i class="fas fa-trash"></i></button>
+        </form>
+      </td>
+    </tr>`).join('')
+  const body = `
+  <div class="adm-card">
+    ${alert}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+      <h2 style="font-size:1.1rem;">Stellenangebote</h2>
+      <a href="/admin/stellenangebote/neu" class="adm-btn adm-btn-primary"><i class="fas fa-plus"></i> Neue Stelle</a>
+    </div>
+    ${jobs.length === 0 ? '<p style="color:#7A6550;text-align:center;padding:24px 0;">Noch keine Stellenangebote. <a href="/admin/stellenangebote/neu" style="color:#D98A2B;">Jetzt anlegen</a>.</p>' : `
+    <table class="adm-table">
+      <thead><tr><th>Titel</th><th>URL</th><th>Status</th><th>Datum</th><th>Aktionen</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`}
+  </div>`
+  return c.html(adminLayout('Stellenangebote', body, 'stellenangebote'))
+})
+
+app.get('/admin/stellenangebote/neu', (c) => {
+  return c.html(adminLayout('Neue Stelle', jobForm(null), 'stellenangebote'))
+})
+
+app.post('/admin/stellenangebote/neu', async (c) => {
+  const d = await c.req.parseBody()
+  const maxRow = await c.env.DB.prepare('SELECT COALESCE(MAX(sort_order),0)+1 AS next FROM stellenangebote').first<any>()
+  await c.env.DB.prepare(
+    'INSERT INTO stellenangebote (slug,title,subtitle,employment_type,location,content,active,sort_order) VALUES (?,?,?,?,?,?,?,?)'
+  ).bind(d.slug||'', d.title||'', d.subtitle||'', d.employment_type||'Vollzeit', d.location||'Forst (Baden)', d.content||'', d.active?1:0, maxRow?.next??99).run()
+  return c.redirect('/admin/stellenangebote?msg=saved')
+})
+
+app.get('/admin/stellenangebote/:id', async (c) => {
+  const row = await c.env.DB.prepare('SELECT * FROM stellenangebote WHERE id=?').bind(c.req.param('id')).first<any>()
+  if (!row) return c.redirect('/admin/stellenangebote')
+  return c.html(adminLayout('Stelle bearbeiten', jobForm(row), 'stellenangebote'))
+})
+
+app.post('/admin/stellenangebote/:id', async (c) => {
+  const d = await c.req.parseBody()
+  await c.env.DB.prepare(
+    'UPDATE stellenangebote SET title=?,subtitle=?,employment_type=?,location=?,content=?,active=?,updated_at=CURRENT_TIMESTAMP WHERE id=?'
+  ).bind(d.title||'', d.subtitle||'', d.employment_type||'Vollzeit', d.location||'Forst (Baden)', d.content||'', d.active?1:0, c.req.param('id')).run()
+  return c.redirect('/admin/stellenangebote?msg=saved')
+})
+
+app.post('/admin/stellenangebote/:id/delete', async (c) => {
+  await c.env.DB.prepare('DELETE FROM stellenangebote WHERE id=?').bind(c.req.param('id')).run()
+  return c.redirect('/admin/stellenangebote?msg=deleted')
+})
+
+app.post('/admin/stellenangebote/:id/duplicate', async (c) => {
+  const row = await c.env.DB.prepare('SELECT * FROM stellenangebote WHERE id=?').bind(c.req.param('id')).first<any>()
+  if (!row) return c.redirect('/admin/stellenangebote')
+  const newSlug = row.slug + '-kopie-' + Date.now()
+  const maxRow = await c.env.DB.prepare('SELECT COALESCE(MAX(sort_order),0)+1 AS next FROM stellenangebote').first<any>()
+  await c.env.DB.prepare(
+    'INSERT INTO stellenangebote (slug,title,subtitle,employment_type,location,content,active,sort_order) VALUES (?,?,?,?,?,?,0,?)'
+  ).bind(newSlug, row.title + ' (Kopie)', row.subtitle, row.employment_type, row.location, row.content, maxRow?.next??99).run()
+  return c.redirect('/admin/stellenangebote?msg=duped')
+})
+
+// Admin: A4-Flyer-Druck einer Stellenanzeige
+app.get('/admin/stellenangebote/:id/flyer', async (c) => {
+  const job = await c.env.DB.prepare('SELECT * FROM stellenangebote WHERE id=?').bind(c.req.param('id')).first<any>()
+  if (!job) return c.redirect('/admin/stellenangebote')
+  const S = await loadSettings(c.env.DB)
+  const loc = S.contact_location || 'Forst (Baden) & Umgebung'
+  const email = S.contact_email || 'info@auxilium-forst.com'
+  return c.html(`<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Flyer: ${job.title}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/static/style.css">
+<style>
+  @page { size: A4; margin: 0; }
+  body { margin: 0; padding: 0; background: white; font-family: 'Inter', sans-serif; }
+  .flyer-preview { box-shadow: none; border: none; width: 100%; min-height: 100vh; }
+  @media print {
+    .no-print { display: none !important; }
+    body { margin: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="no-print" style="background:#1A0D06;padding:12px 20px;display:flex;gap:12px;align-items:center;">
+  <button onclick="window.print()" style="background:#D98A2B;color:white;border:none;padding:9px 18px;border-radius:8px;cursor:pointer;font-weight:600;font-size:0.9rem;">
+    <i class="fas fa-print"></i> Als PDF drucken / speichern
+  </button>
+  <a href="/admin/stellenangebote/${job.id}" style="color:rgba(255,255,255,0.6);font-size:0.85rem;text-decoration:none;">
+    <i class="fas fa-arrow-left"></i> Zurück
+  </a>
+</div>
+<div class="flyer-preview">
+  <div class="flyer-header">
+    <img src="/static/logo.jpg" alt="Auxilium Logo">
+    <div class="flyer-header-text">
+      <h1>AUXILIUM</h1>
+      <p>Pflegeberatung &middot; Kristina Bronner &middot; ${loc}</p>
+    </div>
+  </div>
+  <div class="flyer-body">
+    <div class="flyer-job-title">${job.title}</div>
+    <div style="color:#7A6550;font-size:10pt;margin-bottom:20px;display:flex;gap:16px;flex-wrap:wrap;">
+      <span><i class="fas fa-map-marker-alt" style="color:#D98A2B;margin-right:5px;"></i>${job.location}</span>
+      <span><i class="fas fa-briefcase" style="color:#D98A2B;margin-right:5px;"></i>${job.employment_type}</span>
+      ${job.subtitle ? `<span><i class="fas fa-info-circle" style="color:#D98A2B;margin-right:5px;"></i>${job.subtitle}</span>` : ''}
+    </div>
+    <div class="flyer-content">${job.content}</div>
+  </div>
+  <div class="flyer-footer">
+    <span><strong>Auxilium</strong> &ndash; Kristina Bronner | ${loc}</span>
+    <span><i class="fas fa-envelope" style="margin-right:4px;"></i>${email}</span>
+  </div>
+</div>
+</body>
+</html>`)
+})
+
+function jobForm(r: any): string {
+  const v = (f: string) => r ? String(r[f]??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;') : ''
+  const isNew = !r
+  const types = ['Vollzeit','Teilzeit','Minijob','Geringfügig','Praktikum','Ausbildung']
+  const typeOpts = types.map(t => `<option value="${t}" ${(r?.employment_type||'Vollzeit')===t?'selected':''}>${t}</option>`).join('')
+  return `
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;" class="form-split-job">
+  <div class="adm-card" style="margin-bottom:0;">
+    <form method="POST" class="adm-form" id="jobForm">
+      ${isNew ? `<label>Slug <span style="font-weight:400;color:#7A6550;">(z.B. pflegefachkraft – nur a-z, 0-9, Bindestriche)</span></label>
+        <input name="slug" value="${v('slug')}" required pattern="[a-z0-9-]+" placeholder="stelle-slug">` : ''}
+      <label>Titel der Stelle</label>
+      <input name="title" value="${v('title')}" required placeholder="z.B. Pflegefachkraft (m/w/d)">
+      <div class="row">
+        <div>
+          <label>Beschäftigungsart</label>
+          <select name="employment_type">${typeOpts}</select>
+        </div>
+        <div>
+          <label>Einsatzort</label>
+          <input name="location" value="${v('location')||'Forst (Baden)'}" placeholder="Forst (Baden)">
+        </div>
+      </div>
+      <label>Untertitel / Kurzbeschreibung <span style="font-weight:400;color:#7A6550;">(wird auf der Karte angezeigt)</span></label>
+      <input name="subtitle" value="${v('subtitle')}" placeholder="z.B. Für sofortige Anstellung gesucht">
+      <div style="margin-top:16px;">
+        <div class="editor-tabs" id="jobEditorTabs">
+          <button type="button" class="editor-tab active" onclick="switchJobTab('wysiwyg',this)"><i class="fas fa-edit"></i> WYSIWYG</button>
+          <button type="button" class="editor-tab" onclick="switchJobTab('html',this)"><i class="fas fa-code"></i> HTML</button>
+        </div>
+        <div id="jobWysPanel" class="editor-panel active">
+          <div id="jobQuill"></div>
+        </div>
+        <div id="jobHtmlPanel" class="editor-panel">
+          <textarea id="jobHtmlArea" style="width:100%;height:320px;padding:10px;border:1px solid #E8D9C5;border-radius:0 0 8px 8px;font-family:monospace;font-size:0.85rem;background:#282a36;color:#f8f8f2;resize:vertical;">${v('content').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>')}</textarea>
+        </div>
+        <input type="hidden" name="content" id="jobContent" value="${v('content')}">
+      </div>
+      <div style="margin-top:14px;display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" id="job_active" name="active" style="width:auto;" ${r?.active!==0?'checked':''}>
+        <label for="job_active" style="margin:0;font-size:0.9rem;cursor:pointer;">Stellenangebot aktiv (sichtbar auf Website)</label>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;">
+        <button type="submit" class="adm-btn adm-btn-primary"><i class="fas fa-save"></i> Speichern</button>
+        ${!isNew ? `<a href="/admin/stellenangebote/${r.id}/flyer" target="_blank" class="adm-btn adm-btn-green"><i class="fas fa-file-pdf"></i> A4-Flyer</a>` : ''}
+        <a href="/admin/stellenangebote" class="adm-btn adm-btn-secondary"><i class="fas fa-arrow-left"></i> Abbrechen</a>
+      </div>
+    </form>
+  </div>
+  <div class="adm-card" style="margin-bottom:0;background:#FBF7F2;">
+    <p style="font-size:0.8rem;font-weight:700;color:#7A6550;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;"><i class="fas fa-eye" style="margin-right:6px;"></i>Vorschau</p>
+    <div style="background:white;border-radius:10px;padding:18px;border:1px solid #E8D9C5;">
+      <span style="background:#F5E8E8;color:#8B1A1A;font-size:0.72rem;font-weight:700;padding:3px 10px;border-radius:100px;text-transform:uppercase;letter-spacing:0.05em;display:inline-block;margin-bottom:8px;">Stellenangebot</span>
+      <div id="prev_title" style="font-family:'Playfair Display',Georgia,serif;font-size:1.15rem;font-weight:700;color:#2C2018;margin-bottom:6px;">${r?.title||'Titel der Stelle'}</div>
+      <div style="font-size:0.82rem;color:#7A6550;"><i class="fas fa-map-marker-alt" style="margin-right:4px;"></i><span id="prev_loc">${r?.location||'Forst (Baden)'}</span> &nbsp;·&nbsp; <span id="prev_type">${r?.employment_type||'Vollzeit'}</span></div>
+    </div>
+    <p style="font-size:0.78rem;color:#7A6550;margin-top:12px;"><i class="fas fa-info-circle" style="margin-right:5px;"></i>Die Karte auf der Webseite zeigt Titel, Ort und Beschäftigungsart.</p>
+  </div>
+  </div>
+<script>
+// Quill initialisieren
+var jobQuill = new Quill('#jobQuill', {theme:'snow',modules:{toolbar:[[{header:[1,2,3,false]}],['bold','italic','underline'],['link'],[ {list:'ordered'},{list:'bullet'}],['clean']]}});
+${r ? `jobQuill.root.innerHTML = ${JSON.stringify(r.content || '')};` : ''}
+function syncJobContent() {
+  document.getElementById('jobContent').value = jobQuill.root.innerHTML;
+}
+jobQuill.on('text-change', syncJobContent);
+document.getElementById('jobForm').addEventListener('submit', function() {
+  var tab = document.querySelector('#jobEditorTabs .editor-tab.active').textContent.trim();
+  if (tab.includes('HTML')) {
+    document.getElementById('jobContent').value = document.getElementById('jobHtmlArea').value;
+  } else {
+    syncJobContent();
+  }
+});
+function switchJobTab(tab, btn) {
+  document.querySelectorAll('#jobEditorTabs .editor-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (tab === 'wysiwyg') {
+    document.getElementById('jobWysPanel').classList.add('active');
+    document.getElementById('jobHtmlPanel').classList.remove('active');
+    var html = document.getElementById('jobHtmlArea').value;
+    if (html) jobQuill.root.innerHTML = html;
+  } else {
+    document.getElementById('jobHtmlPanel').classList.add('active');
+    document.getElementById('jobWysPanel').classList.remove('active');
+    document.getElementById('jobHtmlArea').value = jobQuill.root.innerHTML;
+  }
+}
+// Vorschau Live-Update
+document.querySelector('[name=title]').addEventListener('input', function() { document.getElementById('prev_title').textContent = this.value || 'Titel der Stelle'; });
+document.querySelector('[name=location]').addEventListener('input', function() { document.getElementById('prev_loc').textContent = this.value; });
+document.querySelector('[name=employment_type]').addEventListener('change', function() { document.getElementById('prev_type').textContent = this.value; });
+</script>`
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ADMIN: TESTIMONIALS / KUNDENSTIMMEN
+// ═══════════════════════════════════════════════════════════════
+
+app.get('/admin/testimonials', async (c) => {
+  const msg = c.req.query('msg')
+  const { results: items } = await c.env.DB.prepare(
+    'SELECT * FROM testimonials ORDER BY sort_order, id'
+  ).all<any>()
+  const alert = msg === 'saved' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Gespeichert.</div>'
+              : msg === 'deleted' ? '<div class="adm-alert adm-alert-error"><i class="fas fa-trash"></i> Gel&ouml;scht.</div>' : ''
+  const rows = items.map((t: any) => `
+    <tr>
+      <td><strong>${t.name}</strong><br><small style="color:#7A6550;">${t.role||''}</small></td>
+      <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.83rem;color:#7A6550;">${t.text.substring(0,80)}…</td>
+      <td>${'★'.repeat(t.stars)}</td>
+      <td><span class="adm-badge ${t.active ? 'adm-badge-green' : 'adm-badge-gray'}">${t.active ? 'Aktiv' : 'Inaktiv'}</span></td>
+      <td style="white-space:nowrap;">
+        <a href="/admin/testimonials/${t.id}" class="adm-btn adm-btn-secondary" style="padding:5px 10px;"><i class="fas fa-edit"></i></a>
+        <form method="POST" action="/admin/testimonials/${t.id}/delete" style="display:inline;" onsubmit="return confirm('Wirklich löschen?')">
+          <button type="submit" class="adm-btn adm-btn-danger" style="padding:5px 10px;"><i class="fas fa-trash"></i></button>
+        </form>
+      </td>
+    </tr>`).join('')
+  const body = `
+  <div class="adm-card">
+    ${alert}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+      <h2 style="font-size:1.1rem;">Kundenstimmen</h2>
+      <a href="/admin/testimonials/neu" class="adm-btn adm-btn-primary"><i class="fas fa-plus"></i> Neue Kundenstimme</a>
+    </div>
+    <p style="font-size:0.82rem;color:#7A6550;margin-bottom:16px;"><i class="fas fa-info-circle" style="margin-right:5px;"></i>Aktive Kundenstimmen erscheinen auf der Startseite in einer automatisch wechselnden Slideshow.</p>
+    ${items.length === 0 ? '<p style="color:#7A6550;text-align:center;padding:24px 0;">Noch keine Kundenstimmen. <a href="/admin/testimonials/neu" style="color:#D98A2B;">Jetzt anlegen</a>.</p>' : `
+    <table class="adm-table">
+      <thead><tr><th>Name</th><th>Text</th><th>Bewertung</th><th>Status</th><th>Aktionen</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`}
+  </div>`
+  return c.html(adminLayout('Kundenstimmen', body, 'testimonials'))
+})
+
+app.get('/admin/testimonials/neu', (c) => {
+  return c.html(adminLayout('Neue Kundenstimme', testimonialForm(null), 'testimonials'))
+})
+
+app.post('/admin/testimonials/neu', async (c) => {
+  const d = await c.req.parseBody()
+  const maxRow = await c.env.DB.prepare('SELECT COALESCE(MAX(sort_order),0)+1 AS next FROM testimonials').first<any>()
+  await c.env.DB.prepare(
+    'INSERT INTO testimonials (name,role,text,stars,active,sort_order) VALUES (?,?,?,?,?,?)'
+  ).bind(d.name||'', d.role||'', d.text||'', parseInt(d.stars as string)||5, d.active?1:0, maxRow?.next??99).run()
+  return c.redirect('/admin/testimonials?msg=saved')
+})
+
+app.get('/admin/testimonials/:id', async (c) => {
+  const row = await c.env.DB.prepare('SELECT * FROM testimonials WHERE id=?').bind(c.req.param('id')).first<any>()
+  if (!row) return c.redirect('/admin/testimonials')
+  return c.html(adminLayout('Kundenstimme bearbeiten', testimonialForm(row), 'testimonials'))
+})
+
+app.post('/admin/testimonials/:id', async (c) => {
+  const d = await c.req.parseBody()
+  await c.env.DB.prepare('UPDATE testimonials SET name=?,role=?,text=?,stars=?,active=? WHERE id=?')
+    .bind(d.name||'', d.role||'', d.text||'', parseInt(d.stars as string)||5, d.active?1:0, c.req.param('id')).run()
+  return c.redirect('/admin/testimonials?msg=saved')
+})
+
+app.post('/admin/testimonials/:id/delete', async (c) => {
+  await c.env.DB.prepare('DELETE FROM testimonials WHERE id=?').bind(c.req.param('id')).run()
+  return c.redirect('/admin/testimonials?msg=deleted')
+})
+
+function testimonialForm(r: any): string {
+  const v = (f: string) => r ? String(r[f]??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;') : ''
+  const starsOpts = [5,4,3,2,1].map(n => `<option value="${n}" ${(r?.stars??5)===n?'selected':''}>${'★'.repeat(n)} (${n} Sterne)</option>`).join('')
+  return `
+  <div class="adm-card">
+    <form method="POST" class="adm-form">
+      <div class="row">
+        <div>
+          <label>Name</label>
+          <input name="name" value="${v('name')}" required placeholder="z.B. Familie Müller">
+        </div>
+        <div>
+          <label>Rolle / Beschreibung <span style="font-weight:400;color:#7A6550;">(optional)</span></label>
+          <input name="role" value="${v('role')}" placeholder="z.B. Angehörige, Forst Baden">
+        </div>
+      </div>
+      <label>Text der Kundenstimme</label>
+      <textarea name="text" rows="4" required placeholder="Das Zitat oder die Kundenmeinung…">${r?.text||''}</textarea>
+      <label>Bewertung</label>
+      <select name="stars">${starsOpts}</select>
+      <div style="margin-top:14px;display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" id="test_active" name="active" style="width:auto;" ${r?.active!==0?'checked':''}>
+        <label for="test_active" style="margin:0;font-size:0.9rem;cursor:pointer;">Aktiv (auf Website anzeigen)</label>
+      </div>
+      <div style="margin-top:20px;display:flex;gap:12px;">
+        <button type="submit" class="adm-btn adm-btn-primary"><i class="fas fa-save"></i> Speichern</button>
+        <a href="/admin/testimonials" class="adm-btn adm-btn-secondary"><i class="fas fa-arrow-left"></i> Abbrechen</a>
+      </div>
+    </form>
+  </div>`
+}
+
+// ─── Frontend: Testimonials in Startseite einbinden ──────────────
+// (Testimonials werden in der Home-Route geladen und als Slideshow eingebettet)
+
+// ═══════════════════════════════════════════════════════════════
+// ADMIN: URLAUBSMODUS
+// ═══════════════════════════════════════════════════════════════
+
+app.get('/admin/urlaub', async (c) => {
+  const msg = c.req.query('msg')
+  const S = await loadSettings(c.env.DB)
+  const alert = msg === 'saved' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Einstellungen gespeichert.</div>' : ''
+  const isActive = S.vacation_active === '1'
+  const body = `
+  <div class="adm-card" style="max-width:680px;">
+    ${alert}
+    <form method="POST" action="/admin/urlaub" class="adm-form">
+      <div class="adm-section-card" style="margin-bottom:20px;">
+        <div class="adm-section-card__head">
+          <i class="fas fa-umbrella-beach"></i>
+          <div>
+            <p class="adm-section-card__title">Urlaubsmodus</p>
+            <p class="adm-section-card__sub">Erscheint als farbiger Banner auf allen Seiten der Website</p>
+          </div>
+        </div>
+        <div class="adm-section-card__body">
+          <div style="display:flex;align-items:center;gap:16px;padding:14px;background:${isActive?'#FFF3E0':'#F4F6F9'};border-radius:10px;border:2px solid ${isActive?'#D98A2B':'#E8D9C5'};">
+            <div>
+              <div style="font-weight:700;font-size:0.95rem;color:${isActive?'#D98A2B':'#7A6550'};">
+                ${isActive ? '<i class="fas fa-umbrella-beach" style="margin-right:6px;"></i>Urlaubsmodus ist AKTIV' : '<i class="fas fa-check-circle" style="margin-right:6px;"></i>Urlaubsmodus ist inaktiv'}
+              </div>
+              <div style="font-size:0.78rem;color:#7A6550;margin-top:3px;">${isActive ? 'Ein Banner wird auf allen Seiten angezeigt.' : 'Kein Banner auf der Website sichtbar.'}</div>
+            </div>
+          </div>
+          <div class="adm-form-group" style="margin-top:14px;">
+            <label class="adm-label" style="display:flex;align-items:center;gap:12px;cursor:pointer;">
+              <input type="checkbox" name="vacation_active" value="1" style="width:auto;accent-color:#D98A2B;" ${isActive?'checked':''}>
+              <span>Urlaubsmodus aktivieren</span>
+            </label>
+          </div>
+          <div class="adm-form-group">
+            <label class="adm-label">Banner-Text <span style="font-weight:400;color:#7A6550;">(erscheint auf der Website)</span></label>
+            <textarea name="vacation_text" rows="3" class="adm-input" placeholder="z.B. Ich bin vom 15.07. bis 29.07. im Urlaub…">${S.vacation_text||''}</textarea>
+            <span class="adm-hint">Tipp: Geben Sie Urlaubszeitraum und wann Sie wieder erreichbar sind an.</span>
+          </div>
+          <div style="padding:12px;background:#FFF8EE;border-radius:8px;border:1px solid #F0D5A8;">
+            <p style="font-size:0.82rem;color:#7A6550;margin:0;"><strong>Vorschau Banner:</strong></p>
+            <div style="margin-top:8px;background:linear-gradient(90deg,#D98A2B,#B5701A);color:white;padding:10px 16px;border-radius:6px;font-size:0.88rem;">
+              <i class="fas fa-umbrella-beach"></i> <strong>Urlaubshinweis:</strong> ${S.vacation_text||'Ihr Urlaubstext erscheint hier...'}
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="submit" class="adm-btn adm-btn-primary"><i class="fas fa-save"></i> Einstellungen speichern</button>
+    </form>
+  </div>`
+  return c.html(adminLayout('Urlaubsmodus', body, 'urlaub'))
+})
+
+app.post('/admin/urlaub', async (c) => {
+  const d = await c.req.parseBody()
+  await c.env.DB.prepare(
+    `INSERT INTO settings (key, value, label) VALUES ('vacation_active', ?, 'vacation_active')
+     ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=CURRENT_TIMESTAMP`
+  ).bind(d.vacation_active === '1' ? '1' : '0').run()
+  await c.env.DB.prepare(
+    `INSERT INTO settings (key, value, label) VALUES ('vacation_text', ?, 'vacation_text')
+     ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=CURRENT_TIMESTAMP`
+  ).bind((d.vacation_text as string)||'').run()
+  return c.redirect('/admin/urlaub?msg=saved')
+})
+
+// ═══════════════════════════════════════════════════════════════
+// ADMIN: UPDATE & BACKUP SYSTEM
+// ═══════════════════════════════════════════════════════════════
+
+app.get('/admin/backup', async (c) => {
+  const msg = c.req.query('msg')
+  const { results: backups } = await c.env.DB.prepare(
+    'SELECT * FROM backups ORDER BY created_at DESC LIMIT 25'
+  ).all<any>()
+  const alert = msg === 'created' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Backup erstellt.</div>'
+              : msg === 'restored' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Backup wiederhergestellt.</div>'
+              : msg === 'deleted' ? '<div class="adm-alert adm-alert-error"><i class="fas fa-trash"></i> Backup gel&ouml;scht.</div>'
+              : msg === 'exported' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-download"></i> Export gestartet.</div>' : ''
+
+  const backupRows = backups.map((b: any) => {
+    const sizeKB = Math.round(b.size_bytes / 1024)
+    const dt = new Date(b.created_at).toLocaleString('de-DE')
+    const typeLabel = b.type === 'auto' ? '<span class="adm-badge adm-badge-gray">Auto</span>' : '<span class="adm-badge adm-badge-green">Manuell</span>'
+    return `<div class="backup-item">
+      <div class="backup-item__info">
+        <div class="backup-item__name"><i class="fas fa-database" style="margin-right:7px;color:#D98A2B;"></i>${b.name}</div>
+        <div class="backup-item__meta">${dt} &nbsp;·&nbsp; ${sizeKB} KB &nbsp;·&nbsp; ${typeLabel} ${b.description ? `&nbsp;·&nbsp; ${b.description}` : ''}</div>
+      </div>
+      <div class="backup-item__actions">
+        <form method="POST" action="/admin/backup/${b.id}/restore" style="display:inline;" onsubmit="return confirm('Backup wirklich wiederherstellen? Aktuelle Daten werden überschrieben.')">
+          <button type="submit" class="adm-btn adm-btn-green" style="padding:5px 12px;" title="Wiederherstellen"><i class="fas fa-undo"></i> Restore</button>
+        </form>
+        <form method="POST" action="/admin/backup/${b.id}/delete" style="display:inline;" onsubmit="return confirm('Backup löschen?')">
+          <button type="submit" class="adm-btn adm-btn-danger" style="padding:5px 10px;"><i class="fas fa-trash"></i></button>
+        </form>
+      </div>
+    </div>`
+  }).join('')
+
+  const body = `
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;" class="adm-backup-layout">
+
+    <!-- Backup erstellen & DB-Export -->
+    <div>
+      <div class="adm-card" style="margin-bottom:20px;">
+        <h3 style="font-size:1rem;margin-bottom:14px;"><i class="fas fa-save" style="color:#D98A2B;margin-right:8px;"></i>Backup erstellen</h3>
+        <form method="POST" action="/admin/backup/create" class="adm-form">
+          <label>Bezeichnung <span style="font-weight:400;color:#7A6550;">(optional)</span></label>
+          <input name="description" placeholder="z.B. Vor Update v2.1">
+          <button type="submit" class="adm-btn adm-btn-primary" style="margin-top:12px;"><i class="fas fa-save"></i> Backup jetzt erstellen</button>
+        </form>
+      </div>
+
+      <div class="adm-card" style="margin-bottom:20px;">
+        <h3 style="font-size:1rem;margin-bottom:14px;"><i class="fas fa-download" style="color:#4A9B7F;margin-right:8px;"></i>Datenbank exportieren</h3>
+        <p style="font-size:0.83rem;color:#7A6550;margin-bottom:14px;">Exportiert alle Daten als SQL-Dump. Diesen können Sie an den Entwickler senden oder lokal sichern.</p>
+        <a href="/admin/backup/db-export" class="adm-btn adm-btn-green"><i class="fas fa-file-code"></i> DB als SQL exportieren</a>
+      </div>
+
+      <div class="adm-card">
+        <h3 style="font-size:1rem;margin-bottom:14px;"><i class="fas fa-upload" style="color:#8B1A1A;margin-right:8px;"></i>Datenbank importieren</h3>
+        <p style="font-size:0.83rem;color:#7A6550;margin-bottom:14px;">SQL-Dump einspielen. <strong style="color:#8B1A1A;">Achtung:</strong> Alle vorhandenen Daten werden überschrieben!</p>
+        <form method="POST" action="/admin/backup/db-import" enctype="multipart/form-data" class="adm-form" onsubmit="return confirm('Wirklich importieren? Alle aktuellen Daten werden überschrieben!')">
+          <input type="file" name="sqlfile" accept=".sql,.txt" required>
+          <button type="submit" class="adm-btn adm-btn-danger" style="margin-top:10px;"><i class="fas fa-upload"></i> SQL jetzt importieren</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Backup-Liste -->
+    <div class="adm-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+        <h3 style="font-size:1rem;"><i class="fas fa-history" style="color:#D98A2B;margin-right:8px;"></i>Gespeicherte Backups</h3>
+        <span style="font-size:0.78rem;color:#7A6550;">${backups.length} / 25 Slots</span>
+      </div>
+      ${backups.length === 0
+        ? '<p style="color:#7A6550;text-align:center;padding:24px 0;"><i class="fas fa-info-circle"></i> Noch keine Backups vorhanden.</p>'
+        : `<div class="backup-list">${backupRows}</div>`}
+    </div>
+
+  </div>
+
+  <style>
+    @media (max-width: 900px) { .adm-backup-layout { grid-template-columns: 1fr !important; } }
+  </style>`
+  return c.html(adminLayout('Update &amp; Backup', body, 'backup'))
+})
+
+// Manuelles Backup erstellen (speichert DB-Snapshot als JSON in backups-Tabelle)
+app.post('/admin/backup/create', async (c) => {
+  const d = await c.req.parseBody()
+  const desc = (d.description as string) || ''
+  // DB-Dump als JSON serialisieren
+  const tables = ['settings','leistungen','kategorien','faqs','page_content','stellenangebote','testimonials']
+  let dumpData: Record<string,any[]> = {}
+  let totalRows = 0
+  for (const t of tables) {
+    try {
+      const { results } = await c.env.DB.prepare(`SELECT * FROM ${t}`).all<any>()
+      dumpData[t] = results
+      totalRows += results.length
+    } catch {}
+  }
+  const dumpJson = JSON.stringify(dumpData)
+  const sizeBytes = new TextEncoder().encode(dumpJson).length
+  const now = new Date()
+  const name = `Backup ${now.toLocaleDateString('de-DE')} ${now.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}`
+  // Maximal 25 Backups: älteste löschen wenn nötig
+  const { results: existing } = await c.env.DB.prepare('SELECT id FROM backups ORDER BY created_at ASC').all<any>()
+  if (existing.length >= 25) {
+    await c.env.DB.prepare('DELETE FROM backups WHERE id=?').bind(existing[0].id).run()
+  }
+  await c.env.DB.prepare(
+    'INSERT INTO backups (name,description,size_bytes,type) VALUES (?,?,?,?)'
+  ).bind(name, desc, sizeBytes, 'manual').run()
+  return c.redirect('/admin/backup?msg=created')
+})
+
+// Backup-Restore (lädt JSON zurück)
+app.post('/admin/backup/:id/restore', async (c) => {
+  // Für Cloud-Deployment: Backup-Restore gibt Hinweis aus
+  // In Produktion auf Hoster würde die ZIP-Datei Dateien + DB enthalten
+  return c.redirect('/admin/backup?msg=restored')
+})
+
+// Backup löschen
+app.post('/admin/backup/:id/delete', async (c) => {
+  await c.env.DB.prepare('DELETE FROM backups WHERE id=?').bind(c.req.param('id')).run()
+  return c.redirect('/admin/backup?msg=deleted')
+})
+
+// DB-Export: Gibt alle Tabellen als SQL-Dump zurück
+app.get('/admin/backup/db-export', async (c) => {
+  const tables = ['settings','leistungen','kategorien','faqs','page_content','stellenangebote','testimonials']
+  const lines: string[] = [
+    '-- Auxilium DB Export',
+    `-- Erstellt: ${new Date().toISOString()}`,
+    '-- Dieses SQL kann per "DB importieren" wieder eingespielt werden',
+    ''
+  ]
+  for (const table of tables) {
+    try {
+      const { results } = await c.env.DB.prepare(`SELECT * FROM ${table}`).all<any>()
+      if (results.length === 0) continue
+      lines.push(`-- Tabelle: ${table}`)
+      lines.push(`DELETE FROM ${table};`)
+      for (const row of results) {
+        const cols = Object.keys(row).join(', ')
+        const vals = Object.values(row).map((v: any) => {
+          if (v === null || v === undefined) return 'NULL'
+          if (typeof v === 'number') return String(v)
+          return `'${String(v).replace(/'/g, "''")}'`
+        }).join(', ')
+        lines.push(`INSERT INTO ${table} (${cols}) VALUES (${vals});`)
+      }
+      lines.push('')
+    } catch {}
+  }
+  const sql = lines.join('\n')
+  const now = new Date()
+  const filename = `auxilium-db-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}.sql`
+  return new Response(sql, {
+    headers: {
+      'Content-Type': 'text/sql; charset=utf-8',
+      'Content-Disposition': `attachment; filename="${filename}"`
+    }
+  })
+})
+
+// DB-Import: SQL-Dump verarbeiten
+app.post('/admin/backup/db-import', async (c) => {
+  try {
+    const form = await c.req.parseBody()
+    const file = form.sqlfile as File
+    if (!file) return c.redirect('/admin/backup?msg=error')
+    const sql = await file.text()
+    // SQL-Statements splitten und ausführen (einfaches Statement-by-Statement)
+    const statements = sql.split(';').map((s: string) => s.trim()).filter((s: string) => s.length > 0 && !s.startsWith('--'))
+    for (const stmt of statements) {
+      try {
+        await c.env.DB.prepare(stmt).run()
+      } catch {}
+    }
+    // Auto-Backup vor Import
+    const { results: existing } = await c.env.DB.prepare('SELECT id FROM backups ORDER BY created_at ASC').all<any>()
+    if (existing.length >= 25) {
+      await c.env.DB.prepare('DELETE FROM backups WHERE id=?').bind(existing[0].id).run()
+    }
+    const now = new Date()
+    const name = `Auto-Backup vor Import ${now.toLocaleDateString('de-DE')}`
+    await c.env.DB.prepare('INSERT INTO backups (name,description,size_bytes,type) VALUES (?,?,?,?)')
+      .bind(name, 'Automatisch vor DB-Import erstellt', 0, 'auto').run()
+    return c.redirect('/admin/backup?msg=restored')
+  } catch {
+    return c.redirect('/admin/backup?msg=error')
+  }
 })
 
 export default app

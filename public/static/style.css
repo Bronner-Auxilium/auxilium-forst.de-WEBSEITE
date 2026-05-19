@@ -234,8 +234,8 @@ p  { color: var(--text-light); line-height: 1.75; }
   flex-shrink: 0;
 }
 .navbar__logo-img {
-  width: 68px;
-  height: 68px;
+  width: 88px;
+  height: 88px;
   border-radius: 0;
   object-fit: contain;
   background: transparent;
@@ -313,54 +313,40 @@ p  { color: var(--text-light); line-height: 1.75; }
   position: relative;
   overflow: hidden;
   padding-top: 80px;
-  background: linear-gradient(150deg,
-    rgba(251,247,242,0.96) 0%,
-    rgba(250,240,223,0.92) 45%,
-    rgba(243,237,227,0.90) 100%
-  );
+  /* Echtes Naturfoto als Hintergrund */
+  background-image: url('/static/hero-bg.jpg');
+  background-size: cover;
+  background-position: center 40%;
+  background-repeat: no-repeat;
 }
-/* Natur-Hintergrundbild via Pseudo-Element (wird via JS-Class gesetzt) */
+/* Warm-Overlay für Lesbarkeit */
 .hero::before {
   content: '';
   position: absolute; inset: 0;
-  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 800"><defs><radialGradient id="g1" cx="70%" cy="30%" r="60%"><stop offset="0%" stop-color="%23d4e8c2" stop-opacity="0.35"/><stop offset="100%" stop-color="%23faf0df" stop-opacity="0"/></radialGradient><radialGradient id="g2" cx="20%" cy="80%" r="50%"><stop offset="0%" stop-color="%23c9e1d6" stop-opacity="0.25"/><stop offset="100%" stop-color="transparent" stop-opacity="0"/></radialGradient></defs><rect width="1440" height="800" fill="url(%23g1)"/><rect width="1440" height="800" fill="url(%23g2)"/></svg>');
-  background-size: cover;
+  background: linear-gradient(
+    110deg,
+    rgba(251,247,242,0.88) 0%,
+    rgba(250,240,223,0.80) 42%,
+    rgba(243,237,227,0.45) 68%,
+    rgba(200,220,190,0.20) 100%
+  );
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
 }
+/* Dezenter Gradient von unten für Footer-Übergang */
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 120px;
+  background: linear-gradient(to top, rgba(255,255,255,0.5) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+/* Hintergrundshapes werden nicht mehr benötigt */
 .hero__bg-shapes {
-  position: absolute; inset: 0;
-  pointer-events: none; overflow: hidden; z-index: 0;
+  display: none;
 }
-.hero__bg-shapes .shape {
-  position: absolute; border-radius: 50%;
-}
-.hero__bg-shapes .shape-1 {
-  width: 700px; height: 700px;
-  background: radial-gradient(circle, #c8e6b0 0%, transparent 70%);
-  opacity: 0.45;
-  top: -180px; right: -80px;
-}
-.hero__bg-shapes .shape-2 {
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, #D98A2B 0%, transparent 70%);
-  opacity: 0.06;
-  bottom: -120px; left: 5%;
-}
-.hero__bg-shapes .shape-3 {
-  width: 220px; height: 220px;
-  background: radial-gradient(circle, #89C4AE 0%, transparent 70%);
-  opacity: 0.30;
-  top: 20%; left: 2%;
-}
-/* Bokeh-Punkte */
-.hero__bg-shapes .bokeh {
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(217,138,43,0.18) 0%, transparent 70%);
-}
-.hero__bg-shapes .bokeh-1 { width:120px;height:120px; top:15%;right:38%; }
-.hero__bg-shapes .bokeh-2 { width:80px;height:80px; bottom:22%;right:25%; }
-.hero__bg-shapes .bokeh-3 { width:60px;height:60px; top:55%;left:30%; }
 .hero__inner {
   display: grid;
   grid-template-columns: 55% 45%;
@@ -372,21 +358,25 @@ p  { color: var(--text-light); line-height: 1.75; }
   width: 100%;
   position: relative; z-index: 2;
 }
+/* Hero-Content bekommt etwas mehr Textschatten für Lesbarkeit auf Foto */
+.hero__content {
+  position: relative; z-index: 2;
+}
 .hero__content { position: relative; z-index: 2; }
 .hero__badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255,255,255,0.85);
-  border: 1px solid rgba(217,138,43,0.3);
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(217,138,43,0.35);
   border-radius: 100px;
   padding: 6px 16px 6px 10px;
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--text);
   margin-bottom: 28px;
-  box-shadow: 0 2px 12px rgba(44,32,24,0.08);
-  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 16px rgba(44,32,24,0.12);
+  backdrop-filter: blur(8px);
 }
 .hero__badge .badge-dot {
   width: 8px; height: 8px;
@@ -433,7 +423,7 @@ p  { color: var(--text-light); line-height: 1.75; }
   margin-top: 2px;
   line-height: 1.4;
 }
-/* Hero Visual: Logo freigestellt, kein Rahmen */
+/* Hero Visual: Logo freigestellt, kein Rahmen, keine Animation */
 .hero__visual {
   position: relative; z-index: 2;
   display: flex;
@@ -442,13 +432,9 @@ p  { color: var(--text-light); line-height: 1.75; }
 }
 .hero__logo-free {
   width: 100%;
-  max-width: 440px;
-  filter: drop-shadow(0 16px 40px rgba(44,32,24,0.18)) drop-shadow(0 4px 12px rgba(217,138,43,0.15));
-  animation: floatGentle 5s ease-in-out infinite;
-}
-@keyframes floatGentle {
-  0%,100% { transform: translateY(0) rotate(-0.5deg); }
-  50%      { transform: translateY(-10px) rotate(0.5deg); }
+  max-width: 500px;
+  filter: drop-shadow(0 20px 48px rgba(44,32,24,0.22)) drop-shadow(0 4px 16px rgba(217,138,43,0.18));
+  /* Keine Float-Animation */
 }
 /* Legacy card (wird nicht mehr verwendet, bleibt für Rückwärtskompatibilität) */
 .hero__card-main {
@@ -1280,9 +1266,21 @@ p  { color: var(--text-light); line-height: 1.75; }
 }
 
 @media (max-width: 900px) {
-  .hero__inner { grid-template-columns: 1fr; gap: 32px; }
-  .hero__visual { display: flex; justify-content: center; }
-  .hero__logo-free { max-width: 280px; }
+  /* Hero: Logo erscheint ÜBER dem Text auf Mobile */
+  .hero__inner {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 24px;
+    padding: 60px 24px 60px;
+  }
+  .hero__visual {
+    display: flex;
+    justify-content: center;
+    order: -1; /* Logo zuerst */
+  }
+  .hero__logo-free {
+    max-width: 260px;
+  }
   .grid-2 { grid-template-columns: 1fr; gap: 32px; }
   /* 3-spaltig → 2-spaltig bei Tablets */
   .grid-3 {
@@ -1418,6 +1416,12 @@ p  { color: var(--text-light); line-height: 1.75; }
   .footer__links li { margin-bottom: 6px; }
   .footer__links a { font-size: 0.82rem; }
 
+  /* Navbar Logo auf Mobile etwas kleiner */
+  .navbar__logo-img { width: 64px; height: 64px; }
+
+  /* Hero auf Mobile: Logo kleiner */
+  .hero__logo-free { max-width: 220px; }
+
   /* Service Cards Mobile: volle Breite, aufgeräumt */
   .service-card {
     max-width: 440px;
@@ -1490,3 +1494,507 @@ p  { color: var(--text-light); line-height: 1.75; }
 .gap-6 { gap: 24px; }
 .w-full { width: 100%; }
 .hidden { display: none !important; }
+
+/* ─── Startseite: Kategorien-Kacheln ─────────────────────── */
+.home-kat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+.home-kat-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 28px 22px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: all var(--transition);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+.home-kat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+}
+.home-kat-card__icon {
+  width: 54px; height: 54px;
+  background: var(--primary-light);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.35rem;
+  color: var(--primary);
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.home-kat-card:hover .home-kat-card__icon {
+  background: var(--primary);
+  color: white;
+  transform: scale(1.08);
+}
+.home-kat-card__name {
+  font-family: var(--font-heading);
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: var(--secondary);
+  line-height: 1.3;
+}
+.home-kat-card__desc {
+  font-size: 0.845rem;
+  color: var(--text-light);
+  line-height: 1.65;
+  margin: 0;
+}
+.home-kat-card__arrow {
+  margin-top: auto;
+  font-size: 0.8rem;
+  color: var(--primary);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: gap var(--transition);
+}
+.home-kat-card:hover .home-kat-card__arrow { gap: 9px; }
+
+@media (max-width: 900px) {
+  .home-kat-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+}
+@media (max-width: 480px) {
+  .home-kat-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .home-kat-card { padding: 20px 14px; }
+  .home-kat-card__icon { width: 44px; height: 44px; font-size: 1.1rem; }
+  .home-kat-card__name { font-size: 0.92rem; }
+}
+
+/* ─── Stats: Quellenverweise ──────────────────────────────── */
+.stats-banner__source {
+  display: block;
+  font-size: 0.65rem;
+  color: rgba(255,255,255,0.45);
+  margin-top: 3px;
+}
+.stats-banner__source a {
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  transition: color 0.2s;
+}
+.stats-banner__source a:hover {
+  color: rgba(255,255,255,0.75);
+}
+
+/* ─── Vacation Banner (Urlaubsmodus) ─────────────────────── */
+.vacation-banner {
+  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white;
+  text-align: center;
+  padding: 14px 24px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  position: relative;
+  z-index: 999;
+  box-shadow: 0 2px 12px rgba(217,138,43,0.30);
+}
+.vacation-banner i { margin-right: 8px; }
+.vacation-banner strong { font-weight: 700; }
+
+/* ─── Stellenangebote ─────────────────────────────────────── */
+.jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+.job-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 0;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: all var(--transition);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.job-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+}
+.job-card__header {
+  background: linear-gradient(135deg, var(--bg-soft) 0%, var(--bg-muted) 100%);
+  padding: 22px 22px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.job-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--accent-light);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 100px;
+  margin-bottom: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.job-card__title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--secondary);
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+.job-card__subtitle {
+  font-size: 0.84rem;
+  color: var(--text-light);
+}
+.job-card__body {
+  padding: 18px 22px;
+  flex: 1;
+}
+.job-card__excerpt {
+  font-size: 0.875rem;
+  color: var(--text-light);
+  line-height: 1.72;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.job-card__footer {
+  padding: 14px 22px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: var(--text-light);
+}
+.job-card__footer-cta {
+  color: var(--primary);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: gap var(--transition);
+}
+.job-card:hover .job-card__footer-cta { gap: 9px; }
+
+/* Stellenanzeige Detail-Seite */
+.job-detail {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.job-detail__header {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 36px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+.job-detail__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.job-detail__content {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 36px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  line-height: 1.8;
+}
+.job-detail__content h1,
+.job-detail__content h2,
+.job-detail__content h3 {
+  margin-top: 24px;
+  margin-bottom: 10px;
+}
+.job-detail__content p { margin-bottom: 14px; }
+.job-detail__content ul, .job-detail__content ol {
+  margin-left: 20px;
+  margin-bottom: 14px;
+}
+
+/* Share-Buttons */
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-size: 0.83rem;
+  font-weight: 600;
+  transition: all var(--transition);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+.share-btn-copy { background: var(--bg-muted); color: var(--text); border: 1px solid var(--border); }
+.share-btn-copy:hover { background: var(--border); }
+.share-btn-whatsapp { background: #25D366; color: white; }
+.share-btn-whatsapp:hover { background: #1ebe5d; }
+.share-btn-email { background: var(--accent-light); color: var(--accent); border: 1px solid var(--accent); }
+.share-btn-email:hover { background: var(--accent); color: white; }
+.share-btn-print { background: var(--bg-muted); color: var(--text); border: 1px solid var(--border); }
+.share-btn-print:hover { background: var(--border); }
+
+/* Jobs: Leere Seite */
+.jobs-empty {
+  text-align: center;
+  padding: 80px 24px;
+}
+.jobs-empty__icon {
+  font-size: 3rem;
+  color: var(--border);
+  margin-bottom: 16px;
+}
+.jobs-empty__title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.jobs-empty__text {
+  color: var(--text-light);
+  max-width: 440px;
+  margin: 0 auto;
+  line-height: 1.75;
+}
+
+/* ─── Testimonials Slideshow ──────────────────────────────── */
+.testimonials-section {
+  background: var(--bg-soft);
+}
+.testimonials-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+.testimonials-track {
+  display: flex;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+.testimonial-slide {
+  flex: 0 0 100%;
+  padding: 0 4px;
+  display: flex;
+  justify-content: center;
+}
+.testimonial-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 36px 40px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  max-width: 720px;
+  width: 100%;
+  position: relative;
+}
+.testimonial-card__quote {
+  font-size: 4rem;
+  line-height: 1;
+  color: var(--primary);
+  font-family: Georgia, serif;
+  position: absolute;
+  top: 16px; left: 24px;
+  opacity: 0.3;
+  user-select: none;
+}
+.testimonial-card__text {
+  font-size: 1.05rem;
+  line-height: 1.78;
+  color: var(--text);
+  font-style: italic;
+  padding-top: 16px;
+  margin-bottom: 24px;
+}
+.testimonial-card__stars {
+  color: #F4B942;
+  font-size: 1rem;
+  margin-bottom: 14px;
+  letter-spacing: 2px;
+}
+.testimonial-card__author {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.testimonial-card__avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+.testimonial-card__name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--secondary);
+}
+.testimonial-card__role {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  margin-top: 2px;
+}
+.testimonials-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 28px;
+}
+.testimonials-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text);
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.testimonials-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+.testimonials-dots {
+  display: flex;
+  gap: 8px;
+}
+.testimonials-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  cursor: pointer;
+  transition: all var(--transition);
+  border: none;
+}
+.testimonials-dot.active {
+  background: var(--primary);
+  transform: scale(1.3);
+}
+
+/* Stellenangebote Flyer-Druck */
+@media print {
+  body * { visibility: hidden; }
+  .job-print-area, .job-print-area * { visibility: visible; }
+  .job-print-area {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    padding: 0;
+  }
+  .job-no-print { display: none !important; }
+}
+
+/* A4-Flyer für Stellenanzeigen (Admin-Export) */
+.flyer-preview {
+  width: 210mm;
+  min-height: 297mm;
+  background: white;
+  margin: 0 auto;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 11pt;
+  line-height: 1.6;
+  border: 1px solid #ddd;
+  box-shadow: var(--shadow-lg);
+}
+.flyer-header {
+  background: linear-gradient(135deg, #2C2018 0%, #4A2C14 100%);
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.flyer-header img {
+  width: 70px; height: 70px;
+  object-fit: contain;
+}
+.flyer-header-text h1 {
+  color: white;
+  font-size: 20pt;
+  font-weight: 700;
+  margin: 0;
+}
+.flyer-header-text p {
+  color: rgba(255,255,255,0.65);
+  font-size: 9pt;
+  margin: 2px 0 0;
+}
+.flyer-body { padding: 28px 32px; }
+.flyer-job-title {
+  font-size: 18pt;
+  font-weight: 700;
+  color: #2C2018;
+  border-bottom: 3px solid #D98A2B;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+.flyer-content { font-size: 10.5pt; line-height: 1.7; color: #3A2C1E; }
+.flyer-footer {
+  background: #FBF7F2;
+  border-top: 2px solid #D98A2B;
+  padding: 18px 32px;
+  font-size: 9pt;
+  color: #7A6550;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ─── Backup/Update System ────────────────────────────────── */
+.backup-list { display: flex; flex-direction: column; gap: 8px; }
+.backup-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #FAFAFA;
+  border: 1px solid #E8D9C5;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+.backup-item__info { flex: 1; }
+.backup-item__name { font-weight: 600; color: #2C2018; }
+.backup-item__meta { font-size: 0.75rem; color: #7A6550; margin-top: 2px; }
+.backup-item__actions { display: flex; gap: 6px; flex-shrink: 0; }
+.upload-area {
+  border: 2px dashed #E8D9C5;
+  border-radius: 12px;
+  padding: 36px;
+  text-align: center;
+  background: #FAFAFA;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.upload-area:hover, .upload-area.dragover {
+  border-color: #D98A2B;
+  background: #FFF8EE;
+}
+.upload-area i { font-size: 2.5rem; color: #D98A2B; margin-bottom: 12px; display: block; }
+.upload-area p { color: #7A6550; font-size: 0.875rem; margin: 0; }
+.upload-area strong { color: #2C2018; }
