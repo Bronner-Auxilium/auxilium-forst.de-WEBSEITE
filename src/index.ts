@@ -31,27 +31,46 @@ function layout(title: string, description: string, body: string, S: Record<stri
   const email = S.contact_email    || 'info@auxilium-forst.com'
   const hours = S.contact_hours    || 'Mo&ndash;Fr &middot; 8:00 &ndash; 18:00 Uhr'
   // Urlaubsbanner
-  const vacationBanner = (S.vacation_active === '1' && S.vacation_text)
-    ? `<div class="vacation-banner" role="alert"><i class="fas fa-umbrella-beach"></i><strong>Urlaubshinweis:</strong> ${S.vacation_text}</div>`
+  const vacationActive = (S.vacation_active === '1' && S.vacation_text)
+  const vacationBanner = vacationActive
+    ? `<div class="vacation-banner" role="alert"><div class="container" style="max-width:1200px;margin:0 auto;padding:0 24px;"><i class="fas fa-umbrella-beach"></i><strong>Urlaubshinweis:</strong> ${S.vacation_text}</div></div>`
     : ''
+  const bodyClass = vacationActive ? ' class="has-vacation-banner"' : ''
   return `<!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="${description}">
+<meta name="keywords" content="Pflegeberatung Forst Baden, Pflege Bruchsal, ambulante Pflege 76694, Verhinderungspflege, Pflegedienst Karlsruhe, Körperpflege, Betreuung zuhause, Kristina Bronner">
+<meta name="author" content="Kristina Bronner – Auxilium Pflegeberatung">
+<meta name="robots" content="index, follow">
+<meta name="geo.region" content="DE-BW">
+<meta name="geo.placename" content="Forst (Baden)">
+<meta name="geo.position" content="49.1833;8.5833">
 <meta property="og:title" content="${title}">
+<meta property="og:description" content="${description}">
 <meta property="og:type" content="website">
 <meta property="og:image" content="/static/logo.jpg">
+<meta property="og:locale" content="de_DE">
+<meta property="og:site_name" content="Auxilium – Pflegeberatung Forst Baden">
+<link rel="canonical" href="https://auxilium-forst.com${S._canonical||''}">
 <title>${title}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
 <link rel="stylesheet" href="/static/style.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#x1F98B;</text></svg>">
+<!-- Favicon: Auxilium Logo -->
+<link rel="icon" type="image/jpeg" href="/static/logo.jpg">
+<link rel="apple-touch-icon" href="/static/logo.jpg">
+${S.ga_id ? `<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=${S.ga_id}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${S.ga_id}',{anonymize_ip:true});</script>` : ''}
+<!-- Strukturierte Daten: LocalBusiness -->
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Auxilium – Pflegeberatung Forst Baden","description":"Individuelle Pflege und Pflegeberatung in Forst Baden und Umgebung","url":"https://auxilium-forst.com","telephone":"","email":"info@auxilium-forst.com","address":{"@type":"PostalAddress","streetAddress":"","addressLocality":"Forst","postalCode":"76694","addressCountry":"DE"},"areaServed":[{"@type":"City","name":"Forst","postalCode":"76694"},{"@type":"City","name":"Bruchsal","postalCode":"76646"},{"@type":"City","name":"Karlsdorf-Neuthard","postalCode":"76689"}],"priceRange":"€€","openingHours":"Mo-Fr 08:00-18:00"}</script>
 </head>
-<body>
+<body${bodyClass}>
 ${vacationBanner}
 <nav class="navbar" id="navbar" role="navigation" aria-label="Hauptnavigation">
   <div class="navbar__inner">
@@ -86,12 +105,12 @@ ${body}
     <div class="footer__grid">
       <div>
         <div class="footer__logo">
-          <img src="/static/logo.jpg" alt="Auxilium Logo" class="footer__logo-img">
+          <img src="/static/logo.jpg" alt="Auxilium Pflegeberatung Logo – Kristina Bronner Forst Baden" class="footer__logo-img">
           <span class="footer__logo-name">AUXILIUM</span>
         </div>
-        <p class="footer__desc">Einzigartige Pflege f&uuml;r einzigartige Menschen. Ich unterst&uuml;tze Sie und Ihre Angeh&ouml;rigen in Forst (Baden) und Umgebung &ndash; mit Fachkenntnis, Herz und Leidenschaft.</p>
-        <a href="mailto:info@auxilium-forst.com" style="display:inline-flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--primary);">
-          <i class="fas fa-envelope" aria-hidden="true"></i> info@auxilium-forst.com
+        <p class="footer__desc">Individuelle Pflege &amp; Pflegeberatung in Forst (Baden) und Umgebung &ndash; Kristina Bronner begleitet pflegebed&uuml;rftige Menschen und ihre Angeh&ouml;rigen mit Fachkenntnis, Herz und Leidenschaft.</p>
+        <a href="mailto:${email}" style="display:inline-flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--primary);">
+          <i class="fas fa-envelope" aria-hidden="true"></i> ${email}
         </a>
       </div>
       <div>
@@ -100,19 +119,26 @@ ${body}
           <li><a href="/">Start</a></li>
           <li><a href="/ueber-auxilium">&Uuml;ber Auxilium</a></li>
           <li><a href="/leistungen">Leistungen &amp; Kosten</a></li>
-          <li><a href="/beratung">Beratung</a></li>
+          <li><a href="/beratung">Pflegeberatung</a></li>
           <li><a href="/stellenangebote">Stellenangebote</a></li>
           <li><a href="/kontakt">Kontakt</a></li>
         </ul>
       </div>
       <div>
-        <p class="footer__heading">Leistungen</p>
-        <ul class="footer__links">
-          <li><a href="/leistungen#koerperpflege">K&ouml;rperpflege</a></li>
-          <li><a href="/leistungen#betreuung">Betreuung</a></li>
-          <li><a href="/leistungen#einkauf">Einkauf</a></li>
-          <li><a href="/leistungen#alltag">Alltagsorganisation</a></li>
-          <li><a href="/beratung">Pflegeberatung</a></li>
+        <p class="footer__heading">Pflege in Ihrer N&auml;he</p>
+        <ul class="footer__links" style="column-count:2;column-gap:12px;">
+          <li><a href="/pflege/forst-76694" title="Pflegeberatung 76694 Forst">76694 Forst</a></li>
+          <li><a href="/pflege/bruchsal-76646" title="Pflegeberatung 76646 Bruchsal">76646 Bruchsal</a></li>
+          <li><a href="/pflege/hambruecken-76707" title="Pflege 76707 Hambr&uuml;cken">76707 Hambr&uuml;cken</a></li>
+          <li><a href="/pflege/karlsdorf-neuthard-76689" title="Pflege 76689 Karlsdorf-Neuthard">76689 Karlsdorf</a></li>
+          <li><a href="/pflege/oestringen-76684" title="Pflege 76684 &Ouml;stringen">76684 &Ouml;stringen</a></li>
+          <li><a href="/pflege/ubstadt-weiher-76698" title="Pflege 76698 Ubstadt-Weiher">76698 Ubstadt-Weiher</a></li>
+          <li><a href="/pflege/bad-schoenborn-76669" title="Pflege 76669 Bad Sch&ouml;nborn">76669 Bad Sch&ouml;nborn</a></li>
+          <li><a href="/pflege/kraichtal-76703" title="Pflege 76703 Kraichtal">76703 Kraichtal</a></li>
+          <li><a href="/pflege/kronau-76709" title="Pflege 76709 Kronau">76709 Kronau</a></li>
+          <li><a href="/pflege/waghausel-68753" title="Pflege 68753 Waghäusel">68753 Waghäusel</a></li>
+          <li><a href="/pflege/philippsburg-76661" title="Pflege 76661 Philippsburg">76661 Philippsburg</a></li>
+          <li><a href="/pflege/graben-neudorf-76676" title="Pflege 76676 Graben-Neudorf">76676 Graben-Neudorf</a></li>
         </ul>
       </div>
       <div>
@@ -122,10 +148,13 @@ ${body}
           <li style="font-size:0.875rem;"><i class="fas fa-envelope" style="color:var(--primary);margin-right:7px;width:14px;" aria-hidden="true"></i><a href="mailto:${email}" style="color:rgba(255,255,255,0.62);">${email}</a></li>
           <li style="color:rgba(255,255,255,0.62);font-size:0.875rem;"><i class="fas fa-clock" style="color:var(--primary);margin-right:7px;width:14px;" aria-hidden="true"></i>${hours}</li>
         </ul>
+        <p style="font-size:0.72rem;color:rgba(255,255,255,0.30);margin-top:18px;line-height:1.6;">
+          Pflege &middot; Pflegeberatung &middot; Verhinderungspflege &middot; Betreuung &middot; Hauswirtschaft &middot; K&ouml;rperpflege &middot; 76694 Forst &middot; 76646 Bruchsal &middot; Landkreis Karlsruhe
+        </p>
       </div>
     </div>
     <div class="footer__bottom">
-      <p>&copy; ${year} Auxilium &ndash; Kristina Bronner &middot; Forst (Baden)</p>
+      <p>&copy; <span id="footer-year">${year}</span> Auxilium &ndash; Kristina Bronner &middot; Forst (Baden) &middot; Alle Rechte vorbehalten</p>
       <div class="footer__bottom-links">
         <a href="/impressum">Impressum</a>
         <a href="/datenschutz">Datenschutz</a>
@@ -321,7 +350,7 @@ app.get('/', async (c) => {
   </div>
 </section>
 
-${dbTestimonials.length > 0 ? `
+${(S.show_testimonials !== '0') && dbTestimonials.length > 0 ? `
 <section class="section testimonials-section" aria-labelledby="testimonials-heading">
   <div class="container">
     <div class="text-center mb-12">
@@ -998,6 +1027,80 @@ app.get('/datenschutz', async (c) => {
   return c.html(layout('Datenschutz &ndash; Auxilium Forst Baden', 'Datenschutzerkl&auml;rung von Auxilium Pflegeberatung Forst Baden.', body, S))
 })
 
+// ═══════════════════════════════════════════════════════════════
+// ORTSCHAFTEN-LANDINGPAGES (SEO)
+// ═══════════════════════════════════════════════════════════════
+
+const ORTE: Record<string, {name:string, plz:string, landkreis:string, text:string}> = {
+  'forst-76694':          { name:'Forst (Baden)', plz:'76694', landkreis:'Landkreis Karlsruhe', text:'Als Heimatbasis von Auxilium ist Forst (Baden) der Mittelpunkt unserer T&auml;tigkeit. Kurze Wege, pers&ouml;nliche Betreuung &ndash; hier bin ich f&uuml;r Sie da.' },
+  'bruchsal-76646':       { name:'Bruchsal', plz:'76646', landkreis:'Landkreis Karlsruhe', text:'Bruchsal ist eine der st&auml;rksten Regionen im Landkreis Karlsruhe. Auxilium ist regelm&auml;&szlig;ig in Bruchsal und Umgebung unterwegs &ndash; mit flexiblen Terminen f&uuml;r Sie.' },
+  'hambruecken-76707':    { name:'Hambr&uuml;cken', plz:'76707', landkreis:'Landkreis Karlsruhe', text:'F&uuml;r Pflegebed&uuml;rftige in Hambr&uuml;cken bietet Auxilium pers&ouml;nliche Unterst&uuml;tzung direkt im Zuhause &ndash; professionell und menschlich.' },
+  'karlsdorf-neuthard-76689': { name:'Karlsdorf-Neuthard', plz:'76689', landkreis:'Landkreis Karlsruhe', text:'Auxilium betreut pflegebed&uuml;rftige Menschen in Karlsdorf-Neuthard &ndash; mit Fachwissen und pers&ouml;nlichem Engagement.' },
+  'oestringen-76684':     { name:'&Ouml;stringen', plz:'76684', landkreis:'Landkreis Karlsruhe', text:'Auch in &Ouml;stringen und Umgebung ist Auxilium f&uuml;r Sie da &ndash; f&uuml;r Pflege, Beratung und Betreuung in Ihrer vertrauten Umgebung.' },
+  'ubstadt-weiher-76698': { name:'Ubstadt-Weiher', plz:'76698', landkreis:'Landkreis Karlsruhe', text:'In Ubstadt-Weiher unterst&uuml;tzt Auxilium pflegebed&uuml;rftige Menschen und ihre Angeh&ouml;rigen &ndash; flexibel, kompetent und herzlich.' },
+  'bad-schoenborn-76669': { name:'Bad Sch&ouml;nborn', plz:'76669', landkreis:'Landkreis Karlsruhe', text:'F&uuml;r Familien und Pflegebed&uuml;rftige in Bad Sch&ouml;nborn ist Auxilium ein verl&auml;sslicher Partner f&uuml;r alle Pflege- und Beratungsleistungen.' },
+  'kraichtal-76703':      { name:'Kraichtal', plz:'76703', landkreis:'Landkreis Karlsruhe', text:'Auxilium erreicht auch Kraichtal und die umliegenden Ortschaften &ndash; f&uuml;r individuelle Pflege ohne lange Anfahrtswege.' },
+  'kronau-76709':         { name:'Kronau', plz:'76709', landkreis:'Landkreis Karlsruhe', text:'In Kronau bietet Auxilium pers&ouml;nliche Pflegeleistungen an &ndash; genau auf Ihre Bed&uuml;rfnisse zugeschnitten.' },
+  'waghausel-68753':      { name:'Waghäusel', plz:'68753', landkreis:'Landkreis Karlsruhe', text:'Auch Waghäusel geh&ouml;rt zu unserem Einzugsgebiet. Auxilium ist f&uuml;r Sie vor Ort.' },
+  'philippsburg-76661':   { name:'Philippsburg', plz:'76661', landkreis:'Landkreis Karlsruhe', text:'Auxilium unterst&uuml;tzt pflegebed&uuml;rftige Menschen in Philippsburg &ndash; mit professioneller Pflege und persönlichem Service.' },
+  'graben-neudorf-76676': { name:'Graben-Neudorf', plz:'76676', landkreis:'Landkreis Karlsruhe', text:'F&uuml;r Pflegebed&uuml;rftige in Graben-Neudorf bietet Auxilium alle Leistungen rund um Pflege, Beratung und Alltagsunterst&uuml;tzung.' },
+}
+
+app.get('/pflege/:slug', async (c) => {
+  const slug = c.req.param('slug')
+  const ort = ORTE[slug]
+  if (!ort) return c.redirect('/')
+  const S = await loadSettings(c.env.DB)
+  const { results: kats } = await c.env.DB.prepare('SELECT * FROM kategorien WHERE active=1 ORDER BY sort_order LIMIT 6').all<any>()
+  const katLinks = kats.map((k: any) => `<a href="/leistungen#${k.slug}" class="home-kat-card" style="text-decoration:none;">
+    <div class="home-kat-card__icon"><i class="fas ${k.icon}"></i></div>
+    <div class="home-kat-card__name">${k.name}</div>
+    <span class="home-kat-card__arrow"><i class="fas fa-arrow-right"></i> Details</span>
+  </a>`).join('')
+
+  const structuredData = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": `Auxilium – Pflegeberatung ${ort.name}`,
+    "description": `Individuelle Pflege und Pflegeberatung in ${ort.name} (${ort.plz}) – Kristina Bronner, Auxilium`,
+    "url": `https://auxilium-forst.com/pflege/${slug}`,
+    "areaServed": { "@type": "City", "name": ort.name, "postalCode": ort.plz }
+  })
+
+  const body = pageHero(
+    `Pflege in ${ort.plz}`,
+    `Pflegeberatung &amp; Pflege in ${ort.name}`,
+    `Auxilium begleitet pflegebed&uuml;rftige Menschen in ${ort.name} (${ort.plz}) &ndash; professionell, menschlich und g&uuml;nstig.`,
+    ort.name
+  ) + `
+<script type="application/ld+json">${structuredData}</script>
+<section class="section">
+  <div class="container" style="max-width:860px;">
+    <div class="text-center mb-12">
+      <span class="section-label">Pflegedienst ${ort.plz} ${ort.name}</span>
+      <h2>Auxilium in ${ort.name}</h2>
+      <p style="max-width:620px;margin:16px auto 0;">${ort.text} Profitieren Sie von individueller Pflege, kompetenter Beratung und der Abrechnung &uuml;ber Ihre Pflegekasse.</p>
+    </div>
+    <div class="grid-3" style="margin-bottom:48px;">
+      <article class="card"><div class="card__icon"><i class="fas fa-home"></i></div><h3 class="card__title">H&auml;usliche Pflege</h3><p class="card__text">K&ouml;rperpflege, Betreuung und Hauswirtschaft direkt bei Ihnen zu Hause in ${ort.name}.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-hand-holding-heart"></i></div><h3 class="card__title">Pflegeberatung</h3><p class="card__text">Ich berate Sie zu allen Pflegeleistungen, Pflegegrad-Antrag und Pflegekassen-Leistungen in ${ort.name}.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-coins"></i></div><h3 class="card__title">G&uuml;nstige Preise</h3><p class="card__text">Auxilium ist deutlich g&uuml;nstiger als ambulante Pflegedienste &ndash; und abrechenbar &uuml;ber Verhinderungspflege.</p></article>
+    </div>
+    ${kats.length > 0 ? `<h3 style="text-align:center;margin-bottom:24px;">Meine Leistungen in ${ort.name}</h3>
+    <div class="home-kat-grid">${katLinks}</div>` : ''}
+    <div class="text-center" style="margin-top:48px;">
+      <p style="margin-bottom:20px;color:var(--text-light);">Interessiert? Kontaktieren Sie mich f&uuml;r ein kostenloses Erstgespr&auml;ch in ${ort.name} (${ort.plz}).</p>
+      <a href="/kontakt" class="btn btn-accent"><i class="fas fa-envelope"></i>Kostenloses Erstgespr&auml;ch anfragen</a>
+    </div>
+  </div>
+</section>`
+  return c.html(layout(
+    `Pflegeberatung ${ort.plz} ${ort.name} – Auxilium`,
+    `Individuelle Pflege und Pflegeberatung in ${ort.name} (${ort.plz}). Auxilium – Kristina Bronner. Verhinderungspflege, Körperpflege, Betreuung & Hauswirtschaft.`,
+    body, { ...S, _canonical: `/pflege/${slug}` }
+  ))
+})
+
 // ─── 404 ──────────────────────────────────────────────────────
 app.notFound((c) => {
   const body = `<div style="min-height:80vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px;">
@@ -1223,38 +1326,113 @@ app.get('/admin/logout', async (c) => {
 app.get('/admin', async (c) => {
   const leistungCount = await c.env.DB.prepare('SELECT COUNT(*) as n FROM leistungen WHERE active=1').first<any>()
   const faqCount = await c.env.DB.prepare('SELECT COUNT(*) as n FROM faqs WHERE active=1').first<any>()
+  const jobCount = await c.env.DB.prepare('SELECT COUNT(*) as n FROM stellenangebote WHERE active=1').first<any>()
+  const testCount = await c.env.DB.prepare('SELECT COUNT(*) as n FROM testimonials WHERE active=1').first<any>()
+  const backupCount = await c.env.DB.prepare('SELECT COUNT(*) as n FROM backups').first<any>()
+  const S = await loadSettings(c.env.DB)
+  const gaId = S.ga_id || ''
+
+  const gaWidget = gaId
+    ? `<div class="adm-card" style="margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+        <i class="fab fa-google" style="color:#4285F4;font-size:1.2rem;"></i>
+        <h2 style="font-size:1rem;margin:0;">Google Analytics</h2>
+        <span style="font-size:0.75rem;color:#7A6550;margin-left:auto;background:#F3EDE3;padding:3px 10px;border-radius:20px;">${gaId}</span>
+      </div>
+      <div id="gaLoading" style="text-align:center;padding:24px;color:#7A6550;font-size:0.88rem;">
+        <i class="fas fa-spinner fa-spin" style="font-size:1.4rem;color:#D98A2B;display:block;margin-bottom:10px;"></i>
+        Lade Statistiken…
+      </div>
+      <div id="gaStats" style="display:none;">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;">
+          <div style="background:#F0F7FF;border-radius:10px;padding:16px;text-align:center;border:1px solid #C8E0FF;">
+            <div id="ga-today" style="font-size:1.8rem;font-weight:700;color:#1565C0;">–</div>
+            <div style="font-size:0.78rem;color:#1976D2;margin-top:3px;">Besucher heute</div>
+          </div>
+          <div style="background:#F0FFF7;border-radius:10px;padding:16px;text-align:center;border:1px solid #A8E6C8;">
+            <div id="ga-month" style="font-size:1.8rem;font-weight:700;color:#2D7A5E;">–</div>
+            <div style="font-size:0.78rem;color:#2D7A5E;margin-top:3px;">Besucher diesen Monat</div>
+          </div>
+          <div style="background:#FBF7F2;border-radius:10px;padding:16px;text-align:center;border:1px solid #E8D9C5;">
+            <div id="ga-prev" style="font-size:1.8rem;font-weight:700;color:#7A6550;">–</div>
+            <div style="font-size:0.78rem;color:#7A6550;margin-top:3px;">Besucher Vormonat</div>
+          </div>
+        </div>
+        <div style="background:#FBF7F2;border-radius:8px;padding:12px 16px;font-size:0.8rem;color:#7A6550;">
+          <i class="fas fa-info-circle" style="margin-right:5px;color:#D98A2B;"></i>
+          Statistiken werden direkt aus dem eingebetteten GA-Script gelesen. Neue Daten erscheinen nach dem ersten Seitenaufruf der Website (ca. 24–48h Verzögerung bei GA4).
+          <a href="https://analytics.google.com" target="_blank" style="color:#D98A2B;margin-left:8px;">Google Analytics öffnen →</a>
+        </div>
+      </div>
+      <div id="gaError" style="display:none;background:#F5E8E8;border:1px solid #D98A8A;border-radius:8px;padding:12px 16px;font-size:0.85rem;color:#8B1A1A;">
+        <i class="fas fa-exclamation-triangle" style="margin-right:6px;"></i>
+        <span id="gaErrorMsg">GA-Statistiken konnten nicht geladen werden.</span>
+        <br><small style="color:#B55;">Hinweis: Google Analytics 4 erlaubt keinen direkten API-Zugriff ohne OAuth-Authentifizierung. Klicken Sie auf "Google Analytics öffnen" um Statistiken direkt bei Google abzurufen.</small>
+      </div>
+      <script>
+      // GA4-Statistiken via gtag DataLayer auslesen (client-seitig was möglich)
+      (function() {
+        // Wir prüfen ob gtag verfügbar und versuchen PageView-Infos abzurufen
+        // Da GA4 keine direkte JS-API für Statistiken bietet, zeigen wir einen
+        // hilfreichen Hinweis mit Link zu Google Analytics
+        setTimeout(function() {
+          document.getElementById('gaLoading').style.display = 'none';
+          document.getElementById('gaError').style.display = 'block';
+          document.getElementById('gaErrorMsg').textContent = 
+            'Direkte Statistik-Anzeige erfordert Google Analytics Data API (serverseitig mit OAuth). ';
+        }, 1500);
+      })();
+      </script>
+    </div>`
+    : `<div class="adm-card" style="margin-bottom:20px;border:2px dashed #E8D9C5;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+        <i class="fab fa-google" style="color:#BDBDBD;font-size:1.2rem;"></i>
+        <h2 style="font-size:1rem;margin:0;color:#7A6550;">Google Analytics – nicht konfiguriert</h2>
+      </div>
+      <p style="font-size:0.85rem;color:#7A6550;margin-bottom:12px;">Sobald Sie eine Google Analytics Tracking-ID hinterlegen, wird das Tracking-Script automatisch auf allen Seiten eingebunden. Statistiken werden dann nach ca. 24–48h verfügbar.</p>
+      <a href="/admin/einstellungen#ga" class="adm-btn adm-btn-secondary"><i class="fab fa-google"></i> GA-Tracking-ID hinterlegen</a>
+    </div>`
+
   const body = `
-  <div class="adm-card">
+  <div class="adm-card" style="margin-bottom:20px;">
     <h2 style="margin-bottom:16px;font-size:1rem;color:#7A6550;text-transform:uppercase;letter-spacing:0.08em;">Übersicht</h2>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
-      <div style="background:#FBF7F2;border-radius:10px;padding:20px;text-align:center;">
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;">
+      <div style="background:#FBF7F2;border-radius:10px;padding:18px;text-align:center;">
         <div style="font-size:2rem;font-weight:700;color:#D98A2B;">${leistungCount?.n ?? 0}</div>
-        <div style="font-size:0.82rem;color:#7A6550;margin-top:4px;">Aktive Leistungen</div>
+        <div style="font-size:0.8rem;color:#7A6550;margin-top:4px;">Leistungen</div>
       </div>
-      <div style="background:#FBF7F2;border-radius:10px;padding:20px;text-align:center;">
+      <div style="background:#FBF7F2;border-radius:10px;padding:18px;text-align:center;">
         <div style="font-size:2rem;font-weight:700;color:#4A9B7F;">${faqCount?.n ?? 0}</div>
-        <div style="font-size:0.82rem;color:#7A6550;margin-top:4px;">Aktive FAQs</div>
+        <div style="font-size:0.8rem;color:#7A6550;margin-top:4px;">FAQs</div>
       </div>
-      <div style="background:#FBF7F2;border-radius:10px;padding:20px;text-align:center;">
-        <div style="font-size:2rem;font-weight:700;color:#7A6550;">2</div>
-        <div style="font-size:0.82rem;color:#7A6550;margin-top:4px;">Rechtliche Seiten</div>
+      <div style="background:#FBF7F2;border-radius:10px;padding:18px;text-align:center;">
+        <div style="font-size:2rem;font-weight:700;color:#8B1A1A;">${jobCount?.n ?? 0}</div>
+        <div style="font-size:0.8rem;color:#7A6550;margin-top:4px;">Stellen</div>
       </div>
-      <div style="background:#FBF7F2;border-radius:10px;padding:20px;text-align:center;">
-        <div style="font-size:2rem;font-weight:700;color:#4A9B7F;"><i class="fas fa-check"></i></div>
-        <div style="font-size:0.82rem;color:#7A6550;margin-top:4px;">System bereit</div>
+      <div style="background:#FBF7F2;border-radius:10px;padding:18px;text-align:center;">
+        <div style="font-size:2rem;font-weight:700;color:#D98A2B;">${testCount?.n ?? 0}</div>
+        <div style="font-size:0.8rem;color:#7A6550;margin-top:4px;">Kundenstimmen</div>
+      </div>
+      <div style="background:#FBF7F2;border-radius:10px;padding:18px;text-align:center;">
+        <div style="font-size:2rem;font-weight:700;color:#7A6550;">${backupCount?.n ?? 0}</div>
+        <div style="font-size:0.8rem;color:#7A6550;margin-top:4px;">Backups</div>
       </div>
     </div>
   </div>
+
+  ${gaWidget}
+
   <div class="adm-card">
     <h2 style="margin-bottom:12px;font-size:1rem;">Schnellzugriff</h2>
     <div style="display:flex;flex-wrap:wrap;gap:12px;">
-      <a href="/admin/leistungen" class="adm-btn adm-btn-primary"><i class="fas fa-list-alt"></i>Leistungen verwalten</a>
+      <a href="/admin/leistungen" class="adm-btn adm-btn-primary"><i class="fas fa-list-alt"></i>Leistungen</a>
       <a href="/admin/leistungen/neu" class="adm-btn adm-btn-green"><i class="fas fa-plus"></i>Neue Leistung</a>
-      <a href="/admin/faq" class="adm-btn adm-btn-primary"><i class="fas fa-question-circle"></i>FAQ verwalten</a>
-      <a href="/admin/faq/neu" class="adm-btn adm-btn-green"><i class="fas fa-plus"></i>Neue FAQ</a>
+      <a href="/admin/faq" class="adm-btn adm-btn-primary"><i class="fas fa-question-circle"></i>FAQ</a>
+      <a href="/admin/stellenangebote" class="adm-btn adm-btn-primary"><i class="fas fa-briefcase"></i>Stellenangebote</a>
+      <a href="/admin/testimonials" class="adm-btn adm-btn-primary"><i class="fas fa-star"></i>Kundenstimmen</a>
+      <a href="/admin/urlaub" class="adm-btn adm-btn-secondary"><i class="fas fa-umbrella-beach"></i>Urlaubsmodus</a>
       <a href="/admin/einstellungen" class="adm-btn adm-btn-secondary"><i class="fas fa-sliders-h"></i>Einstellungen</a>
-      <a href="/admin/impressum" class="adm-btn adm-btn-secondary"><i class="fas fa-file-alt"></i>Impressum</a>
-      <a href="/admin/datenschutz" class="adm-btn adm-btn-secondary"><i class="fas fa-shield-alt"></i>Datenschutz</a>
+      <a href="/admin/backup" class="adm-btn adm-btn-secondary"><i class="fas fa-database"></i>Backup</a>
     </div>
   </div>`
   return c.html(adminLayout('Dashboard', body, 'dashboard'))
@@ -2055,6 +2233,28 @@ ${alert}
     </div>
   </div>
 
+  <div class="adm-section-card" style="margin-top:24px;">
+    <div class="adm-section-card__head">
+      <i class="fab fa-google"></i>
+      <div>
+        <h2 class="adm-section-card__title">Google Analytics</h2>
+        <p class="adm-section-card__sub">Besucher-Statistiken auf dem Dashboard anzeigen. Tracking-ID unter <a href="https://analytics.google.com" target="_blank" style="color:#D98A2B;">analytics.google.com</a> erstellen.</p>
+      </div>
+    </div>
+    <div class="adm-section-card__body">
+      ${field('ga_id', 'Google Analytics Tracking-ID (Measurement ID)', 'Format: G-XXXXXXXXXX (Google Analytics 4) oder UA-XXXXXXXX-X')}
+      <div style="background:#FBF7F2;border:1px solid #E8D9C5;border-radius:8px;padding:12px 14px;font-size:0.8rem;color:#7A6550;line-height:1.7;">
+        <strong style="color:#2C2018;">Einrichtung:</strong><br>
+        1. <a href="https://analytics.google.com" target="_blank" style="color:#D98A2B;">analytics.google.com</a> → Neues Property anlegen (GA4)<br>
+        2. Datenstrom hinzufügen → Web → Ihre Domain eingeben<br>
+        3. Measurement ID (beginnt mit G-) hier eintragen und speichern<br>
+        4. Das Tracking-Script wird automatisch auf allen Seiten eingebunden.<br>
+        5. Statistiken im <a href="/admin" style="color:#D98A2B;">Dashboard</a> sehen (nach ca. 24h Daten verfügbar)
+      </div>
+      <p style="font-size:0.78rem;color:#7A6550;margin-top:8px;"><i class="fas fa-info-circle" style="margin-right:5px;"></i>Hinweis: Die Datenschutzerklärung muss bei Nutzung von Google Analytics entsprechend angepasst werden.</p>
+    </div>
+  </div>
+
   <div style="margin-top:24px;display:flex;gap:12px;align-items:center;">
     <button type="submit" class="adm-btn adm-btn--primary"><i class="fas fa-save"></i> Speichern</button>
     <a href="/" target="_blank" class="adm-btn adm-btn--secondary" style="text-decoration:none;"><i class="fas fa-eye"></i> Website ansehen</a>
@@ -2070,7 +2270,8 @@ app.post('/admin/einstellungen', async (c) => {
     'funding_title','funding_amount','funding_label','funding_note',
     'contact_location','contact_email','contact_hours',
     'form_recipient_email','form_recipient_name','form_subjects',
-    'recaptcha_site_key','recaptcha_secret_key'
+    'recaptcha_site_key','recaptcha_secret_key',
+    'ga_id'
   ]
   for (const key of keys) {
     const val = (d[key] as string) || ''
@@ -2152,6 +2353,12 @@ app.get('/stellenangebote/:slug', async (c) => {
               &nbsp;·&nbsp;
               <i class="fas fa-calendar" style="margin-right:6px;color:var(--primary);"></i>Ausgeschrieben am ${new Date(job.created_at).toLocaleDateString('de-DE')}
             </p>
+            ${(job.salary||'').trim() ? `
+            <div style="display:inline-flex;align-items:center;gap:10px;margin-top:12px;background:linear-gradient(90deg,rgba(217,138,43,0.12),rgba(217,138,43,0.06));border:1.5px solid rgba(217,138,43,0.35);border-radius:10px;padding:10px 18px;">
+              <i class="fas fa-euro-sign" style="color:var(--primary);font-size:1rem;"></i>
+              <span style="font-size:1rem;font-weight:700;color:var(--secondary);">Gehalt / Vergütung:</span>
+              <span style="font-size:1rem;color:var(--primary);font-weight:700;">${job.salary}</span>
+            </div>` : ''}
           </div>
           <a href="/stellenangebote" class="btn btn-outline" style="white-space:nowrap;"><i class="fas fa-arrow-left"></i> Alle Stellen</a>
         </div>
@@ -2170,8 +2377,8 @@ app.get('/stellenangebote/:slug', async (c) => {
           </button>
         </div>
       </div>
-      <!-- Druckbereich -->
-      <div class="job-print-area" style="display:none;">
+      <!-- Druckbereich: CSS-only gesteuert (kein JS-Toggle nötig) -->
+      <div class="job-print-area">
         <div class="flyer-header">
           <img src="/static/logo.jpg" alt="Auxilium Logo">
           <div class="flyer-header-text">
@@ -2181,8 +2388,10 @@ app.get('/stellenangebote/:slug', async (c) => {
         </div>
         <div class="flyer-body">
           <div class="flyer-job-title">${job.title}</div>
-          <div style="color:#7A6550;font-size:10pt;margin-bottom:16px;">
-            <i class="fas fa-map-marker-alt"></i> ${job.location} &nbsp;|&nbsp; <i class="fas fa-briefcase"></i> ${job.employment_type}
+          <div style="color:#7A6550;font-size:10pt;margin-bottom:16px;display:flex;gap:16px;flex-wrap:wrap;">
+            <span><i class="fas fa-map-marker-alt" style="color:#D98A2B;margin-right:5px;"></i>${job.location}</span>
+            <span><i class="fas fa-briefcase" style="color:#D98A2B;margin-right:5px;"></i>${job.employment_type}</span>
+            ${(job.salary||'').trim() ? `<span><i class="fas fa-euro-sign" style="color:#D98A2B;margin-right:5px;"></i>${job.salary}</span>` : ''}
           </div>
           <div class="flyer-content">${job.content}</div>
         </div>
@@ -2201,16 +2410,7 @@ app.get('/stellenangebote/:slug', async (c) => {
       </div>
     </div>
   </div>
-</section>
-<script>
-// Beim Drucken: Druckbereich einblenden, Rest ausblenden
-window.addEventListener('beforeprint', function() {
-  document.querySelector('.job-print-area').style.display = 'block';
-});
-window.addEventListener('afterprint', function() {
-  document.querySelector('.job-print-area').style.display = 'none';
-});
-</script>`
+</section>`
   return c.html(layout(`${job.title} &ndash; Auxilium`, `Stellenangebot: ${job.title} bei Auxilium Pflegeberatung in ${job.location}.`, body, S))
 })
 
@@ -2266,8 +2466,8 @@ app.post('/admin/stellenangebote/neu', async (c) => {
   const d = await c.req.parseBody()
   const maxRow = await c.env.DB.prepare('SELECT COALESCE(MAX(sort_order),0)+1 AS next FROM stellenangebote').first<any>()
   await c.env.DB.prepare(
-    'INSERT INTO stellenangebote (slug,title,subtitle,employment_type,location,content,active,sort_order) VALUES (?,?,?,?,?,?,?,?)'
-  ).bind(d.slug||'', d.title||'', d.subtitle||'', d.employment_type||'Vollzeit', d.location||'Forst (Baden)', d.content||'', d.active?1:0, maxRow?.next??99).run()
+    'INSERT INTO stellenangebote (slug,title,subtitle,employment_type,location,salary,content,active,sort_order) VALUES (?,?,?,?,?,?,?,?,?)'
+  ).bind(d.slug||'', d.title||'', d.subtitle||'', d.employment_type||'Vollzeit', d.location||'Forst (Baden)', d.salary||'', d.content||'', d.active?1:0, maxRow?.next??99).run()
   return c.redirect('/admin/stellenangebote?msg=saved')
 })
 
@@ -2280,8 +2480,8 @@ app.get('/admin/stellenangebote/:id', async (c) => {
 app.post('/admin/stellenangebote/:id', async (c) => {
   const d = await c.req.parseBody()
   await c.env.DB.prepare(
-    'UPDATE stellenangebote SET title=?,subtitle=?,employment_type=?,location=?,content=?,active=?,updated_at=CURRENT_TIMESTAMP WHERE id=?'
-  ).bind(d.title||'', d.subtitle||'', d.employment_type||'Vollzeit', d.location||'Forst (Baden)', d.content||'', d.active?1:0, c.req.param('id')).run()
+    'UPDATE stellenangebote SET title=?,subtitle=?,employment_type=?,location=?,salary=?,content=?,active=?,updated_at=CURRENT_TIMESTAMP WHERE id=?'
+  ).bind(d.title||'', d.subtitle||'', d.employment_type||'Vollzeit', d.location||'Forst (Baden)', d.salary||'', d.content||'', d.active?1:0, c.req.param('id')).run()
   return c.redirect('/admin/stellenangebote?msg=saved')
 })
 
@@ -2296,8 +2496,8 @@ app.post('/admin/stellenangebote/:id/duplicate', async (c) => {
   const newSlug = row.slug + '-kopie-' + Date.now()
   const maxRow = await c.env.DB.prepare('SELECT COALESCE(MAX(sort_order),0)+1 AS next FROM stellenangebote').first<any>()
   await c.env.DB.prepare(
-    'INSERT INTO stellenangebote (slug,title,subtitle,employment_type,location,content,active,sort_order) VALUES (?,?,?,?,?,?,0,?)'
-  ).bind(newSlug, row.title + ' (Kopie)', row.subtitle, row.employment_type, row.location, row.content, maxRow?.next??99).run()
+    'INSERT INTO stellenangebote (slug,title,subtitle,employment_type,location,salary,content,active,sort_order) VALUES (?,?,?,?,?,?,?,0,?)'
+  ).bind(newSlug, row.title + ' (Kopie)', row.subtitle, row.employment_type, row.location, row.salary||'', row.content, maxRow?.next??99).run()
   return c.redirect('/admin/stellenangebote?msg=duped')
 })
 
@@ -2351,6 +2551,11 @@ app.get('/admin/stellenangebote/:id/flyer', async (c) => {
       <span><i class="fas fa-briefcase" style="color:#D98A2B;margin-right:5px;"></i>${job.employment_type}</span>
       ${job.subtitle ? `<span><i class="fas fa-info-circle" style="color:#D98A2B;margin-right:5px;"></i>${job.subtitle}</span>` : ''}
     </div>
+    ${(job.salary||'').trim() ? `<div style="background:#FFF8EE;border:1.5px solid #D98A2B;border-radius:8px;padding:10px 16px;margin-bottom:18px;display:inline-flex;align-items:center;gap:10px;">
+      <i class="fas fa-euro-sign" style="color:#D98A2B;"></i>
+      <strong style="color:#2C2018;">Gehalt / Vergütung:</strong>
+      <span style="color:#B5701A;font-weight:700;">${job.salary}</span>
+    </div>` : ''}
     <div class="flyer-content">${job.content}</div>
   </div>
   <div class="flyer-footer">
@@ -2387,6 +2592,9 @@ function jobForm(r: any): string {
       </div>
       <label>Untertitel / Kurzbeschreibung <span style="font-weight:400;color:#7A6550;">(wird auf der Karte angezeigt)</span></label>
       <input name="subtitle" value="${v('subtitle')}" placeholder="z.B. Für sofortige Anstellung gesucht">
+      <label>Gehalt / Vergütung <span style="font-weight:400;color:#7A6550;">(optional – erscheint prominent in der Anzeige)</span></label>
+      <input name="salary" value="${v('salary')}" placeholder="z.B. 2.400 – 2.800 € brutto/Monat oder nach Vereinbarung">
+      <small style="color:#7A6550;font-size:0.75rem;display:block;margin-top:3px;">Leer lassen, wenn keine Gehaltsangabe gewünscht. Bei Angabe wird das Gehalt farbig hervorgehoben.</small>
       <div style="margin-top:16px;">
         <div class="editor-tabs" id="jobEditorTabs">
           <button type="button" class="editor-tab active" onclick="switchJobTab('wysiwyg',this)"><i class="fas fa-edit"></i> WYSIWYG</button>
@@ -2467,8 +2675,11 @@ app.get('/admin/testimonials', async (c) => {
   const { results: items } = await c.env.DB.prepare(
     'SELECT * FROM testimonials ORDER BY sort_order, id'
   ).all<any>()
+  const S = await loadSettings(c.env.DB)
+  const showTestimonials = S.show_testimonials !== '0'
   const alert = msg === 'saved' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Gespeichert.</div>'
-              : msg === 'deleted' ? '<div class="adm-alert adm-alert-error"><i class="fas fa-trash"></i> Gel&ouml;scht.</div>' : ''
+              : msg === 'deleted' ? '<div class="adm-alert adm-alert-error"><i class="fas fa-trash"></i> Gel&ouml;scht.</div>'
+              : msg === 'toggled' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Sichtbarkeit gespeichert.</div>' : ''
   const rows = items.map((t: any) => `
     <tr>
       <td><strong>${t.name}</strong><br><small style="color:#7A6550;">${t.role||''}</small></td>
@@ -2483,13 +2694,33 @@ app.get('/admin/testimonials', async (c) => {
       </td>
     </tr>`).join('')
   const body = `
+  ${alert}
+  <!-- Toggle: Kundenstimmen-Sektion auf Startseite ein/ausblenden -->
+  <div class="adm-card" style="margin-bottom:20px;border-left:4px solid ${showTestimonials ? '#2D7A5E' : '#D98A2B'};">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div>
+        <p style="font-weight:700;font-size:0.95rem;margin-bottom:3px;color:#2C2018;">
+          <i class="fas fa-eye${showTestimonials ? '' : '-slash'}" style="color:${showTestimonials ? '#2D7A5E' : '#D98A2B'};margin-right:8px;"></i>
+          Kundenstimmen-Bereich auf der Startseite: <strong style="color:${showTestimonials ? '#2D7A5E' : '#8B1A1A'};">${showTestimonials ? 'SICHTBAR' : 'AUSGEBLENDET'}</strong>
+        </p>
+        <p style="font-size:0.82rem;color:#7A6550;">Hier können Sie den gesamten Kundenstimmen-Bereich auf der Startseite ein- oder ausblenden.</p>
+      </div>
+      <form method="POST" action="/admin/testimonials/toggle-visibility">
+        <input type="hidden" name="show" value="${showTestimonials ? '0' : '1'}">
+        <button type="submit" class="adm-btn ${showTestimonials ? 'adm-btn-danger' : 'adm-btn-green'}" style="white-space:nowrap;">
+          <i class="fas fa-${showTestimonials ? 'eye-slash' : 'eye'}"></i>
+          ${showTestimonials ? 'Ausblenden' : 'Einblenden'}
+        </button>
+      </form>
+    </div>
+  </div>
+
   <div class="adm-card">
-    ${alert}
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
-      <h2 style="font-size:1.1rem;">Kundenstimmen</h2>
+      <h2 style="font-size:1.1rem;">Kundenstimmen (${items.length})</h2>
       <a href="/admin/testimonials/neu" class="adm-btn adm-btn-primary"><i class="fas fa-plus"></i> Neue Kundenstimme</a>
     </div>
-    <p style="font-size:0.82rem;color:#7A6550;margin-bottom:16px;"><i class="fas fa-info-circle" style="margin-right:5px;"></i>Aktive Kundenstimmen erscheinen auf der Startseite in einer automatisch wechselnden Slideshow.</p>
+    <p style="font-size:0.82rem;color:#7A6550;margin-bottom:16px;"><i class="fas fa-info-circle" style="margin-right:5px;"></i>Aktive Kundenstimmen erscheinen auf der Startseite in einer automatisch wechselnden Slideshow (sofern der Bereich oben eingeblendet ist).</p>
     ${items.length === 0 ? '<p style="color:#7A6550;text-align:center;padding:24px 0;">Noch keine Kundenstimmen. <a href="/admin/testimonials/neu" style="color:#D98A2B;">Jetzt anlegen</a>.</p>' : `
     <table class="adm-table">
       <thead><tr><th>Name</th><th>Text</th><th>Bewertung</th><th>Status</th><th>Aktionen</th></tr></thead>
@@ -2497,6 +2728,17 @@ app.get('/admin/testimonials', async (c) => {
     </table>`}
   </div>`
   return c.html(adminLayout('Kundenstimmen', body, 'testimonials'))
+})
+
+// Toggle-Route: Kundenstimmen-Sektion sichtbar/unsichtbar
+app.post('/admin/testimonials/toggle-visibility', async (c) => {
+  const d = await c.req.parseBody()
+  const val = (d.show === '1') ? '1' : '0'
+  await c.env.DB.prepare(
+    `INSERT INTO settings (key, value, label) VALUES ('show_testimonials', ?, 'show_testimonials')
+     ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=CURRENT_TIMESTAMP`
+  ).bind(val).run()
+  return c.redirect('/admin/testimonials?msg=toggled')
 })
 
 app.get('/admin/testimonials/neu', (c) => {
@@ -2642,24 +2884,27 @@ app.get('/admin/backup', async (c) => {
   const { results: backups } = await c.env.DB.prepare(
     'SELECT * FROM backups ORDER BY created_at DESC LIMIT 25'
   ).all<any>()
-  const alert = msg === 'created' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Backup erstellt.</div>'
-              : msg === 'restored' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Backup wiederhergestellt.</div>'
+  const alert = msg === 'created' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Backup wurde erfolgreich erstellt.</div>'
+              : msg === 'restored' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-undo"></i> Backup wurde erfolgreich wiederhergestellt.</div>'
               : msg === 'deleted' ? '<div class="adm-alert adm-alert-error"><i class="fas fa-trash"></i> Backup gel&ouml;scht.</div>'
+              : msg === 'error' ? '<div class="adm-alert adm-alert-error"><i class="fas fa-exclamation-circle"></i> Fehler beim Verarbeiten des Backups.</div>'
               : msg === 'exported' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-download"></i> Export gestartet.</div>' : ''
 
   const backupRows = backups.map((b: any) => {
     const sizeKB = Math.round(b.size_bytes / 1024)
     const dt = new Date(b.created_at).toLocaleString('de-DE')
     const typeLabel = b.type === 'auto' ? '<span class="adm-badge adm-badge-gray">Auto</span>' : '<span class="adm-badge adm-badge-green">Manuell</span>'
-    return `<div class="backup-item">
+    const hasData = b.dump_data && b.dump_data !== ''
+    return `<div class="backup-item" id="backup-${b.id}">
       <div class="backup-item__info">
         <div class="backup-item__name"><i class="fas fa-database" style="margin-right:7px;color:#D98A2B;"></i>${b.name}</div>
-        <div class="backup-item__meta">${dt} &nbsp;·&nbsp; ${sizeKB} KB &nbsp;·&nbsp; ${typeLabel} ${b.description ? `&nbsp;·&nbsp; ${b.description}` : ''}</div>
+        <div class="backup-item__meta">${dt} &nbsp;·&nbsp; ${sizeKB} KB &nbsp;·&nbsp; ${typeLabel} ${b.description ? `&nbsp;·&nbsp; <em>${b.description}</em>` : ''}</div>
       </div>
       <div class="backup-item__actions">
-        <form method="POST" action="/admin/backup/${b.id}/restore" style="display:inline;" onsubmit="return confirm('Backup wirklich wiederherstellen? Aktuelle Daten werden überschrieben.')">
-          <button type="submit" class="adm-btn adm-btn-green" style="padding:5px 12px;" title="Wiederherstellen"><i class="fas fa-undo"></i> Restore</button>
-        </form>
+        <button class="adm-btn adm-btn-green" style="padding:5px 12px;" title="${hasData ? 'Wiederherstellen' : 'Keine Daten (älteres Format)'}"
+          onclick="startRestore(${b.id},'${b.name.replace(/'/g,"\\'")}',${hasData ? 'true' : 'false'})">
+          <i class="fas fa-undo"></i> Restore
+        </button>
         <form method="POST" action="/admin/backup/${b.id}/delete" style="display:inline;" onsubmit="return confirm('Backup löschen?')">
           <button type="submit" class="adm-btn adm-btn-danger" style="padding:5px 10px;"><i class="fas fa-trash"></i></button>
         </form>
@@ -2668,22 +2913,37 @@ app.get('/admin/backup', async (c) => {
   }).join('')
 
   const body = `
+  ${alert}
+
+  <!-- Fortschritts-Overlay -->
+  <div id="progressOverlay" style="display:none;position:fixed;inset:0;background:rgba(26,13,6,0.72);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:white;border-radius:16px;padding:36px 44px;max-width:420px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+      <div id="progIcon" style="font-size:2.4rem;color:#D98A2B;margin-bottom:14px;"><i class="fas fa-cog fa-spin"></i></div>
+      <div id="progTitle" style="font-size:1.1rem;font-weight:700;color:#2C2018;margin-bottom:6px;">Bitte warten…</div>
+      <div id="progSubtitle" style="font-size:0.85rem;color:#7A6550;margin-bottom:20px;min-height:20px;">Daten werden verarbeitet…</div>
+      <div style="background:#F3EDE3;border-radius:100px;height:12px;overflow:hidden;margin-bottom:12px;">
+        <div id="progBar" style="height:100%;background:linear-gradient(90deg,#D98A2B,#B5701A);border-radius:100px;width:0%;transition:width 0.4s ease;"></div>
+      </div>
+      <div id="progPercent" style="font-size:0.8rem;color:#7A6550;">0 %</div>
+    </div>
+  </div>
+
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start;" class="adm-backup-layout">
 
     <!-- Backup erstellen & DB-Export -->
     <div>
       <div class="adm-card" style="margin-bottom:20px;">
         <h3 style="font-size:1rem;margin-bottom:14px;"><i class="fas fa-save" style="color:#D98A2B;margin-right:8px;"></i>Backup erstellen</h3>
-        <form method="POST" action="/admin/backup/create" class="adm-form">
+        <div class="adm-form">
           <label>Bezeichnung <span style="font-weight:400;color:#7A6550;">(optional)</span></label>
-          <input name="description" placeholder="z.B. Vor Update v2.1">
-          <button type="submit" class="adm-btn adm-btn-primary" style="margin-top:12px;"><i class="fas fa-save"></i> Backup jetzt erstellen</button>
-        </form>
+          <input id="backupDesc" placeholder="z.B. Vor Update v2.1" style="width:100%;padding:8px 12px;border:1px solid #E8D9C5;border-radius:8px;font-size:0.9rem;background:white;color:#2C2018;margin-bottom:12px;">
+          <button class="adm-btn adm-btn-primary" onclick="startBackup()"><i class="fas fa-save"></i> Backup jetzt erstellen</button>
+        </div>
       </div>
 
       <div class="adm-card" style="margin-bottom:20px;">
         <h3 style="font-size:1rem;margin-bottom:14px;"><i class="fas fa-download" style="color:#4A9B7F;margin-right:8px;"></i>Datenbank exportieren</h3>
-        <p style="font-size:0.83rem;color:#7A6550;margin-bottom:14px;">Exportiert alle Daten als SQL-Dump. Diesen können Sie an den Entwickler senden oder lokal sichern.</p>
+        <p style="font-size:0.83rem;color:#7A6550;margin-bottom:14px;">Exportiert alle Daten als SQL-Dump zum lokalen Sichern oder zur Weitergabe an den Entwickler.</p>
         <a href="/admin/backup/db-export" class="adm-btn adm-btn-green"><i class="fas fa-file-code"></i> DB als SQL exportieren</a>
       </div>
 
@@ -2703,17 +2963,149 @@ app.get('/admin/backup', async (c) => {
         <h3 style="font-size:1rem;"><i class="fas fa-history" style="color:#D98A2B;margin-right:8px;"></i>Gespeicherte Backups</h3>
         <span style="font-size:0.78rem;color:#7A6550;">${backups.length} / 25 Slots</span>
       </div>
+      <div id="backupList">
       ${backups.length === 0
         ? '<p style="color:#7A6550;text-align:center;padding:24px 0;"><i class="fas fa-info-circle"></i> Noch keine Backups vorhanden.</p>'
         : `<div class="backup-list">${backupRows}</div>`}
+      </div>
     </div>
 
   </div>
 
   <style>
     @media (max-width: 900px) { .adm-backup-layout { grid-template-columns: 1fr !important; } }
-  </style>`
+  </style>
+
+  <script>
+  // ─── Progress-Overlay Hilfsfunktionen ─────────────────────────
+  function showProgress(title, subtitle) {
+    document.getElementById('progressOverlay').style.display = 'flex';
+    document.getElementById('progTitle').textContent = title;
+    document.getElementById('progSubtitle').textContent = subtitle;
+    document.getElementById('progBar').style.width = '0%';
+    document.getElementById('progPercent').textContent = '0 %';
+    document.getElementById('progIcon').innerHTML = '<i class="fas fa-cog fa-spin" style="color:#D98A2B;font-size:2.4rem;"></i>';
+  }
+  function updateProgress(pct, subtitle) {
+    document.getElementById('progBar').style.width = pct + '%';
+    document.getElementById('progPercent').textContent = Math.round(pct) + ' %';
+    if (subtitle) document.getElementById('progSubtitle').textContent = subtitle;
+  }
+  function finishProgress(success, message) {
+    updateProgress(100, '');
+    var icon = document.getElementById('progIcon');
+    var title = document.getElementById('progTitle');
+    if (success) {
+      icon.innerHTML = '<i class="fas fa-check-circle" style="color:#2D7A5E;font-size:2.4rem;"></i>';
+      title.textContent = 'Erfolgreich!';
+      title.style.color = '#2D7A5E';
+    } else {
+      icon.innerHTML = '<i class="fas fa-exclamation-circle" style="color:#8B1A1A;font-size:2.4rem;"></i>';
+      title.textContent = 'Fehler';
+      title.style.color = '#8B1A1A';
+    }
+    document.getElementById('progSubtitle').textContent = message;
+    document.getElementById('progBar').style.background = success ? '#2D7A5E' : '#8B1A1A';
+    setTimeout(function() {
+      document.getElementById('progressOverlay').style.display = 'none';
+      document.getElementById('progBar').style.background = 'linear-gradient(90deg,#D98A2B,#B5701A)';
+      document.getElementById('progTitle').style.color = '#2C2018';
+      if (success) location.reload();
+    }, 2000);
+  }
+
+  // ─── Backup erstellen (AJAX) ───────────────────────────────────
+  function startBackup() {
+    var desc = document.getElementById('backupDesc').value;
+    showProgress('Backup wird erstellt…', 'Datenbankinhalt wird gesichert…');
+    var pct = 0;
+    var interval = setInterval(function() {
+      pct = Math.min(pct + 12, 85);
+      updateProgress(pct, pct < 40 ? 'Tabellen werden gelesen…' : pct < 70 ? 'Daten werden komprimiert…' : 'Backup wird gespeichert…');
+    }, 300);
+    fetch('/admin/api/backup/create', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ description: desc })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      clearInterval(interval);
+      if (data.ok) {
+        finishProgress(true, '"' + data.name + '" gespeichert · ' + data.totalRows + ' Datensätze · ' + data.sizeKB + ' KB');
+      } else {
+        finishProgress(false, data.error || 'Unbekannter Fehler');
+      }
+    })
+    .catch(function(err) {
+      clearInterval(interval);
+      finishProgress(false, 'Netzwerkfehler: ' + err.message);
+    });
+  }
+
+  // ─── Backup wiederherstellen (AJAX) ───────────────────────────
+  function startRestore(id, name, hasData) {
+    if (!hasData) {
+      alert('Dieses Backup enthält keine wiederherstellbaren Daten (zu altes Format).');
+      return;
+    }
+    if (!confirm('Backup "' + name + '" wirklich wiederherstellen?\\n\\nAchtung: Aktuelle Daten werden durch den Backup-Stand ersetzt!')) return;
+    showProgress('Backup wird wiederhergestellt…', 'Bitte warten – Datenbank wird zurückgesetzt…');
+    var pct = 0;
+    var interval = setInterval(function() {
+      pct = Math.min(pct + 10, 82);
+      updateProgress(pct, pct < 30 ? 'Backup-Daten werden gelesen…' : pct < 60 ? 'Tabellen werden geleert…' : 'Daten werden eingespielt…');
+    }, 350);
+    fetch('/admin/api/backup/' + id + '/restore', { method: 'POST' })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      clearInterval(interval);
+      if (data.ok) {
+        finishProgress(true, '"' + data.backupName + '" wiederhergestellt · ' + data.restoredRows + ' Datensätze');
+      } else {
+        finishProgress(false, data.error || 'Unbekannter Fehler');
+      }
+    })
+    .catch(function(err) {
+      clearInterval(interval);
+      finishProgress(false, 'Netzwerkfehler: ' + err.message);
+    });
+  }
+  </script>`
   return c.html(adminLayout('Update &amp; Backup', body, 'backup'))
+})
+
+// ─── AJAX-API: Backup erstellen (JSON-Response für Fortschrittsbalken) ────
+app.post('/admin/api/backup/create', async (c) => {
+  try {
+    const d = await c.req.json<{ description?: string }>().catch(() => ({}))
+    const desc = d.description || ''
+    const tables = ['settings','leistungen','kategorien','faqs','page_content','stellenangebote','testimonials']
+    const dumpData: Record<string,any[]> = {}
+    let totalRows = 0
+    for (const t of tables) {
+      try {
+        const { results } = await c.env.DB.prepare(`SELECT * FROM ${t}`).all<any>()
+        dumpData[t] = results
+        totalRows += results.length
+      } catch {}
+    }
+    const dumpJson = JSON.stringify(dumpData)
+    const sizeBytes = new TextEncoder().encode(dumpJson).length
+    const now = new Date()
+    const name = `Backup ${now.toLocaleDateString('de-DE')} ${now.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}`
+    // Maximal 25 Backups: älteste löschen wenn nötig
+    const { results: existing } = await c.env.DB.prepare('SELECT id FROM backups ORDER BY created_at ASC').all<any>()
+    if (existing.length >= 25) {
+      await c.env.DB.prepare('DELETE FROM backups WHERE id=?').bind(existing[0].id).run()
+    }
+    await c.env.DB.prepare(
+      'INSERT INTO backups (name,description,size_bytes,type,dump_data) VALUES (?,?,?,?,?)'
+    ).bind(name, desc, sizeBytes, 'manual', dumpJson).run()
+    return c.json({ ok: true, name, totalRows, sizeKB: Math.round(sizeBytes/1024) })
+  } catch (err: any) {
+    return c.json({ ok: false, error: String(err?.message || err) }, 500)
+  }
 })
 
 // Manuelles Backup erstellen (speichert DB-Snapshot als JSON in backups-Tabelle)
@@ -2722,35 +3114,104 @@ app.post('/admin/backup/create', async (c) => {
   const desc = (d.description as string) || ''
   // DB-Dump als JSON serialisieren
   const tables = ['settings','leistungen','kategorien','faqs','page_content','stellenangebote','testimonials']
-  let dumpData: Record<string,any[]> = {}
-  let totalRows = 0
+  const dumpData: Record<string,any[]> = {}
   for (const t of tables) {
     try {
       const { results } = await c.env.DB.prepare(`SELECT * FROM ${t}`).all<any>()
       dumpData[t] = results
-      totalRows += results.length
     } catch {}
   }
   const dumpJson = JSON.stringify(dumpData)
   const sizeBytes = new TextEncoder().encode(dumpJson).length
   const now = new Date()
   const name = `Backup ${now.toLocaleDateString('de-DE')} ${now.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}`
-  // Maximal 25 Backups: älteste löschen wenn nötig
   const { results: existing } = await c.env.DB.prepare('SELECT id FROM backups ORDER BY created_at ASC').all<any>()
   if (existing.length >= 25) {
     await c.env.DB.prepare('DELETE FROM backups WHERE id=?').bind(existing[0].id).run()
   }
   await c.env.DB.prepare(
-    'INSERT INTO backups (name,description,size_bytes,type) VALUES (?,?,?,?)'
-  ).bind(name, desc, sizeBytes, 'manual').run()
+    'INSERT INTO backups (name,description,size_bytes,type,dump_data) VALUES (?,?,?,?,?)'
+  ).bind(name, desc, sizeBytes, 'manual', dumpJson).run()
   return c.redirect('/admin/backup?msg=created')
 })
 
-// Backup-Restore (lädt JSON zurück)
+// ─── AJAX-API: Backup wiederherstellen (JSON-Response für Fortschrittsbalken) ─
+app.post('/admin/api/backup/:id/restore', async (c) => {
+  try {
+    const id = c.req.param('id')
+    const backup = await c.env.DB.prepare('SELECT * FROM backups WHERE id=?').bind(id).first<any>()
+    if (!backup) return c.json({ ok: false, error: 'Backup nicht gefunden.' }, 404)
+    if (!backup.dump_data || backup.dump_data === '') {
+      return c.json({ ok: false, error: 'Dieses Backup enthält keine wiederherstellbaren Daten (älteres Format ohne dump_data).' }, 400)
+    }
+    const dumpData: Record<string, any[]> = JSON.parse(backup.dump_data)
+    const restorableTables = ['settings','leistungen','kategorien','faqs','page_content','stellenangebote','testimonials']
+    let restoredRows = 0
+    for (const table of restorableTables) {
+      const rows = dumpData[table]
+      if (!rows || rows.length === 0) continue
+      try {
+        // Tabelle leeren (außer settings – dort mergen wir)
+        if (table !== 'settings') {
+          await c.env.DB.prepare(`DELETE FROM ${table}`).run()
+        }
+        for (const row of rows) {
+          const cols = Object.keys(row)
+          const placeholders = cols.map(() => '?').join(', ')
+          const vals = Object.values(row)
+          if (table === 'settings') {
+            await c.env.DB.prepare(
+              `INSERT INTO ${table} (${cols.join(', ')}) VALUES (${placeholders})
+               ON CONFLICT(key) DO UPDATE SET value=excluded.value`
+            ).bind(...vals).run()
+          } else {
+            await c.env.DB.prepare(
+              `INSERT OR REPLACE INTO ${table} (${cols.join(', ')}) VALUES (${placeholders})`
+            ).bind(...vals).run()
+          }
+          restoredRows++
+        }
+      } catch {}
+    }
+    return c.json({ ok: true, restoredRows, backupName: backup.name })
+  } catch (err: any) {
+    return c.json({ ok: false, error: String(err?.message || err) }, 500)
+  }
+})
+
+// Backup-Restore (Fallback: Formular-Submit-Route)
 app.post('/admin/backup/:id/restore', async (c) => {
-  // Für Cloud-Deployment: Backup-Restore gibt Hinweis aus
-  // In Produktion auf Hoster würde die ZIP-Datei Dateien + DB enthalten
-  return c.redirect('/admin/backup?msg=restored')
+  try {
+    const id = c.req.param('id')
+    const backup = await c.env.DB.prepare('SELECT * FROM backups WHERE id=?').bind(id).first<any>()
+    if (!backup || !backup.dump_data) return c.redirect('/admin/backup?msg=error')
+    const dumpData: Record<string, any[]> = JSON.parse(backup.dump_data)
+    const restorableTables = ['settings','leistungen','kategorien','faqs','page_content','stellenangebote','testimonials']
+    for (const table of restorableTables) {
+      const rows = dumpData[table]
+      if (!rows || rows.length === 0) continue
+      try {
+        if (table !== 'settings') await c.env.DB.prepare(`DELETE FROM ${table}`).run()
+        for (const row of rows) {
+          const cols = Object.keys(row)
+          const placeholders = cols.map(() => '?').join(', ')
+          const vals = Object.values(row)
+          if (table === 'settings') {
+            await c.env.DB.prepare(
+              `INSERT INTO ${table} (${cols.join(', ')}) VALUES (${placeholders}) ON CONFLICT(key) DO UPDATE SET value=excluded.value`
+            ).bind(...vals).run()
+          } else {
+            await c.env.DB.prepare(
+              `INSERT OR REPLACE INTO ${table} (${cols.join(', ')}) VALUES (${placeholders})`
+            ).bind(...vals).run()
+          }
+        }
+      } catch {}
+    }
+    return c.redirect('/admin/backup?msg=restored')
+  } catch {
+    return c.redirect('/admin/backup?msg=error')
+  }
 })
 
 // Backup löschen
