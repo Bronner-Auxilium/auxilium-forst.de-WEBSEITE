@@ -17,7 +17,19 @@
       navbar.classList.add('navbar--subpage');
     }
 
+    // Urlaubsbanner: Navbar-top dynamisch anpassen
+    const vacationBanner = document.querySelector('.vacation-banner');
+    const getBannerH = () => vacationBanner ? vacationBanner.offsetHeight : 0;
+    const applyNavbarTop = () => {
+      navbar.style.top = getBannerH() + 'px';
+    };
+    applyNavbarTop();
+    // Bei Resize Banner-Höhe neu berechnen (z.B. Zeilenumbruch auf Mobile)
+    window.addEventListener('resize', applyNavbarTop, { passive: true });
+
     const onScroll = () => {
+      // Banner-Offset immer beibehalten, egal wie weit gescrollt wurde
+      applyNavbarTop();
       if (window.scrollY > 40) {
         navbar.classList.add('scrolled');
       } else {

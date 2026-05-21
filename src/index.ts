@@ -51,7 +51,7 @@ function layout(title: string, description: string, body: string, S: Record<stri
 <meta property="og:title" content="${title}">
 <meta property="og:description" content="${description}">
 <meta property="og:type" content="website">
-<meta property="og:image" content="/static/logo.jpg">
+<meta property="og:image" content="/static/logo.png">
 <meta property="og:locale" content="de_DE">
 <meta property="og:site_name" content="Auxilium – Pflegeberatung Forst Baden">
 <link rel="canonical" href="https://auxilium-forst.com${S._canonical||''}">
@@ -62,8 +62,8 @@ function layout(title: string, description: string, body: string, S: Record<stri
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
 <link rel="stylesheet" href="/static/style.css">
 <!-- Favicon: Auxilium Logo -->
-<link rel="icon" type="image/jpeg" href="/static/logo.jpg">
-<link rel="apple-touch-icon" href="/static/logo.jpg">
+<link rel="icon" type="image/png" href="/static/logo.png">
+<link rel="apple-touch-icon" href="/static/logo.png">
 ${S.ga_id ? `<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=${S.ga_id}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${S.ga_id}',{anonymize_ip:true});</script>` : ''}
@@ -75,7 +75,7 @@ ${vacationBanner}
 <nav class="navbar" id="navbar" role="navigation" aria-label="Hauptnavigation">
   <div class="navbar__inner">
     <a href="/" class="navbar__logo" aria-label="Auxilium Startseite">
-      <img src="/static/logo.jpg" alt="Auxilium Logo" class="navbar__logo-img">
+      <img src="/static/logo.png" alt="Auxilium Logo" class="navbar__logo-img">
       <div class="navbar__logo-text">
         <span class="navbar__logo-name">AUXILIUM</span>
         <span class="navbar__logo-sub">Pflegeberatung &middot; Forst Baden</span>
@@ -105,7 +105,7 @@ ${body}
     <div class="footer__grid">
       <div>
         <div class="footer__logo">
-          <img src="/static/logo.jpg" alt="Auxilium Pflegeberatung Logo – Kristina Bronner Forst Baden" class="footer__logo-img">
+          <img src="/static/logo.png" alt="Auxilium Pflegeberatung Logo – Kristina Bronner Forst Baden" class="footer__logo-img">
           <span class="footer__logo-name">AUXILIUM</span>
         </div>
         <p class="footer__desc">Individuelle Pflege &amp; Pflegeberatung in Forst (Baden) und Umgebung &ndash; Kristina Bronner begleitet pflegebed&uuml;rftige Menschen und ihre Angeh&ouml;rigen mit Fachkenntnis, Herz und Leidenschaft.</p>
@@ -249,7 +249,7 @@ app.get('/', async (c) => {
       </div>
     </div>
     <div class="hero__visual animate-fade-in-delay-1">
-      <img src="/static/logo.jpg" alt="Auxilium &ndash; Schmetterling &amp; Hand Logo" class="hero__logo-free">
+      <img src="/static/logo.png" alt="Auxilium &ndash; Schmetterling &amp; Hand Logo" class="hero__logo-free">
     </div>
   </div>
 </section>
@@ -482,7 +482,7 @@ app.get('/ueber-auxilium', async (c) => {
           </div>
         </div>
         <div class="person-logo-box">
-          <img src="/static/logo.jpg" alt="Auxilium Logo" class="person-logo-img">
+          <img src="/static/logo.png" alt="Auxilium Logo" class="person-logo-img">
           <div>
             <p class="person-logo-title">Das Symbol von Auxilium</p>
             <p class="person-logo-text">Ein Schmetterling mit einem fehlenden Fl&uuml;gel &ndash; f&uuml;r die Kraft der pers&ouml;nlichen Transformation und den Mut, Hilfe anzunehmen.</p>
@@ -713,7 +713,7 @@ app.get('/leistungen', async (c) => {
       <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-credit-card" aria-hidden="true"></i></div><h3 class="card__title">Privatzahler/-innen</h3><p class="card__text">Auch ohne Pflegekassen-Leistungen sind alle Auxilium-Angebote als Privatleistung buchbar.</p></article>
     </div>
     <div class="text-center mt-8">
-      <a href="/kontakt" class="btn btn-accent"><i class="fas fa-calendar-check" aria-hidden="true"></i>Kostenloses Erstgespr&auml;ch vereinbaren</a>
+      <a href="/kontakt" class="btn btn-accent"><i class="fas fa-calendar-check" aria-hidden="true"></i>Pers&ouml;nliches Erstgespr&auml;ch vereinbaren</a>
     </div>
   </div>
 </section>`
@@ -1089,8 +1089,8 @@ app.get('/pflege/:slug', async (c) => {
     ${kats.length > 0 ? `<h3 style="text-align:center;margin-bottom:24px;">Meine Leistungen in ${ort.name}</h3>
     <div class="home-kat-grid">${katLinks}</div>` : ''}
     <div class="text-center" style="margin-top:48px;">
-      <p style="margin-bottom:20px;color:var(--text-light);">Interessiert? Kontaktieren Sie mich f&uuml;r ein kostenloses Erstgespr&auml;ch in ${ort.name} (${ort.plz}).</p>
-      <a href="/kontakt" class="btn btn-accent"><i class="fas fa-envelope"></i>Kostenloses Erstgespr&auml;ch anfragen</a>
+      <p style="margin-bottom:20px;color:var(--text-light);">Interessiert? Kontaktieren Sie mich f&uuml;r ein pers&ouml;nliches Erstgespr&auml;ch in ${ort.name} (${ort.plz}).</p>
+      <a href="/kontakt" class="btn btn-accent"><i class="fas fa-envelope"></i>Pers&ouml;nliches Erstgespr&auml;ch anfragen</a>
     </div>
   </div>
 </section>`
@@ -1105,7 +1105,7 @@ app.get('/pflege/:slug', async (c) => {
 app.notFound((c) => {
   const body = `<div style="min-height:80vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px;">
   <div>
-    <img src="/static/logo.jpg" alt="Auxilium" style="width:120px;height:120px;border-radius:16px;object-fit:cover;margin:0 auto 20px;box-shadow:var(--shadow-md);">
+    <img src="/static/logo.png" alt="Auxilium" style="width:120px;height:120px;border-radius:16px;object-fit:cover;margin:0 auto 20px;box-shadow:var(--shadow-md);">
     <h1 style="font-size:3rem;margin-bottom:10px;">404</h1>
     <h2 style="font-size:1.3rem;margin-bottom:18px;color:var(--text-light);">Seite nicht gefunden</h2>
     <p style="color:var(--text-light);max-width:380px;margin:0 auto 28px;">Diese Seite existiert leider nicht.</p>
@@ -1292,7 +1292,7 @@ button:hover{background:#B5701A;}</style>
 </head><body>
 <div class="login-box">
   <div class="login-logo">
-    <img src="/static/logo.jpg" alt="Auxilium">
+    <img src="/static/logo.png" alt="Auxilium">
     <h1>Admin-Bereich</h1>
     <p>Auxilium – Backend-Verwaltung</p>
   </div>
@@ -2380,7 +2380,7 @@ app.get('/stellenangebote/:slug', async (c) => {
       <!-- Druckbereich: CSS-only gesteuert (kein JS-Toggle nötig) -->
       <div class="job-print-area">
         <div class="flyer-header">
-          <img src="/static/logo.jpg" alt="Auxilium Logo">
+          <img src="/static/logo.png" alt="Auxilium Logo">
           <div class="flyer-header-text">
             <h1>AUXILIUM</h1>
             <p>Pflegeberatung &middot; Kristina Bronner &middot; Forst Baden</p>
@@ -2538,7 +2538,7 @@ app.get('/admin/stellenangebote/:id/flyer', async (c) => {
 </div>
 <div class="flyer-preview">
   <div class="flyer-header">
-    <img src="/static/logo.jpg" alt="Auxilium Logo">
+    <img src="/static/logo.png" alt="Auxilium Logo">
     <div class="flyer-header-text">
       <h1>AUXILIUM</h1>
       <p>Pflegeberatung &middot; Kristina Bronner &middot; ${loc}</p>

@@ -192,21 +192,41 @@ p  { color: var(--text-light); line-height: 1.75; }
 /* Mobile-only Kontakt-Link im Nav (auf Desktop versteckt) */
 .navbar__nav-cta-mobile { display: none; }
 
+/* ─── Urlaubsbanner ──────────────────────────────────────── */
+.vacation-banner {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1001;           /* Über der Navbar */
+  background: linear-gradient(90deg, #D98A2B, #B5701A);
+  color: white;
+  padding: 10px 0;
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.4;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.vacation-banner .container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 /* ─── Navigation ─────────────────────────────────────────── */
 .navbar {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 1000;
-  transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, top 0.3s ease;
+  /* top wird per JS auf 44px gesetzt wenn Banner aktiv */
+  transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, top 0.2s ease;
   padding: 14px 0;
-  /* Standardmäßig transparent – auf heller Startseite */
   background: transparent;
 }
-/* Wenn Urlaubsbanner aktiv: Navbar unter dem Banner */
-body.has-vacation-banner .navbar {
-  top: 46px; /* Banner-Höhe */
-}
-/* Scrolled-State (Startseite nach unten scrollen) */
+/* Scrolled-State */
 .navbar.scrolled {
   background: rgba(255,255,255,0.97);
   backdrop-filter: blur(14px);
@@ -214,7 +234,7 @@ body.has-vacation-banner .navbar {
   box-shadow: 0 2px 20px rgba(44,32,24,0.10);
   padding: 8px 0;
 }
-/* Unterseiten: immer weißer Hintergrund (page-hero ist dunkel) */
+/* Unterseiten: immer weißer Hintergrund */
 .navbar--subpage {
   background: rgba(255,255,255,0.97) !important;
   backdrop-filter: blur(14px);
@@ -242,9 +262,9 @@ body.has-vacation-banner .navbar {
   height: 88px;
   border-radius: 0;
   object-fit: contain;
-  /* Weißer Hintergrund entfernt – Logo ist freigestellt */
+  /* PNG mit Transparenz – kein mix-blend-mode nötig */
   background: transparent;
-  mix-blend-mode: multiply;
+  mix-blend-mode: normal;
   padding: 0;
   box-shadow: none;
   border: none;
@@ -321,7 +341,11 @@ body.has-vacation-banner .navbar {
   padding-top: 80px;
 }
 body.has-vacation-banner .hero {
-  padding-top: 128px; /* 80px Navbar + 48px Banner */
+  padding-top: 168px; /* 80px Navbar + 44px Banner + 44px Puffer */
+}
+/* Unterseiten: Page-Hero mit Banner */
+body.has-vacation-banner .page-hero {
+  padding-top: 100px;
 }
 .hero {
   /* Echtes Naturfoto als Hintergrund */
@@ -450,9 +474,9 @@ body.has-vacation-banner .hero {
   max-height: 520px;
   height: auto;
   object-fit: contain;
-  /* Weißer Hintergrund entfernt: mix-blend-mode + drop-shadow */
-  mix-blend-mode: multiply;
-  filter: drop-shadow(0 20px 48px rgba(44,32,24,0.20)) drop-shadow(0 4px 16px rgba(217,138,43,0.15));
+  /* PNG mit Transparenz – drop-shadow reicht */
+  mix-blend-mode: normal;
+  filter: drop-shadow(0 20px 48px rgba(44,32,24,0.22)) drop-shadow(0 4px 16px rgba(217,138,43,0.18));
 }
 /* Legacy card (wird nicht mehr verwendet, bleibt für Rückwärtskompatibilität) */
 .hero__card-main {
