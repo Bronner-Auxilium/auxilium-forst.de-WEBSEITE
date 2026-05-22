@@ -17,24 +17,25 @@
       navbar.classList.add('navbar--subpage');
     }
 
-    // Urlaubsbanner: Navbar-top dynamisch anpassen
+    // Urlaubsbanner: Banner sitzt UNTER der Navbar – top per JS setzen
     const vacationBanner = document.querySelector('.vacation-banner');
-    const getBannerH = () => vacationBanner ? vacationBanner.offsetHeight : 0;
-    const applyNavbarTop = () => {
-      navbar.style.top = getBannerH() + 'px';
+    const positionBanner = () => {
+      if (!vacationBanner) return;
+      // Banner direkt unter Navbar positionieren
+      vacationBanner.style.top = navbar.offsetHeight + 'px';
     };
-    applyNavbarTop();
-    // Bei Resize Banner-Höhe neu berechnen (z.B. Zeilenumbruch auf Mobile)
-    window.addEventListener('resize', applyNavbarTop, { passive: true });
+    positionBanner();
+    // Bei Resize (z.B. Textumbruch auf Mobile) neu berechnen
+    window.addEventListener('resize', positionBanner, { passive: true });
 
     const onScroll = () => {
-      // Banner-Offset immer beibehalten, egal wie weit gescrollt wurde
-      applyNavbarTop();
       if (window.scrollY > 40) {
         navbar.classList.add('scrolled');
       } else {
         if (!isSubpage) navbar.classList.remove('scrolled');
       }
+      // Nach Scroll-Klasse-Wechsel Navbar-Höhe neu messen und Banner neu setzen
+      positionBanner();
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -115,6 +116,28 @@
       el.style.transform = 'translateY(20px)';
       el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
       observer.observe(el);
+    });
+  }
+
+  /* ─── Stellenangebote: Print / PDF ──────────────────────── */
+  const printArea = document.querySelector('.job-print-area');
+  if (printArea) {
+    // Druckbereich direkt als Body-Kind verschieben (vor dem Drucken)
+    let printPlaceholder = null;
+    window.addEventListener('beforeprint', () => {
+      // Platzhalter merken, um nach dem Druck zurückzuversetzen
+      printPlaceholder = document.createComment('print-placeholder');
+      printArea.parentNode.insertBefore(printPlaceholder, printArea);
+      document.body.appendChild(printArea);
+      document.body.classList.add('printing');
+    });
+    window.addEventListener('afterprint', () => {
+      document.body.classList.remove('printing');
+      if (printPlaceholder && printPlaceholder.parentNode) {
+        printPlaceholder.parentNode.insertBefore(printArea, printPlaceholder);
+        printPlaceholder.parentNode.removeChild(printPlaceholder);
+      }
+      printPlaceholder = null;
     });
   }
 

@@ -341,11 +341,11 @@ p  { color: var(--text-light); line-height: 1.75; }
   padding-top: 80px;
 }
 body.has-vacation-banner .hero {
-  padding-top: 168px; /* 80px Navbar + 44px Banner + 44px Puffer */
+  padding-top: 200px; /* Navbar (~68px) + Banner (~44px) + Puffer */
 }
 /* Unterseiten: Page-Hero mit Banner */
 body.has-vacation-banner .page-hero {
-  padding-top: 100px;
+  padding-top: 130px;
 }
 .hero {
   /* Echtes Naturfoto als Hintergrund */
@@ -1943,29 +1943,34 @@ body.has-vacation-banner .page-hero {
 }
 
 /* ─── Stellenangebote: Print / PDF ──────────────────────────
-   Normaler Zustand: Druckbereich ausgeblendet, Seiteninhalt sichtbar.
-   Print-Zustand: NUR der Druckbereich wird gezeigt, alles andere versteckt.
-   Die JS-Events (beforeprint/afterprint) DÜRFEN den display-Wert NICHT
-   mehr selbst toggeln – das übernimmt ausschließlich das CSS. */
+   Im Normalzustand ist .job-print-area unsichtbar.
+   Beim Drucken verschiebt JS den Block an <body> (beforeprint/afterprint),
+   sodass er als direktes Body-Kind liegt und CSS-Override sicher greift. */
 .job-print-area {
-  display: none !important; /* Standard: unsichtbar */
+  display: none; /* Standard: ausgeblendet */
+}
+/* Wenn JS die Klasse print-ready setzt (beforeprint) */
+body.printing .job-print-area {
+  display: block !important;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: white;
+  z-index: 99999;
+  padding: 0; margin: 0;
+  overflow: auto;
+}
+body.printing > *:not(.job-print-area) {
+  display: none !important;
 }
 @media print {
-  /* Alles verstecken */
-  body > *,
-  .navbar, .footer, .page-hero, .scroll-top,
-  .job-detail__header, .job-detail__actions,
-  .job-detail__content, .job-no-print { display: none !important; }
-  /* Nur den Druckbereich zeigen */
+  /* Fallback für Browser ohne beforeprint-Support */
+  body > *:not(.job-print-area) { display: none !important; }
   .job-print-area {
     display: block !important;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    background: white;
-    z-index: 99999;
+    position: static !important;
+    width: 100% !important;
+    background: white !important;
+    padding: 0 !important; margin: 0 !important;
   }
 }
 
