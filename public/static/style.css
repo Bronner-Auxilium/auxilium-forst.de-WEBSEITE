@@ -137,15 +137,40 @@ p  { color: var(--text-light); line-height: 1.75; }
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(139,26,26,0.4);
 }
+/* btn-outline: Im Hero weiß/halbtransparent, sonst braun */
 .btn-outline {
-  border: 2px solid var(--primary);
-  color: var(--primary);
-  background: transparent;
+  border: 2px solid white;
+  color: white;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.25);
 }
 .btn-outline:hover {
+  background: white;
+  color: var(--primary-dark);
+  border-color: white;
+  text-shadow: none;
+  transform: translateY(-2px);
+}
+/* Außerhalb des Hero: klassische Variante */
+.section .btn-outline,
+.page-hero ~ * .btn-outline,
+.card .btn-outline,
+.cta-section .btn-outline {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: transparent;
+  backdrop-filter: none;
+  text-shadow: none;
+}
+.section .btn-outline:hover,
+.page-hero ~ * .btn-outline:hover,
+.card .btn-outline:hover,
+.cta-section .btn-outline:hover {
   background: var(--primary);
   color: white;
-  transform: translateY(-2px);
+  border-color: var(--primary);
 }
 .btn-white {
   background: white;
@@ -192,21 +217,28 @@ p  { color: var(--text-light); line-height: 1.75; }
 /* Mobile-only Kontakt-Link im Nav (auf Desktop versteckt) */
 .navbar__nav-cta-mobile { display: none; }
 
-/* ─── Urlaubsbanner ──────────────────────────────────────── */
-.vacation-banner {
+/* ─── Site-Header Wrapper (Banner + Navbar) ─────────────── */
+/* Banner und Navbar sitzen beide in #siteHeader – fixed als Block */
+#siteHeader {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 1001;           /* Über der Navbar */
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Urlaubsbanner ──────────────────────────────────────── */
+/* Banner ist erstes Kind in #siteHeader – liegt ÜBER der Navbar */
+.vacation-banner {
+  width: 100%;
   background: linear-gradient(90deg, #D98A2B, #B5701A);
   color: white;
-  padding: 10px 0;
-  font-size: 0.88rem;
+  padding: 9px 0;
+  font-size: 0.875rem;
   font-weight: 500;
   text-align: center;
   line-height: 1.4;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
+  box-shadow: 0 2px 8px rgba(181,112,26,0.30);
 }
 .vacation-banner .container {
   display: flex;
@@ -214,15 +246,18 @@ p  { color: var(--text-light); line-height: 1.75; }
   justify-content: center;
   gap: 8px;
   flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
 /* ─── Navigation ─────────────────────────────────────────── */
 .navbar {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 1000;
-  /* top wird per JS auf 44px gesetzt wenn Banner aktiv */
-  transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease, top 0.2s ease;
+  /* Kein position:fixed mehr – liegt im #siteHeader-Wrapper */
+  position: relative;
+  top: auto; left: auto; right: auto;
+  z-index: auto;
+  transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
   padding: 14px 0;
   background: transparent;
 }
@@ -340,12 +375,12 @@ p  { color: var(--text-light); line-height: 1.75; }
   overflow: hidden;
   padding-top: 80px;
 }
+/* Padding-top wird per JS dynamisch auf #siteHeader.offsetHeight gesetzt */
 body.has-vacation-banner .hero {
-  padding-top: 200px; /* Navbar (~68px) + Banner (~44px) + Puffer */
+  padding-top: 190px;
 }
-/* Unterseiten: Page-Hero mit Banner */
 body.has-vacation-banner .page-hero {
-  padding-top: 130px;
+  padding-top: 120px;
 }
 .hero {
   /* Echtes Naturfoto als Hintergrund */
@@ -1148,12 +1183,13 @@ body.has-vacation-banner .page-hero {
 }
 .footer__logo-img {
   width: 80px; height: 80px;
-  border-radius: 8px;
+  border-radius: 10px;
   object-fit: contain;
-  /* Transparenter Hintergrund mit hellem Glühen */
-  background: rgba(255,255,255,0.12);
-  padding: 6px;
-  border: 1.5px solid rgba(217,138,43,0.35);
+  /* Weißer Hintergrund: Logo klar lesbar auf dunklem Footer */
+  background: #ffffff;
+  padding: 8px;
+  border: none;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.22);
   mix-blend-mode: normal;
 }
 .footer__logo-name {
@@ -1631,20 +1667,8 @@ body.has-vacation-banner .page-hero {
   color: rgba(255,255,255,0.75);
 }
 
-/* ─── Vacation Banner (Urlaubsmodus) ─────────────────────── */
-/* Banner liegt VOR der Navbar – kein fixed-Overlap möglich */
-.vacation-banner {
-  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-dark) 100%);
-  color: white;
-  text-align: center;
-  padding: 13px 24px;
-  font-size: 0.88rem;
-  font-weight: 500;
-  position: relative;
-  z-index: 1001;   /* über Navbar */
-  box-shadow: 0 2px 12px rgba(217,138,43,0.35);
-}
-.vacation-banner i { margin-right: 8px; }
+/* Vacation Banner Ergänzungen (Hauptblock weiter oben) */
+.vacation-banner i { margin-right: 6px; }
 .vacation-banner strong { font-weight: 700; }
 
 /* ─── Stellenangebote ─────────────────────────────────────── */
@@ -1943,34 +1967,41 @@ body.has-vacation-banner .page-hero {
 }
 
 /* ─── Stellenangebote: Print / PDF ──────────────────────────
-   Im Normalzustand ist .job-print-area unsichtbar.
-   Beim Drucken verschiebt JS den Block an <body> (beforeprint/afterprint),
-   sodass er als direktes Body-Kind liegt und CSS-Override sicher greift. */
+   JS verschiebt .job-print-area vor dem Drucken direkt an <body>
+   und setzt body.printing – so ist die CSS-Kaskade 100% sicher. */
 .job-print-area {
-  display: none; /* Standard: ausgeblendet */
-}
-/* Wenn JS die Klasse print-ready setzt (beforeprint) */
-body.printing .job-print-area {
-  display: block !important;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: white;
-  z-index: 99999;
-  padding: 0; margin: 0;
-  overflow: auto;
-}
-body.printing > *:not(.job-print-area) {
   display: none !important;
 }
+/* beforeprint: body erhält Klasse "printing" */
+body.printing > #siteHeader,
+body.printing > main,
+body.printing > section,
+body.printing > .footer,
+body.printing > [id="scrollTop"],
+body.printing > script {
+  display: none !important;
+}
+body.printing > .job-print-area {
+  display: block !important;
+  position: fixed !important;
+  inset: 0 !important;
+  background: white !important;
+  z-index: 99999 !important;
+  overflow: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
 @media print {
-  /* Fallback für Browser ohne beforeprint-Support */
-  body > *:not(.job-print-area) { display: none !important; }
+  /* Sicherheitsnetz: Falls beforeprint nicht feuert */
+  #siteHeader, .footer, .section, main,
+  .navbar, .page-hero, [id="scrollTop"] { display: none !important; }
   .job-print-area {
     display: block !important;
     position: static !important;
     width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
     background: white !important;
-    padding: 0 !important; margin: 0 !important;
   }
 }
 
@@ -2062,3 +2093,236 @@ body.printing > *:not(.job-print-area) {
 .upload-area i { font-size: 2.5rem; color: #D98A2B; margin-bottom: 12px; display: block; }
 .upload-area p { color: #7A6550; font-size: 0.875rem; margin: 0; }
 .upload-area strong { color: #2C2018; }
+
+/* ═══════════════════════════════════════════════════════════
+   DSGVO Cookie-Banner
+   ═══════════════════════════════════════════════════════════ */
+
+/* Overlay-Backdrop */
+.cookie-banner {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(44, 32, 24, 0.55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  animation: cookieFadeIn 0.3s ease;
+}
+.cookie-banner[hidden] { display: none !important; }
+
+@keyframes cookieFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Weißes Panel */
+.cookie-banner__inner {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 24px 64px rgba(44,32,24,0.28);
+  padding: 32px;
+  max-width: 680px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: cookieSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes cookieSlideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Header */
+.cookie-banner__title {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--secondary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cookie-banner__title i { color: var(--primary); font-size: 1.2rem; }
+.cookie-banner__desc {
+  font-size: 0.875rem;
+  color: var(--text-light);
+  line-height: 1.65;
+  margin-bottom: 24px;
+}
+.cookie-banner__link {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Kategorien */
+.cookie-banner__categories {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.cookie-cat {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  background: var(--bg-soft);
+  transition: border-color 0.2s;
+}
+.cookie-cat:has(.cookie-cat__toggle:checked) {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+.cookie-cat__label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  margin-bottom: 6px;
+}
+.cookie-cat__name {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--secondary);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.cookie-cat__name i { color: var(--primary); }
+.cookie-cat__badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.cookie-cat__badge--required {
+  background: var(--mint);
+  color: #2C6B52;
+}
+
+/* Toggle-Switch */
+.cookie-cat__toggle {
+  position: absolute;
+  opacity: 0;
+  width: 0; height: 0;
+}
+.cookie-toggle-ui {
+  position: relative;
+  width: 42px;
+  height: 24px;
+  background: #ccc;
+  border-radius: 24px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.25s;
+}
+.cookie-toggle-ui::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+  transition: transform 0.25s;
+}
+.cookie-cat__toggle:checked + .cookie-toggle-ui {
+  background: var(--primary);
+}
+.cookie-cat__toggle:checked + .cookie-toggle-ui::after {
+  transform: translateX(18px);
+}
+.cookie-cat__toggle:disabled + .cookie-toggle-ui {
+  background: var(--mint-dark);
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+.cookie-cat__toggle:focus-visible + .cookie-toggle-ui {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.cookie-cat__desc {
+  font-size: 0.8rem;
+  color: var(--text-light);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Buttons */
+.cookie-banner__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-bottom: 14px;
+}
+.cookie-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.cookie-btn--primary {
+  background: var(--primary);
+  color: white;
+}
+.cookie-btn--primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+.cookie-btn--secondary {
+  background: var(--bg-muted);
+  color: var(--secondary);
+  border: 1.5px solid var(--border);
+}
+.cookie-btn--secondary:hover { background: var(--border); }
+.cookie-btn--outline {
+  background: transparent;
+  color: var(--text-light);
+  border: 1.5px solid var(--border);
+}
+.cookie-btn--outline:hover { background: var(--bg-muted); color: var(--secondary); }
+
+.cookie-banner__footer-note {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  text-align: center;
+  margin: 0;
+}
+
+/* Footer: Cookie-Settings-Button */
+.footer__cookie-btn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.55);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: color 0.2s;
+  font-family: inherit;
+  text-decoration: none;
+}
+.footer__cookie-btn:hover { color: rgba(255,255,255,0.9); }
+.footer__cookie-btn i { font-size: 0.75rem; }
+
+/* Mobile */
+@media (max-width: 560px) {
+  .cookie-banner__inner { padding: 22px 18px; border-radius: 14px 14px 0 0; }
+  .cookie-banner { align-items: flex-end; padding: 0; }
+  .cookie-banner__actions { flex-direction: column-reverse; }
+  .cookie-btn { width: 100%; text-align: center; }
+}

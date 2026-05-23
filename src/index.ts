@@ -64,15 +64,24 @@ function layout(title: string, description: string, body: string, S: Record<stri
 <!-- Favicon: Auxilium Logo -->
 <link rel="icon" type="image/png" href="/static/logo.png">
 <link rel="apple-touch-icon" href="/static/logo.png">
-${S.ga_id ? `<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=${S.ga_id}"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${S.ga_id}',{anonymize_ip:true});</script>` : ''}
+${S.ga_id ? `<!-- Google Analytics: nur nach Cookie-Zustimmung geladen (DSGVO) -->
+<script>
+  window.__AUX_GA_ID = '${S.ga_id}';
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    analytics_storage: 'denied',
+    ad_storage: 'denied',
+    wait_for_update: 500
+  });
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=${S.ga_id}"></script>` : ''}
 <!-- Strukturierte Daten: LocalBusiness -->
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Auxilium – Pflegeberatung Forst Baden","description":"Individuelle Pflege und Pflegeberatung in Forst Baden und Umgebung","url":"https://auxilium-forst.com","telephone":"","email":"info@auxilium-forst.com","address":{"@type":"PostalAddress","streetAddress":"","addressLocality":"Forst","postalCode":"76694","addressCountry":"DE"},"areaServed":[{"@type":"City","name":"Forst","postalCode":"76694"},{"@type":"City","name":"Bruchsal","postalCode":"76646"},{"@type":"City","name":"Karlsdorf-Neuthard","postalCode":"76689"}],"priceRange":"€€","openingHours":"Mo-Fr 08:00-18:00"}</script>
 </head>
 <body${bodyClass}>
-${vacationBanner}
-<nav class="navbar" id="navbar" role="navigation" aria-label="Hauptnavigation">
+<div class="site-header" id="siteHeader">
+${vacationBanner}<nav class="navbar" id="navbar" role="navigation" aria-label="Hauptnavigation">
   <div class="navbar__inner">
     <a href="/" class="navbar__logo" aria-label="Auxilium Startseite">
       <img src="/static/logo.png" alt="Auxilium Logo" class="navbar__logo-img">
@@ -99,7 +108,80 @@ ${vacationBanner}
     </button>
   </div>
 </nav>
+</div><!-- /.site-header -->
 ${body}
+<!-- ═══════════════════════════════════════════════════════
+     DSGVO Cookie-Banner
+     ═══════════════════════════════════════════════════════ -->
+<div id="cookieBanner" class="cookie-banner" role="dialog" aria-modal="true"
+     aria-labelledby="cookieBannerTitle" aria-describedby="cookieBannerDesc" hidden>
+  <div class="cookie-banner__inner">
+    <div class="cookie-banner__header">
+      <h2 id="cookieBannerTitle" class="cookie-banner__title">
+        <i class="fas fa-cookie-bite" aria-hidden="true"></i>
+        Ihre Privatsph&auml;re
+      </h2>
+      <p id="cookieBannerDesc" class="cookie-banner__desc">
+        Wir verwenden Cookies, um Ihnen die bestm&ouml;gliche Nutzung unserer Website zu erm&ouml;glichen
+        und unsere Inhalte laufend zu verbessern. Einige Cookies sind technisch notwendig,
+        andere helfen uns, Besuche statistisch zu erfassen. Sie k&ouml;nnen selbst entscheiden,
+        welche Kategorien Sie zulassen. Weitere Infos finden Sie in unserer
+        <a href="/datenschutz" class="cookie-banner__link">Datenschutzerkl&auml;rung</a>.
+      </p>
+    </div>
+    <div class="cookie-banner__categories">
+      <!-- Technisch notwendig: immer aktiv -->
+      <div class="cookie-cat">
+        <label class="cookie-cat__label">
+          <span class="cookie-cat__name">
+            <i class="fas fa-shield-alt" aria-hidden="true"></i>
+            Technisch notwendig
+          </span>
+          <span class="cookie-cat__badge cookie-cat__badge--required">Erforderlich</span>
+          <input type="checkbox" class="cookie-cat__toggle" id="cookieNecessary"
+                 checked disabled aria-label="Technisch notwendige Cookies (immer aktiv)">
+          <span class="cookie-toggle-ui" aria-hidden="true"></span>
+        </label>
+        <p class="cookie-cat__desc">
+          Session-Cookie f&uuml;r Login-Status (Admin), Formularsicherheit.
+          Diese Cookies k&ouml;nnen nicht deaktiviert werden, da sie f&uuml;r den Betrieb der Website notwendig sind.
+        </p>
+      </div>
+      <!-- Statistik (Google Analytics) -->
+      <div class="cookie-cat" id="cookieCatAnalytics">
+        <label class="cookie-cat__label">
+          <span class="cookie-cat__name">
+            <i class="fas fa-chart-bar" aria-hidden="true"></i>
+            Statistik &amp; Analyse
+          </span>
+          <input type="checkbox" class="cookie-cat__toggle" id="cookieAnalytics"
+                 aria-label="Statistik-Cookies (Google Analytics)">
+          <span class="cookie-toggle-ui" aria-hidden="true"></span>
+        </label>
+        <p class="cookie-cat__desc">
+          Google Analytics (anonymisiert) &ndash; hilft uns zu verstehen, welche Seiten besucht werden.
+          IP-Adressen werden anonymisiert gespeichert. Anbieter: Google Ireland Ltd.
+        </p>
+      </div>
+    </div>
+    <div class="cookie-banner__actions">
+      <button id="cookieRejectAll" class="cookie-btn cookie-btn--outline">
+        Nur notwendige
+      </button>
+      <button id="cookieSaveSelected" class="cookie-btn cookie-btn--secondary">
+        Auswahl best&auml;tigen
+      </button>
+      <button id="cookieAcceptAll" class="cookie-btn cookie-btn--primary">
+        Alle akzeptieren
+      </button>
+    </div>
+    <p class="cookie-banner__footer-note">
+      Sie k&ouml;nnen Ihre Einwilligung jederzeit &uuml;ber den Link
+      &bdquo;Cookie-Einstellungen&ldquo; im Footer widerrufen.
+      &copy; Auxilium &ndash; <a href="/datenschutz" class="cookie-banner__link">Datenschutz</a>
+    </p>
+  </div>
+</div>
 <footer class="footer" role="contentinfo">
   <div class="container">
     <div class="footer__grid">
@@ -158,6 +240,10 @@ ${body}
       <div class="footer__bottom-links">
         <a href="/impressum">Impressum</a>
         <a href="/datenschutz">Datenschutz</a>
+        <button id="cookieSettingsBtn" class="footer__cookie-btn" aria-label="Cookie-Einstellungen &ouml;ffnen">
+          <i class="fas fa-cookie-bite" aria-hidden="true"></i>
+          Cookie-Einstellungen
+        </button>
       </div>
     </div>
   </div>

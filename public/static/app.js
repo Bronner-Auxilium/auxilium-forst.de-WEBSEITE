@@ -17,16 +17,20 @@
       navbar.classList.add('navbar--subpage');
     }
 
-    // Urlaubsbanner: Banner sitzt UNTER der Navbar – top per JS setzen
-    const vacationBanner = document.querySelector('.vacation-banner');
-    const positionBanner = () => {
-      if (!vacationBanner) return;
-      // Banner direkt unter Navbar positionieren
-      vacationBanner.style.top = navbar.offsetHeight + 'px';
+    // Site-Header (Banner+Navbar) als Wrapper – padding-top des ersten
+    // scrollbaren Inhaltsblocks dynamisch auf Header-Höhe setzen
+    const siteHeader = document.getElementById('siteHeader');
+    const adjustPagePadding = () => {
+      if (!siteHeader) return;
+      const h = siteHeader.offsetHeight;
+      // Ersten Content-Block nach dem Header finden und Padding setzen
+      const firstContent = siteHeader.nextElementSibling;
+      if (firstContent) {
+        (firstContent as HTMLElement).style.paddingTop = h + 'px';
+      }
     };
-    positionBanner();
-    // Bei Resize (z.B. Textumbruch auf Mobile) neu berechnen
-    window.addEventListener('resize', positionBanner, { passive: true });
+    adjustPagePadding();
+    window.addEventListener('resize', adjustPagePadding, { passive: true });
 
     const onScroll = () => {
       if (window.scrollY > 40) {
@@ -34,8 +38,6 @@
       } else {
         if (!isSubpage) navbar.classList.remove('scrolled');
       }
-      // Nach Scroll-Klasse-Wechsel Navbar-Höhe neu messen und Banner neu setzen
-      positionBanner();
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -290,5 +292,130 @@
       }
     });
   });
+
+  /* ═══════════════════════════════════════════════════════════
+     DSGVO Cookie-Banner
+     ═══════════════════════════════════════════════════════════ */
+  (function cookieConsent() {
+    const STORAGE_KEY = 'aux_cookie_consent';
+    const banner      = document.getElementById('cookieBanner');
+    const btnAcceptAll   = document.getElementById('cookieAcceptAll');
+    const btnRejectAll   = document.getElementById('cookieRejectAll');
+    const btnSave        = document.getElementById('cookieSaveSelected');
+    const btnSettings    = document.getElementById('cookieSettingsBtn');
+    const toggleAnalytics = document.getElementById('cookieAnalytics');
+
+    if (!banner) return;
+
+    // ── Consent aus localStorage lesen ──────────────────────
+    function loadConsent() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); }
+      catch(e) { return null; }
+    }
+
+    // ── Consent speichern ────────────────────────────────────
+    function saveConsent(analytics) {
+      const consent = {
+        necessary: true,
+        analytics: !!analytics,
+        timestamp: new Date().toISOString(),
+        version: '1'
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(consent));
+      return consent;
+    }
+
+    // ── Google Analytics laden (nur nach Zustimmung) ─────────
+    function loadGA(enable) {
+      if (typeof gtag !== 'function') return;
+      gtag('consent', 'update', {
+        analytics_storage: enable ? 'granted' : 'denied'
+      });
+      if (enable && window.__AUX_GA_ID) {
+        gtag('js', new Date());
+        gtag('config', window.__AUX_GA_ID, { anonymize_ip: true });
+      }
+    }
+
+    // ── Banner anzeigen ──────────────────────────────────────
+    function showBanner() {
+      banner.hidden = false;
+      banner.removeAttribute('hidden');
+      document.body.style.overflow = 'hidden'; // kein Scrollen dahinter
+      // Fokus auf ersten Button setzen (Accessibility)
+      setTimeout(() => {
+        const firstBtn = banner.querySelector('.cookie-btn');
+        if (firstBtn) firstBtn.focus();
+      }, 100);
+    }
+
+    // ── Banner schließen ─────────────────────────────────────
+    function closeBanner() {
+      banner.hidden = true;
+      document.body.style.overflow = '';
+    }
+
+    // ── Auf gespeicherte Einstellung reagieren ───────────────
+    function applyConsent(consent) {
+      if (!consent) return;
+      // Toggle-State wiederherstellen
+      if (toggleAnalytics) toggleAnalytics.checked = !!consent.analytics;
+      loadGA(consent.analytics);
+    }
+
+    // ── Initialisierung ──────────────────────────────────────
+    const saved = loadConsent();
+    if (!saved) {
+      // Noch keine Entscheidung – Banner nach kurzem Delay zeigen
+      setTimeout(showBanner, 600);
+    } else {
+      // Gespeicherte Einstellung anwenden
+      applyConsent(saved);
+    }
+
+    // ── Button-Events ────────────────────────────────────────
+    if (btnAcceptAll) {
+      btnAcceptAll.addEventListener('click', () => {
+        if (toggleAnalytics) toggleAnalytics.checked = true;
+        const c = saveConsent(true);
+        applyConsent(c);
+        closeBanner();
+      });
+    }
+
+    if (btnRejectAll) {
+      btnRejectAll.addEventListener('click', () => {
+        if (toggleAnalytics) toggleAnalytics.checked = false;
+        const c = saveConsent(false);
+        applyConsent(c);
+        closeBanner();
+      });
+    }
+
+    if (btnSave) {
+      btnSave.addEventListener('click', () => {
+        const analyticsChecked = toggleAnalytics ? toggleAnalytics.checked : false;
+        const c = saveConsent(analyticsChecked);
+        applyConsent(c);
+        closeBanner();
+      });
+    }
+
+    // ── Footer-Button: Einstellungen erneut öffnen ───────────
+    if (btnSettings) {
+      btnSettings.addEventListener('click', () => {
+        // Aktuellen Stand ins Formular laden
+        const current = loadConsent();
+        if (current && toggleAnalytics) {
+          toggleAnalytics.checked = !!current.analytics;
+        }
+        showBanner();
+      });
+    }
+
+    // ── ESC-Taste schließt Banner NICHT (DSGVO: Entscheidung erforderlich)
+    // Klick auf Backdrop schließt ebenfalls nicht aus demselben Grund
+
+  })(); // Ende cookieConsent
 
 })();
