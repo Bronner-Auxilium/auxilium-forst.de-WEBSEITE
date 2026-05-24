@@ -11,33 +11,27 @@
   const navToggle = document.getElementById('navToggle');
 
   if (navbar) {
-    // Unterseiten: Navbar immer mit weißem Hintergrund (kein Transparent)
     const isSubpage = window.location.pathname !== '/';
-    if (isSubpage) {
-      navbar.classList.add('navbar--subpage');
-    }
 
-    // Site-Header (Banner+Navbar) als Wrapper – padding-top des ersten
-    // scrollbaren Inhaltsblocks dynamisch auf Header-Höhe setzen
-    const siteHeader = document.getElementById('siteHeader');
-    const adjustPagePadding = () => {
-      if (!siteHeader) return;
-      const h = siteHeader.offsetHeight;
-      // Ersten Content-Block nach dem Header finden und Padding setzen
-      const firstContent = siteHeader.nextElementSibling;
-      if (firstContent) {
-        (firstContent as HTMLElement).style.paddingTop = h + 'px';
-      }
+    // Navbar ist immer fixed – body braucht padding-top = Navbar-Höhe,
+    // damit Inhalt nicht unter der Navbar verschwindet.
+    // Bei aktivem Urlaubsbanner liegt der Banner statisch IM Dokumentfluss
+    // (ÜBER der Navbar-Lücke), deshalb: body padding-top = nur Navbar-Höhe.
+    const applyBodyPadding = () => {
+      document.body.style.paddingTop = navbar.offsetHeight + 'px';
     };
-    adjustPagePadding();
-    window.addEventListener('resize', adjustPagePadding, { passive: true });
+    applyBodyPadding();
+    window.addEventListener('resize', applyBodyPadding, { passive: true });
 
     const onScroll = () => {
-      if (window.scrollY > 40) {
+      // Scrolled-Klasse für kompakteren Navbar-Style
+      if (window.scrollY > 20) {
         navbar.classList.add('scrolled');
       } else {
-        if (!isSubpage) navbar.classList.remove('scrolled');
+        navbar.classList.remove('scrolled');
       }
+      // Padding nach Größenänderung aktualisieren
+      applyBodyPadding();
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -122,24 +116,41 @@
   }
 
   /* ─── Stellenangebote: Print / PDF ──────────────────────── */
-  const printArea = document.querySelector('.job-print-area');
-  if (printArea) {
-    // Druckbereich direkt als Body-Kind verschieben (vor dem Drucken)
-    let printPlaceholder = null;
-    window.addEventListener('beforeprint', () => {
-      // Platzhalter merken, um nach dem Druck zurückzuversetzen
-      printPlaceholder = document.createComment('print-placeholder');
-      printArea.parentNode.insertBefore(printPlaceholder, printArea);
-      document.body.appendChild(printArea);
-      document.body.classList.add('printing');
-    });
-    window.addEventListener('afterprint', () => {
-      document.body.classList.remove('printing');
-      if (printPlaceholder && printPlaceholder.parentNode) {
-        printPlaceholder.parentNode.insertBefore(printArea, printPlaceholder);
-        printPlaceholder.parentNode.removeChild(printPlaceholder);
-      }
-      printPlaceholder = null;
+  // Lösung: Druckknopf öffnet ein neues Fenster mit nur dem Flyer-Inhalt.
+  // Das ist die zuverlässigste Methode – unabhängig von CSS-Kaskaden-Problemen.
+  var printBtn = document.querySelector('.share-btn-print');
+  var printArea = document.querySelector('.job-print-area');
+  if (printBtn && printArea) {
+    printBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      // Flyer-HTML klonen
+      var flyerHtml = printArea.innerHTML;
+      // Stylesheets für das Druckfenster sammeln
+      var styles = Array.from(document.styleSheets).map(function(ss) {
+        try {
+          return Array.from(ss.cssRules).map(function(r){ return r.cssText; }).join('\n');
+        } catch(err) { return ''; }
+      }).join('\n');
+      var win = window.open('', '_blank', 'width=900,height=700');
+      if (!win) return;
+      win.document.write(
+        '<!DOCTYPE html><html lang="de"><head>' +
+        '<meta charset="UTF-8">' +
+        '<title>Stellenanzeige</title>' +
+        '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">' +
+        '<style>' + styles + '</style>' +
+        '<style>' +
+        'body{margin:0;padding:0;background:white;}' +
+        '.job-print-area{display:block!important;position:static!important;}' +
+        '@media print{body{margin:0;}@page{margin:10mm;}}' +
+        '</style>' +
+        '</head><body>' +
+        '<div class="job-print-area" style="display:block">' + flyerHtml + '</div>' +
+        '<script>window.onload=function(){window.print();window.onafterprint=function(){window.close();};};<\/script>' +
+        '</body></html>'
+      );
+      win.document.close();
     });
   }
 
@@ -339,19 +350,17 @@
 
     // ── Banner anzeigen ──────────────────────────────────────
     function showBanner() {
-      banner.hidden = false;
-      banner.removeAttribute('hidden');
-      document.body.style.overflow = 'hidden'; // kein Scrollen dahinter
-      // Fokus auf ersten Button setzen (Accessibility)
+      banner.classList.remove('cookie-banner--hidden');
+      document.body.style.overflow = 'hidden';
       setTimeout(() => {
-        const firstBtn = banner.querySelector('.cookie-btn');
+        var firstBtn = banner.querySelector('.cookie-btn');
         if (firstBtn) firstBtn.focus();
-      }, 100);
+      }, 120);
     }
 
     // ── Banner schließen ─────────────────────────────────────
     function closeBanner() {
-      banner.hidden = true;
+      banner.classList.add('cookie-banner--hidden');
       document.body.style.overflow = '';
     }
 

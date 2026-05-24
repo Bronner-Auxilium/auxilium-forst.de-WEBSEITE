@@ -137,40 +137,19 @@ p  { color: var(--text-light); line-height: 1.75; }
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(139,26,26,0.4);
 }
-/* btn-outline: Im Hero weiß/halbtransparent, sonst braun */
+/* btn-outline: Überall einheitlich – primary-Amber ausgefüllt */
 .btn-outline {
-  border: 2px solid white;
+  border: 2px solid var(--primary);
   color: white;
-  background: rgba(255,255,255,0.18);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  background: var(--primary);
+  box-shadow: 0 4px 16px rgba(217,138,43,0.30);
 }
 .btn-outline:hover {
-  background: white;
-  color: var(--primary-dark);
-  border-color: white;
-  text-shadow: none;
-  transform: translateY(-2px);
-}
-/* Außerhalb des Hero: klassische Variante */
-.section .btn-outline,
-.page-hero ~ * .btn-outline,
-.card .btn-outline,
-.cta-section .btn-outline {
-  border-color: var(--primary);
-  color: var(--primary);
-  background: transparent;
-  backdrop-filter: none;
-  text-shadow: none;
-}
-.section .btn-outline:hover,
-.page-hero ~ * .btn-outline:hover,
-.card .btn-outline:hover,
-.cta-section .btn-outline:hover {
-  background: var(--primary);
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
   color: white;
-  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(217,138,43,0.42);
 }
 .btn-white {
   background: white;
@@ -217,28 +196,21 @@ p  { color: var(--text-light); line-height: 1.75; }
 /* Mobile-only Kontakt-Link im Nav (auf Desktop versteckt) */
 .navbar__nav-cta-mobile { display: none; }
 
-/* ─── Site-Header Wrapper (Banner + Navbar) ─────────────── */
-/* Banner und Navbar sitzen beide in #siteHeader – fixed als Block */
-#siteHeader {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-}
-
 /* ─── Urlaubsbanner ──────────────────────────────────────── */
-/* Banner ist erstes Kind in #siteHeader – liegt ÜBER der Navbar */
+/* Banner ist ein normales statisches Element ganz oben auf der Seite.
+   Die Navbar ist separat fixed – sitzt UNTER dem Banner im initialen
+   Viewport (padding-top auf <body> via JS), scrollt aber nicht mit. */
 .vacation-banner {
   width: 100%;
   background: linear-gradient(90deg, #D98A2B, #B5701A);
   color: white;
-  padding: 9px 0;
+  padding: 11px 0;
   font-size: 0.875rem;
   font-weight: 500;
   text-align: center;
   line-height: 1.4;
-  box-shadow: 0 2px 8px rgba(181,112,26,0.30);
+  position: relative; /* normaler Dokumentfluss */
+  z-index: 1;
 }
 .vacation-banner .container {
   display: flex;
@@ -253,25 +225,26 @@ p  { color: var(--text-light); line-height: 1.75; }
 
 /* ─── Navigation ─────────────────────────────────────────── */
 .navbar {
-  /* Kein position:fixed mehr – liegt im #siteHeader-Wrapper */
-  position: relative;
-  top: auto; left: auto; right: auto;
-  z-index: auto;
-  transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
-  padding: 14px 0;
-  background: transparent;
+  /* Navbar ist immer fixed – unabhängig vom Banner */
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  transition: background 0.25s ease, box-shadow 0.25s ease, padding 0.25s ease;
+  padding: 10px 0;
+  /* Immer weißer Hintergrund – kein transparentes Navbar mehr */
+  background: rgba(255,255,255,0.98);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 16px rgba(44,32,24,0.08);
 }
-/* Scrolled-State */
+/* Scrolled-State: etwas kompakter + stärkerer Schatten */
 .navbar.scrolled {
-  background: rgba(255,255,255,0.97);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 2px 20px rgba(44,32,24,0.10);
-  padding: 8px 0;
+  padding: 6px 0;
+  box-shadow: 0 3px 20px rgba(44,32,24,0.13);
 }
-/* Unterseiten: immer weißer Hintergrund */
+/* Unterseiten: weißer Hintergrund (identisch, kein !important nötig) */
 .navbar--subpage {
-  background: rgba(255,255,255,0.97) !important;
+  background: rgba(255,255,255,0.98) !important;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   box-shadow: 0 2px 20px rgba(44,32,24,0.10);
@@ -373,14 +346,17 @@ p  { color: var(--text-light); line-height: 1.75; }
   align-items: center;
   position: relative;
   overflow: hidden;
-  padding-top: 80px;
+  /* padding-top wird per JS auf Navbar-Höhe gesetzt (kein Banner: ~68px) */
+  padding-top: 68px;
 }
-/* Padding-top wird per JS dynamisch auf #siteHeader.offsetHeight gesetzt */
+/* Mit Urlaubsbanner: Banner ist statisch im DOM, kein extra padding nötig
+   – der Banner schiebt den Inhalt von selbst nach unten.
+   Nur die fixed Navbar braucht Ausgleich (JS setzt body padding-top). */
 body.has-vacation-banner .hero {
-  padding-top: 190px;
+  padding-top: 0; /* Banner schiebt Hero selbst runter */
 }
 body.has-vacation-banner .page-hero {
-  padding-top: 120px;
+  padding-top: 0; /* Banner schiebt Page-Hero selbst runter */
 }
 .hero {
   /* Echtes Naturfoto als Hintergrund */
@@ -2112,7 +2088,8 @@ body.printing > .job-print-area {
   -webkit-backdrop-filter: blur(3px);
   animation: cookieFadeIn 0.3s ease;
 }
-.cookie-banner[hidden] { display: none !important; }
+/* Banner initial versteckt – JS entfernt die Klasse zum Einblenden */
+.cookie-banner--hidden { display: none !important; }
 
 @keyframes cookieFadeIn {
   from { opacity: 0; }

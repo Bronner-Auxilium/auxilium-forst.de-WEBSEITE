@@ -80,7 +80,6 @@ ${S.ga_id ? `<!-- Google Analytics: nur nach Cookie-Zustimmung geladen (DSGVO) -
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Auxilium – Pflegeberatung Forst Baden","description":"Individuelle Pflege und Pflegeberatung in Forst Baden und Umgebung","url":"https://auxilium-forst.com","telephone":"","email":"info@auxilium-forst.com","address":{"@type":"PostalAddress","streetAddress":"","addressLocality":"Forst","postalCode":"76694","addressCountry":"DE"},"areaServed":[{"@type":"City","name":"Forst","postalCode":"76694"},{"@type":"City","name":"Bruchsal","postalCode":"76646"},{"@type":"City","name":"Karlsdorf-Neuthard","postalCode":"76689"}],"priceRange":"€€","openingHours":"Mo-Fr 08:00-18:00"}</script>
 </head>
 <body${bodyClass}>
-<div class="site-header" id="siteHeader">
 ${vacationBanner}<nav class="navbar" id="navbar" role="navigation" aria-label="Hauptnavigation">
   <div class="navbar__inner">
     <a href="/" class="navbar__logo" aria-label="Auxilium Startseite">
@@ -108,13 +107,12 @@ ${vacationBanner}<nav class="navbar" id="navbar" role="navigation" aria-label="H
     </button>
   </div>
 </nav>
-</div><!-- /.site-header -->
 ${body}
 <!-- ═══════════════════════════════════════════════════════
      DSGVO Cookie-Banner
      ═══════════════════════════════════════════════════════ -->
-<div id="cookieBanner" class="cookie-banner" role="dialog" aria-modal="true"
-     aria-labelledby="cookieBannerTitle" aria-describedby="cookieBannerDesc" hidden>
+<div id="cookieBanner" class="cookie-banner cookie-banner--hidden" role="dialog" aria-modal="true"
+     aria-labelledby="cookieBannerTitle" aria-describedby="cookieBannerDesc">
   <div class="cookie-banner__inner">
     <div class="cookie-banner__header">
       <h2 id="cookieBannerTitle" class="cookie-banner__title">
@@ -2458,7 +2456,7 @@ app.get('/stellenangebote/:slug', async (c) => {
           <a class="share-btn share-btn-email" href="mailto:?subject=${mailSubj}&body=${mailBody}">
             <i class="fas fa-envelope"></i> Per E-Mail
           </a>
-          <button class="share-btn share-btn-print" onclick="window.print()">
+          <button class="share-btn share-btn-print" type="button">
             <i class="fas fa-print"></i> Drucken / PDF
           </button>
         </div>
