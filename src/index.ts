@@ -64,18 +64,9 @@ function layout(title: string, description: string, body: string, S: Record<stri
 <!-- Favicon: Auxilium Logo -->
 <link rel="icon" type="image/png" href="/static/logo.png">
 <link rel="apple-touch-icon" href="/static/logo.png">
-${S.ga_id ? `<!-- Google Analytics: nur nach Cookie-Zustimmung geladen (DSGVO) -->
-<script>
-  window.__AUX_GA_ID = '${S.ga_id}';
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('consent', 'default', {
-    analytics_storage: 'denied',
-    ad_storage: 'denied',
-    wait_for_update: 500
-  });
-</script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=${S.ga_id}"></script>` : ''}
+${S.ga_id ? `<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=${S.ga_id}"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${S.ga_id}',{anonymize_ip:true});</script>` : ''}
 <!-- Strukturierte Daten: LocalBusiness -->
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Auxilium – Pflegeberatung Forst Baden","description":"Individuelle Pflege und Pflegeberatung in Forst Baden und Umgebung","url":"https://auxilium-forst.com","telephone":"","email":"info@auxilium-forst.com","address":{"@type":"PostalAddress","streetAddress":"","addressLocality":"Forst","postalCode":"76694","addressCountry":"DE"},"areaServed":[{"@type":"City","name":"Forst","postalCode":"76694"},{"@type":"City","name":"Bruchsal","postalCode":"76646"},{"@type":"City","name":"Karlsdorf-Neuthard","postalCode":"76689"}],"priceRange":"€€","openingHours":"Mo-Fr 08:00-18:00"}</script>
 </head>
@@ -108,78 +99,6 @@ ${vacationBanner}<nav class="navbar" id="navbar" role="navigation" aria-label="H
   </div>
 </nav>
 ${body}
-<!-- ═══════════════════════════════════════════════════════
-     DSGVO Cookie-Banner
-     ═══════════════════════════════════════════════════════ -->
-<div id="cookieBanner" class="cookie-banner cookie-banner--hidden" role="dialog" aria-modal="true"
-     aria-labelledby="cookieBannerTitle" aria-describedby="cookieBannerDesc">
-  <div class="cookie-banner__inner">
-    <div class="cookie-banner__header">
-      <h2 id="cookieBannerTitle" class="cookie-banner__title">
-        <i class="fas fa-cookie-bite" aria-hidden="true"></i>
-        Ihre Privatsph&auml;re
-      </h2>
-      <p id="cookieBannerDesc" class="cookie-banner__desc">
-        Wir verwenden Cookies, um Ihnen die bestm&ouml;gliche Nutzung unserer Website zu erm&ouml;glichen
-        und unsere Inhalte laufend zu verbessern. Einige Cookies sind technisch notwendig,
-        andere helfen uns, Besuche statistisch zu erfassen. Sie k&ouml;nnen selbst entscheiden,
-        welche Kategorien Sie zulassen. Weitere Infos finden Sie in unserer
-        <a href="/datenschutz" class="cookie-banner__link">Datenschutzerkl&auml;rung</a>.
-      </p>
-    </div>
-    <div class="cookie-banner__categories">
-      <!-- Technisch notwendig: immer aktiv -->
-      <div class="cookie-cat">
-        <label class="cookie-cat__label">
-          <span class="cookie-cat__name">
-            <i class="fas fa-shield-alt" aria-hidden="true"></i>
-            Technisch notwendig
-          </span>
-          <span class="cookie-cat__badge cookie-cat__badge--required">Erforderlich</span>
-          <input type="checkbox" class="cookie-cat__toggle" id="cookieNecessary"
-                 checked disabled aria-label="Technisch notwendige Cookies (immer aktiv)">
-          <span class="cookie-toggle-ui" aria-hidden="true"></span>
-        </label>
-        <p class="cookie-cat__desc">
-          Session-Cookie f&uuml;r Login-Status (Admin), Formularsicherheit.
-          Diese Cookies k&ouml;nnen nicht deaktiviert werden, da sie f&uuml;r den Betrieb der Website notwendig sind.
-        </p>
-      </div>
-      <!-- Statistik (Google Analytics) -->
-      <div class="cookie-cat" id="cookieCatAnalytics">
-        <label class="cookie-cat__label">
-          <span class="cookie-cat__name">
-            <i class="fas fa-chart-bar" aria-hidden="true"></i>
-            Statistik &amp; Analyse
-          </span>
-          <input type="checkbox" class="cookie-cat__toggle" id="cookieAnalytics"
-                 aria-label="Statistik-Cookies (Google Analytics)">
-          <span class="cookie-toggle-ui" aria-hidden="true"></span>
-        </label>
-        <p class="cookie-cat__desc">
-          Google Analytics (anonymisiert) &ndash; hilft uns zu verstehen, welche Seiten besucht werden.
-          IP-Adressen werden anonymisiert gespeichert. Anbieter: Google Ireland Ltd.
-        </p>
-      </div>
-    </div>
-    <div class="cookie-banner__actions">
-      <button id="cookieRejectAll" class="cookie-btn cookie-btn--outline">
-        Nur notwendige
-      </button>
-      <button id="cookieSaveSelected" class="cookie-btn cookie-btn--secondary">
-        Auswahl best&auml;tigen
-      </button>
-      <button id="cookieAcceptAll" class="cookie-btn cookie-btn--primary">
-        Alle akzeptieren
-      </button>
-    </div>
-    <p class="cookie-banner__footer-note">
-      Sie k&ouml;nnen Ihre Einwilligung jederzeit &uuml;ber den Link
-      &bdquo;Cookie-Einstellungen&ldquo; im Footer widerrufen.
-      &copy; Auxilium &ndash; <a href="/datenschutz" class="cookie-banner__link">Datenschutz</a>
-    </p>
-  </div>
-</div>
 <footer class="footer" role="contentinfo">
   <div class="container">
     <div class="footer__grid">
@@ -238,10 +157,6 @@ ${body}
       <div class="footer__bottom-links">
         <a href="/impressum">Impressum</a>
         <a href="/datenschutz">Datenschutz</a>
-        <button id="cookieSettingsBtn" class="footer__cookie-btn" aria-label="Cookie-Einstellungen &ouml;ffnen">
-          <i class="fas fa-cookie-bite" aria-hidden="true"></i>
-          Cookie-Einstellungen
-        </button>
       </div>
     </div>
   </div>
@@ -884,8 +799,8 @@ app.get('/beratung', async (c) => {
 
 <section class="cta-section-green" aria-labelledby="advice-cta-heading">
   <div class="container text-center">
-    <h2 id="advice-cta-heading" class="cta-section-green__title">Lassen Sie sich kostenlos beraten</h2>
-    <p class="cta-section-green__text">In einem kostenlosen Gespr&auml;ch analysiere ich mit Ihnen alle Anspr&uuml;che und erstelle die beste Finanzierungsstrategie f&uuml;r Ihre Situation.</p>
+    <h2 id="advice-cta-heading" class="cta-section-green__title">Lassen Sie sich pers&ouml;nlich beraten</h2>
+    <p class="cta-section-green__text">In einem pers&ouml;nlichen Gespr&auml;ch analysiere ich mit Ihnen alle Anspr&uuml;che und erstelle die beste Finanzierungsstrategie f&uuml;r Ihre Situation.</p>
     <a href="/kontakt" class="btn btn-green-solid"><i class="fas fa-calendar-check" aria-hidden="true"></i>Jetzt Beratungstermin anfragen</a>
   </div>
 </section>`
@@ -1363,8 +1278,9 @@ app.get('/admin/login', (c) => {
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
 <style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,#1A0D06,#2C2018);min-height:100vh;display:flex;align-items:center;justify-content:center;}
 .login-box{background:white;border-radius:16px;padding:44px 40px;width:100%;max-width:400px;box-shadow:0 16px 48px rgba(0,0,0,0.3);}
-.login-logo{text-align:center;margin-bottom:28px;}.login-logo img{width:64px;height:64px;border-radius:10px;object-fit:cover;}
-.login-logo h1{font-size:1.4rem;font-weight:700;color:#2C2018;margin-top:12px;}
+.login-logo{text-align:center;margin-bottom:28px;}
+.login-logo img{width:160px;height:auto;object-fit:contain;display:block;margin:0 auto;}
+.login-logo h1{font-size:1.4rem;font-weight:700;color:#2C2018;margin-top:16px;}
 .login-logo p{font-size:0.82rem;color:#7A6550;margin-top:4px;}
 label{display:block;font-size:0.82rem;font-weight:600;color:#7A6550;margin-bottom:5px;margin-top:16px;}
 input{width:100%;padding:10px 14px;border:1px solid #E8D9C5;border-radius:8px;font-size:0.95rem;outline:none;}
@@ -2984,7 +2900,8 @@ app.get('/admin/backup', async (c) => {
         <div class="backup-item__name"><i class="fas fa-database" style="margin-right:7px;color:#D98A2B;"></i>${b.name}</div>
         <div class="backup-item__meta">${dt} &nbsp;·&nbsp; ${sizeKB} KB &nbsp;·&nbsp; ${typeLabel} ${b.description ? `&nbsp;·&nbsp; <em>${b.description}</em>` : ''}</div>
       </div>
-      <div class="backup-item__actions">
+      <div class="backup-item__actions" style="flex-wrap:wrap;">
+        ${hasData ? `<a href="/admin/backup/${b.id}/download" class="adm-btn adm-btn-secondary" style="padding:5px 10px;" title="Als JSON herunterladen (für Genspark-Import)"><i class="fas fa-download"></i></a>` : ''}
         <button class="adm-btn adm-btn-green" style="padding:5px 12px;" title="${hasData ? 'Wiederherstellen' : 'Keine Daten (älteres Format)'}"
           onclick="startRestore(${b.id},'${b.name.replace(/'/g,"\\'")}',${hasData ? 'true' : 'false'})">
           <i class="fas fa-undo"></i> Restore
@@ -3027,8 +2944,23 @@ app.get('/admin/backup', async (c) => {
 
       <div class="adm-card" style="margin-bottom:20px;">
         <h3 style="font-size:1rem;margin-bottom:14px;"><i class="fas fa-download" style="color:#4A9B7F;margin-right:8px;"></i>Datenbank exportieren</h3>
-        <p style="font-size:0.83rem;color:#7A6550;margin-bottom:14px;">Exportiert alle Daten als SQL-Dump zum lokalen Sichern oder zur Weitergabe an den Entwickler.</p>
-        <a href="/admin/backup/db-export" class="adm-btn adm-btn-green"><i class="fas fa-file-code"></i> DB als SQL exportieren</a>
+
+        <!-- JSON-Export: Für Genspark-Hochladen -->
+        <div style="background:linear-gradient(135deg,#FBF7F2,#F3EDE3);border:1.5px solid #D98A2B;border-radius:10px;padding:14px;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <i class="fas fa-star" style="color:#D98A2B;"></i>
+            <strong style="font-size:0.88rem;color:#2C2018;">Für Genspark-Import empfohlen</strong>
+          </div>
+          <p style="font-size:0.8rem;color:#7A6550;margin-bottom:10px;">
+            Exportiert alle Inhalte als <strong>JSON-Datei</strong>. Diese Datei können Sie bei Genspark hochladen,
+            damit der KI-Assistent Ihre aktuellen Daten kennt und darauf basierend Änderungen vornehmen kann.
+          </p>
+          <a href="/admin/backup/json-export" class="adm-btn adm-btn-primary"><i class="fas fa-file-export"></i> Jetzt als JSON exportieren</a>
+        </div>
+
+        <!-- SQL-Export: Für technische Sicherung -->
+        <p style="font-size:0.8rem;color:#7A6550;margin-bottom:10px;">SQL-Dump für technische Sicherung oder Datenbankwiederherstellung:</p>
+        <a href="/admin/backup/db-export" class="adm-btn adm-btn-secondary"><i class="fas fa-file-code"></i> DB als SQL exportieren</a>
       </div>
 
       <div class="adm-card">
@@ -3337,6 +3269,58 @@ app.get('/admin/backup/db-export', async (c) => {
   return new Response(sql, {
     headers: {
       'Content-Type': 'text/sql; charset=utf-8',
+      'Content-Disposition': `attachment; filename="${filename}"`
+    }
+  })
+})
+
+// ─── JSON-Export: Alle Daten als JSON-Datei (für Genspark-Import) ─────────────
+app.get('/admin/backup/json-export', async (c) => {
+  const tables = ['settings','leistungen','kategorien','faqs','page_content','stellenangebote','testimonials']
+  const exportData: Record<string, any[]> = {}
+  let totalRows = 0
+  for (const table of tables) {
+    try {
+      const { results } = await c.env.DB.prepare(`SELECT * FROM ${table}`).all<any>()
+      exportData[table] = results
+      totalRows += results.length
+    } catch { exportData[table] = [] }
+  }
+  const meta = {
+    exported_at: new Date().toISOString(),
+    total_rows: totalRows,
+    tables: Object.keys(exportData),
+    format: 'auxilium-json-v1',
+    note: 'Diese Datei bei Genspark hochladen, damit der KI-Assistent Ihre aktuellen Daten kennt.'
+  }
+  const output = JSON.stringify({ _meta: meta, data: exportData }, null, 2)
+  const now = new Date()
+  const filename = `auxilium-daten-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}.json`
+  return new Response(output, {
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Disposition': `attachment; filename="${filename}"`
+    }
+  })
+})
+
+// ─── Backup als JSON herunterladen ────────────────────────────────────────────
+app.get('/admin/backup/:id/download', async (c) => {
+  const id = c.req.param('id')
+  const backup = await c.env.DB.prepare('SELECT * FROM backups WHERE id=?').bind(id).first<any>()
+  if (!backup || !backup.dump_data) {
+    return c.text('Backup nicht gefunden oder keine Daten vorhanden.', 404)
+  }
+  // dump_data ist bereits JSON-String – hübsch formatiert ausgeben
+  let pretty = backup.dump_data
+  try { pretty = JSON.stringify(JSON.parse(backup.dump_data), null, 2) } catch {}
+  const now = new Date(backup.created_at)
+  const dateStr = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`
+  const safeName = backup.name.replace(/[^a-z0-9äöü\-]/gi, '_').toLowerCase()
+  const filename = `auxilium-backup-${dateStr}-${safeName}.json`
+  return new Response(pretty, {
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
       'Content-Disposition': `attachment; filename="${filename}"`
     }
   })
