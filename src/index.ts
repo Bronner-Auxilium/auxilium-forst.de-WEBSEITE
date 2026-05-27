@@ -30,12 +30,63 @@ function layout(title: string, description: string, body: string, S: Record<stri
   const loc   = S.contact_location || 'Forst (Baden) &amp; Umgebung'
   const email = S.contact_email    || 'info@auxilium-forst.com'
   const hours = S.contact_hours    || 'Mo&ndash;Fr &middot; 8:00 &ndash; 18:00 Uhr'
-  // Urlaubsbanner
-  const vacationActive = (S.vacation_active === '1' && S.vacation_text)
-  const vacationBanner = vacationActive
-    ? `<div class="vacation-banner" role="alert"><div class="container" style="max-width:1200px;margin:0 auto;padding:0 24px;"><i class="fas fa-umbrella-beach"></i><strong>Urlaubshinweis:</strong> ${S.vacation_text}</div></div>`
-    : ''
-  const bodyClass = vacationActive ? ' class="has-vacation-banner"' : ''
+  // Info-Banner (Modal)
+  const bannerActive = S.banner_active === '1'
+  const bannerIntervalMinutes = S.banner_interval_minutes || '60'
+  const bannerTitle = S.banner_title || ''
+  const bannerIcon = S.banner_icon || ''
+  const bannerText = S.banner_text || ''
+  const bannerBgEnabled = S.banner_bg_enabled === '1'
+  const bannerBgImage = S.banner_bg_image || ''
+  const infoBannerHtml = bannerActive ? `
+<!-- Info-Banner Modal -->
+<div id="infoBannerBackdrop" class="info-banner-backdrop" style="display:none;" onclick="closeInfoBanner()"></div>
+<div id="infoBannerModal" class="info-banner-modal" style="display:none;"${bannerBgEnabled && bannerBgImage ? ` data-bg="${bannerBgImage}"` : ''}>
+  ${bannerBgEnabled && bannerBgImage ? `<div class="info-banner-modal__bg" style="background-image:url('${bannerBgImage}')"></div>` : ''}
+  <div class="info-banner-modal__inner">
+    <button class="info-banner-modal__close" onclick="closeInfoBanner()" aria-label="Schließen">&times;</button>
+    ${(bannerIcon || bannerTitle) ? `<div class="info-banner-modal__header">
+      ${bannerIcon ? `<span class="info-banner-modal__icon"><i class="${bannerIcon}"></i></span>` : ''}
+      ${bannerTitle ? `<h2 class="info-banner-modal__title">${bannerTitle}</h2>` : ''}
+    </div>` : ''}
+    <div class="info-banner-modal__body">${bannerText}</div>
+  </div>
+</div>
+<script>
+(function(){
+  var key='aux_infobanner_last_shown';
+  var interval=${bannerIntervalMinutes};
+  var last=localStorage.getItem(key);
+  var show=true;
+  if(last){var diff=(Date.now()-parseInt(last,10))/60000;if(diff<interval)show=false;}
+  if(show){
+    var backdrop=document.getElementById('infoBannerBackdrop');
+    var modal=document.getElementById('infoBannerModal');
+    if(backdrop&&modal){
+      var bgData=modal.getAttribute('data-bg');
+      setTimeout(function(){
+        backdrop.style.display='block';
+        modal.style.display='flex';
+        requestAnimationFrame(function(){
+          backdrop.classList.add('visible');
+          modal.classList.add('visible');
+        });
+        localStorage.setItem(key,String(Date.now()));
+      },600);
+    }
+  }
+  window.closeInfoBanner=function(){
+    var backdrop=document.getElementById('infoBannerBackdrop');
+    var modal=document.getElementById('infoBannerModal');
+    if(backdrop)backdrop.classList.remove('visible');
+    if(modal)modal.classList.remove('visible');
+    setTimeout(function(){
+      if(backdrop)backdrop.style.display='none';
+      if(modal)modal.style.display='none';
+    },350);
+  };
+})();
+</script>` : ''
   return `<!DOCTYPE html>
 <html lang="de">
 <head>
@@ -70,8 +121,8 @@ ${S.ga_id ? `<!-- Google Analytics -->
 <!-- Strukturierte Daten: LocalBusiness -->
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Auxilium – Pflegeberatung Forst Baden","description":"Individuelle Pflege und Pflegeberatung in Forst Baden und Umgebung","url":"https://auxilium-forst.com","telephone":"","email":"info@auxilium-forst.com","address":{"@type":"PostalAddress","streetAddress":"","addressLocality":"Forst","postalCode":"76694","addressCountry":"DE"},"areaServed":[{"@type":"City","name":"Forst","postalCode":"76694"},{"@type":"City","name":"Bruchsal","postalCode":"76646"},{"@type":"City","name":"Karlsdorf-Neuthard","postalCode":"76689"}],"priceRange":"€€","openingHours":"Mo-Fr 08:00-18:00"}</script>
 </head>
-<body${bodyClass}>
-${vacationBanner}<nav class="navbar" id="navbar" role="navigation" aria-label="Hauptnavigation">
+<body>
+${infoBannerHtml}<div id="siteHeader" class="site-header"><nav class="navbar" id="navbar" role="navigation" aria-label="Hauptnavigation">
   <div class="navbar__inner">
     <a href="/" class="navbar__logo" aria-label="Auxilium Startseite">
       <img src="/static/logo.png" alt="Auxilium Logo" class="navbar__logo-img">
@@ -97,7 +148,7 @@ ${vacationBanner}<nav class="navbar" id="navbar" role="navigation" aria-label="H
       <span></span><span></span><span></span>
     </button>
   </div>
-</nav>
+</nav></div><!-- /.site-header -->
 ${body}
 <footer class="footer" role="contentinfo">
   <div class="container">
@@ -248,7 +299,7 @@ app.get('/', async (c) => {
       </div>
     </div>
     <div class="hero__visual animate-fade-in-delay-1">
-      <img src="/static/logo.png" alt="Auxilium &ndash; Schmetterling &amp; Hand Logo" class="hero__logo-free">
+      <img src="/static/logo-hero.png" alt="Auxilium &ndash; Schmetterling &amp; Hand Logo" class="hero__logo-free">
     </div>
   </div>
 </section>
@@ -1129,7 +1180,7 @@ function adminLayout(title: string, body: string, activeNav = ''): string {
     { href: '/admin/faq', label: 'FAQ', key: 'faq', icon: 'fa-question-circle' },
     { href: '/admin/stellenangebote', label: 'Stellenangebote', key: 'stellenangebote', icon: 'fa-briefcase' },
     { href: '/admin/testimonials', label: 'Kundenstimmen', key: 'testimonials', icon: 'fa-star' },
-    { href: '/admin/urlaub', label: 'Urlaubsmodus', key: 'urlaub', icon: 'fa-umbrella-beach' },
+    { href: '/admin/infobanner', label: 'Info-Banner', key: 'infobanner', icon: 'fa-info-circle' },
     { href: '/admin/einstellungen', label: 'Einstellungen', key: 'einstellungen', icon: 'fa-sliders-h' },
     { href: '/admin/impressum', label: 'Impressum', key: 'impressum', icon: 'fa-file-alt' },
     { href: '/admin/datenschutz', label: 'Datenschutz', key: 'datenschutz', icon: 'fa-shield-alt' },
@@ -1430,7 +1481,7 @@ app.get('/admin', async (c) => {
       <a href="/admin/faq" class="adm-btn adm-btn-primary"><i class="fas fa-question-circle"></i>FAQ</a>
       <a href="/admin/stellenangebote" class="adm-btn adm-btn-primary"><i class="fas fa-briefcase"></i>Stellenangebote</a>
       <a href="/admin/testimonials" class="adm-btn adm-btn-primary"><i class="fas fa-star"></i>Kundenstimmen</a>
-      <a href="/admin/urlaub" class="adm-btn adm-btn-secondary"><i class="fas fa-umbrella-beach"></i>Urlaubsmodus</a>
+      <a href="/admin/infobanner" class="adm-btn adm-btn-secondary"><i class="fas fa-info-circle"></i>Info-Banner</a>
       <a href="/admin/einstellungen" class="adm-btn adm-btn-secondary"><i class="fas fa-sliders-h"></i>Einstellungen</a>
       <a href="/admin/backup" class="adm-btn adm-btn-secondary"><i class="fas fa-database"></i>Backup</a>
     </div>
@@ -2811,68 +2862,204 @@ function testimonialForm(r: any): string {
 // ADMIN: URLAUBSMODUS
 // ═══════════════════════════════════════════════════════════════
 
-app.get('/admin/urlaub', async (c) => {
+// Redirect alter URL
+app.get('/admin/urlaub', (c) => c.redirect('/admin/infobanner', 301))
+
+// ═══════════════════════════════════════════════════════════════
+// ADMIN: INFO-BANNER
+// ═══════════════════════════════════════════════════════════════
+
+app.get('/admin/infobanner', async (c) => {
   const msg = c.req.query('msg')
   const S = await loadSettings(c.env.DB)
-  const alert = msg === 'saved' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Einstellungen gespeichert.</div>' : ''
-  const isActive = S.vacation_active === '1'
+  const alert = msg === 'saved' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Info-Banner gespeichert.</div>'
+    : msg === 'error' ? '<div class="adm-alert adm-alert-error"><i class="fas fa-exclamation-circle"></i> Fehler beim Speichern.</div>' : ''
+  const isActive = S.banner_active === '1'
+  const bgEnabled = S.banner_bg_enabled === '1'
+  const hasBgImage = !!S.banner_bg_image
+  const interval = S.banner_interval_minutes || '60'
+
   const body = `
-  <div class="adm-card" style="max-width:680px;">
-    ${alert}
-    <form method="POST" action="/admin/urlaub" class="adm-form">
-      <div class="adm-section-card" style="margin-bottom:20px;">
-        <div class="adm-section-card__head">
-          <i class="fas fa-umbrella-beach"></i>
+  ${alert}
+  <form method="POST" action="/admin/infobanner" enctype="multipart/form-data" class="adm-form" style="max-width:780px;">
+
+    <!-- Status-Karte -->
+    <div class="adm-card" style="margin-bottom:20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:44px;height:44px;border-radius:12px;background:${isActive?'linear-gradient(135deg,#D98A2B,#B5701A)':'#E8D9C5'};display:flex;align-items:center;justify-content:center;">
+            <i class="fas fa-info-circle" style="color:white;font-size:1.2rem;"></i>
+          </div>
           <div>
-            <p class="adm-section-card__title">Urlaubsmodus</p>
-            <p class="adm-section-card__sub">Erscheint als farbiger Banner auf allen Seiten der Website</p>
+            <div style="font-weight:700;font-size:0.97rem;color:${isActive?'#D98A2B':'#7A6550'};">
+              Info-Banner ist ${isActive?'<span style="color:#D98A2B;">AKTIV</span>':'<span>inaktiv</span>'}
+            </div>
+            <div style="font-size:0.78rem;color:#7A6550;margin-top:2px;">${isActive?'Modal erscheint auf der Website für Besucher.':'Kein Modal wird auf der Website angezeigt.'}</div>
           </div>
         </div>
-        <div class="adm-section-card__body">
-          <div style="display:flex;align-items:center;gap:16px;padding:14px;background:${isActive?'#FFF3E0':'#F4F6F9'};border-radius:10px;border:2px solid ${isActive?'#D98A2B':'#E8D9C5'};">
-            <div>
-              <div style="font-weight:700;font-size:0.95rem;color:${isActive?'#D98A2B':'#7A6550'};">
-                ${isActive ? '<i class="fas fa-umbrella-beach" style="margin-right:6px;"></i>Urlaubsmodus ist AKTIV' : '<i class="fas fa-check-circle" style="margin-right:6px;"></i>Urlaubsmodus ist inaktiv'}
-              </div>
-              <div style="font-size:0.78rem;color:#7A6550;margin-top:3px;">${isActive ? 'Ein Banner wird auf allen Seiten angezeigt.' : 'Kein Banner auf der Website sichtbar.'}</div>
-            </div>
-          </div>
-          <div class="adm-form-group" style="margin-top:14px;">
-            <label class="adm-label" style="display:flex;align-items:center;gap:12px;cursor:pointer;">
-              <input type="checkbox" name="vacation_active" value="1" style="width:auto;accent-color:#D98A2B;" ${isActive?'checked':''}>
-              <span>Urlaubsmodus aktivieren</span>
-            </label>
-          </div>
-          <div class="adm-form-group">
-            <label class="adm-label">Banner-Text <span style="font-weight:400;color:#7A6550;">(erscheint auf der Website)</span></label>
-            <textarea name="vacation_text" rows="3" class="adm-input" placeholder="z.B. Ich bin vom 15.07. bis 29.07. im Urlaub…">${S.vacation_text||''}</textarea>
-            <span class="adm-hint">Tipp: Geben Sie Urlaubszeitraum und wann Sie wieder erreichbar sind an.</span>
-          </div>
-          <div style="padding:12px;background:#FFF8EE;border-radius:8px;border:1px solid #F0D5A8;">
-            <p style="font-size:0.82rem;color:#7A6550;margin:0;"><strong>Vorschau Banner:</strong></p>
-            <div style="margin-top:8px;background:linear-gradient(90deg,#D98A2B,#B5701A);color:white;padding:10px 16px;border-radius:6px;font-size:0.88rem;">
-              <i class="fas fa-umbrella-beach"></i> <strong>Urlaubshinweis:</strong> ${S.vacation_text||'Ihr Urlaubstext erscheint hier...'}
-            </div>
-          </div>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;background:${isActive?'#FFF3E0':'#F4F6F9'};padding:10px 16px;border-radius:10px;border:2px solid ${isActive?'#D98A2B':'#E8D9C5'};">
+          <input type="checkbox" name="banner_active" value="1" style="width:18px;height:18px;accent-color:#D98A2B;" ${isActive?'checked':''}>
+          <span style="font-weight:600;font-size:0.9rem;">Banner aktivieren</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Inhalt-Karte -->
+    <div class="adm-card" style="margin-bottom:20px;">
+      <h3 style="font-size:1rem;margin-bottom:16px;color:#2C2018;"><i class="fas fa-pen" style="color:#D98A2B;margin-right:8px;"></i>Banner-Inhalt</h3>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;" class="infobanner-grid-2">
+        <div class="adm-form-group">
+          <label class="adm-label">Titel <span style="font-weight:400;color:#7A6550;">(optional)</span></label>
+          <input type="text" name="banner_title" value="${(S.banner_title||'').replace(/"/g,'&quot;')}" class="adm-input" placeholder="z.B. Wichtiger Hinweis">
+        </div>
+        <div class="adm-form-group">
+          <label class="adm-label">Icon <span style="font-weight:400;color:#7A6550;">(optional, FontAwesome-Klasse)</span></label>
+          <input type="text" name="banner_icon" value="${(S.banner_icon||'').replace(/"/g,'&quot;')}" class="adm-input" placeholder="z.B. fas fa-umbrella-beach">
+          <span class="adm-hint">Beispiele: fas fa-info-circle &nbsp;|&nbsp; fas fa-umbrella-beach &nbsp;|&nbsp; fas fa-star</span>
         </div>
       </div>
+
+      <!-- WYSIWYG-Editor (wie Impressum) -->
+      <div class="adm-form-group">
+        <label class="adm-label">Banner-Text <span style="font-weight:400;color:#7A6550;">(erscheint im Modal)</span></label>
+        <div style="border:1px solid #E8D9C5;border-radius:10px;overflow:hidden;background:white;">
+          <!-- Toolbar -->
+          <div style="display:flex;flex-wrap:wrap;gap:4px;padding:8px 10px;background:#F9F5F0;border-bottom:1px solid #E8D9C5;">
+            <button type="button" onclick="ibExecCmd('bold')" title="Fett" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;"><b>B</b></button>
+            <button type="button" onclick="ibExecCmd('italic')" title="Kursiv" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;"><i>I</i></button>
+            <button type="button" onclick="ibExecCmd('underline')" title="Unterstrichen" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;"><u>U</u></button>
+            <span style="width:1px;background:#ddd;margin:2px 4px;"></span>
+            <button type="button" onclick="ibExecCmd('insertUnorderedList')" title="Liste" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;"><i class="fas fa-list"></i></button>
+            <button type="button" onclick="ibExecCmd('justifyLeft')" title="Links" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;"><i class="fas fa-align-left"></i></button>
+            <button type="button" onclick="ibExecCmd('justifyCenter')" title="Mitte" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;"><i class="fas fa-align-center"></i></button>
+            <button type="button" onclick="ibCreateLink()" title="Link einfügen" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;"><i class="fas fa-link"></i></button>
+            <span style="width:1px;background:#ddd;margin:2px 4px;"></span>
+            <button type="button" id="ibToggleHtml" onclick="ibToggleHtmlMode()" title="HTML-Ansicht" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;font-size:0.78rem;font-family:monospace;">&lt;/&gt;</button>
+          </div>
+          <!-- Editor-Bereich -->
+          <div id="ibEditor" contenteditable="true" style="min-height:120px;padding:14px;outline:none;font-size:0.9rem;line-height:1.6;color:#2C2018;">${S.banner_text||''}</div>
+          <textarea id="ibHtmlArea" name="banner_text" style="display:none;width:100%;min-height:120px;padding:14px;font-family:monospace;font-size:0.82rem;border:none;outline:none;resize:vertical;">${(S.banner_text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hintergrundbild-Karte -->
+    <div class="adm-card" style="margin-bottom:20px;">
+      <h3 style="font-size:1rem;margin-bottom:16px;color:#2C2018;"><i class="fas fa-image" style="color:#D98A2B;margin-right:8px;"></i>Hintergrundbild</h3>
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:14px;">
+        <input type="checkbox" name="banner_bg_enabled" value="1" style="width:18px;height:18px;accent-color:#D98A2B;" ${bgEnabled?'checked':''}>
+        <span style="font-weight:600;font-size:0.9rem;">Hintergrundbild aktivieren</span>
+      </label>
+      <div class="adm-form-group">
+        <label class="adm-label">Bild hochladen <span style="font-weight:400;color:#7A6550;">(JPG, PNG, WebP – max. 2 MB)</span></label>
+        <input type="file" name="banner_bg_file" accept="image/jpeg,image/png,image/webp" class="adm-input" style="padding:8px;">
+        ${hasBgImage ? `<div style="margin-top:10px;"><p style="font-size:0.8rem;color:#4A9B7F;margin-bottom:6px;"><i class="fas fa-check-circle"></i> Bild vorhanden</p><img src="${S.banner_bg_image}" alt="Banner Hintergrundbild" style="max-width:220px;border-radius:8px;border:1px solid #E8D9C5;"><p style="font-size:0.78rem;color:#7A6550;margin-top:6px;">Neues Bild hochladen, um es zu ersetzen. Feld leer lassen, um beizubehalten.</p></div>` : '<span class="adm-hint">Noch kein Bild hochgeladen.</span>'}
+      </div>
+      ${hasBgImage ? `<label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+        <input type="checkbox" name="banner_bg_delete" value="1" style="width:16px;height:16px;accent-color:#8B1A1A;">
+        <span style="font-size:0.85rem;color:#8B1A1A;">Aktuelles Hintergrundbild löschen</span>
+      </label>` : ''}
+    </div>
+
+    <!-- Anzeige-Intervall-Karte -->
+    <div class="adm-card" style="margin-bottom:20px;">
+      <h3 style="font-size:1rem;margin-bottom:16px;color:#2C2018;"><i class="fas fa-clock" style="color:#D98A2B;margin-right:8px;"></i>Anzeigeintervall</h3>
+      <div class="adm-form-group">
+        <label class="adm-label">Banner erneut anzeigen nach <span style="font-weight:400;color:#7A6550;">(Minuten pro Browser)</span></label>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <input type="number" name="banner_interval_minutes" value="${interval}" min="1" max="99999" class="adm-input" style="max-width:120px;">
+          <span style="font-size:0.85rem;color:#7A6550;">Minuten</span>
+        </div>
+        <span class="adm-hint">Nach dem ersten Anzeigen wird das Banner pro Browser erst nach dieser Zeit wieder eingeblendet. Standard: 60 Minuten.</span>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
       <button type="submit" class="adm-btn adm-btn-primary"><i class="fas fa-save"></i> Einstellungen speichern</button>
-    </form>
-  </div>`
-  return c.html(adminLayout('Urlaubsmodus', body, 'urlaub'))
+      <a href="/" target="_blank" class="adm-btn adm-btn-secondary"><i class="fas fa-eye"></i> Website ansehen</a>
+    </div>
+  </form>
+
+  <style>
+    @media(max-width:600px){.infobanner-grid-2{grid-template-columns:1fr!important;}}
+  </style>
+  <script>
+    // WYSIWYG für Info-Banner
+    var ibHtmlMode = false;
+    var ibEditor = document.getElementById('ibEditor');
+    var ibHtmlArea = document.getElementById('ibHtmlArea');
+    function ibExecCmd(cmd, val) {
+      if(ibHtmlMode) return;
+      document.execCommand(cmd, false, val||null);
+      ibEditor.focus();
+    }
+    function ibCreateLink() {
+      if(ibHtmlMode) return;
+      var url = prompt('URL eingeben:');
+      if(url) document.execCommand('createLink', false, url);
+      ibEditor.focus();
+    }
+    function ibToggleHtmlMode() {
+      ibHtmlMode = !ibHtmlMode;
+      var btn = document.getElementById('ibToggleHtml');
+      if(ibHtmlMode) {
+        ibHtmlArea.value = ibEditor.innerHTML;
+        ibEditor.style.display='none';
+        ibHtmlArea.style.display='block';
+        btn.style.background='#D98A2B';btn.style.color='white';btn.style.borderColor='#D98A2B';
+      } else {
+        ibEditor.innerHTML = ibHtmlArea.value;
+        ibHtmlArea.style.display='none';
+        ibEditor.style.display='block';
+        btn.style.background='';btn.style.color='';btn.style.borderColor='';
+      }
+    }
+    // Beim Absenden: WYSIWYG-Inhalt in Textarea übertragen
+    document.querySelector('form').addEventListener('submit', function(){
+      if(!ibHtmlMode) ibHtmlArea.value = ibEditor.innerHTML;
+      ibHtmlArea.style.display='block';
+    });
+  </script>`
+  return c.html(adminLayout('Info-Banner', body, 'infobanner'))
 })
 
-app.post('/admin/urlaub', async (c) => {
-  const d = await c.req.parseBody()
-  await c.env.DB.prepare(
-    `INSERT INTO settings (key, value, label) VALUES ('vacation_active', ?, 'vacation_active')
-     ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=CURRENT_TIMESTAMP`
-  ).bind(d.vacation_active === '1' ? '1' : '0').run()
-  await c.env.DB.prepare(
-    `INSERT INTO settings (key, value, label) VALUES ('vacation_text', ?, 'vacation_text')
-     ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=CURRENT_TIMESTAMP`
-  ).bind((d.vacation_text as string)||'').run()
-  return c.redirect('/admin/urlaub?msg=saved')
+app.post('/admin/infobanner', async (c) => {
+  try {
+    const form = await c.req.parseBody()
+    const upsert = async (key: string, value: string) => {
+      await c.env.DB.prepare(
+        `INSERT INTO settings (key, value, label) VALUES (?, ?, ?)
+         ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=CURRENT_TIMESTAMP`
+      ).bind(key, value, key).run()
+    }
+    await upsert('banner_active', form.banner_active === '1' ? '1' : '0')
+    await upsert('banner_title', (form.banner_title as string) || '')
+    await upsert('banner_icon', (form.banner_icon as string) || '')
+    await upsert('banner_text', (form.banner_text as string) || '')
+    await upsert('banner_bg_enabled', form.banner_bg_enabled === '1' ? '1' : '0')
+    await upsert('banner_interval_minutes', (form.banner_interval_minutes as string) || '60')
+
+    // Hintergrundbild: löschen oder hochladen
+    if (form.banner_bg_delete === '1') {
+      await upsert('banner_bg_image', '')
+    } else {
+      const bgFile = form.banner_bg_file as File
+      if (bgFile && bgFile.size > 0) {
+        // Als Base64-Data-URL in DB speichern
+        const buffer = await bgFile.arrayBuffer()
+        const bytes = new Uint8Array(buffer)
+        let binary = ''
+        for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i])
+        const base64 = btoa(binary)
+        const mimeType = bgFile.type || 'image/jpeg'
+        await upsert('banner_bg_image', `data:${mimeType};base64,${base64}`)
+      }
+    }
+    return c.redirect('/admin/infobanner?msg=saved')
+  } catch {
+    return c.redirect('/admin/infobanner?msg=error')
+  }
 })
 
 // ═══════════════════════════════════════════════════════════════
@@ -2901,7 +3088,7 @@ app.get('/admin/backup', async (c) => {
         <div class="backup-item__meta">${dt} &nbsp;·&nbsp; ${sizeKB} KB &nbsp;·&nbsp; ${typeLabel} ${b.description ? `&nbsp;·&nbsp; <em>${b.description}</em>` : ''}</div>
       </div>
       <div class="backup-item__actions" style="flex-wrap:wrap;">
-        ${hasData ? `<a href="/admin/backup/${b.id}/download" class="adm-btn adm-btn-secondary" style="padding:5px 10px;" title="Als JSON herunterladen (für Genspark-Import)"><i class="fas fa-download"></i></a>` : ''}
+        ${hasData ? `<a href="/admin/backup/${b.id}/download" class="adm-btn adm-btn-secondary" style="padding:5px 10px;" title="Als JSON herunterladen"><i class="fas fa-download"></i></a>` : ''}
         <button class="adm-btn adm-btn-green" style="padding:5px 12px;" title="${hasData ? 'Wiederherstellen' : 'Keine Daten (älteres Format)'}"
           onclick="startRestore(${b.id},'${b.name.replace(/'/g,"\\'")}',${hasData ? 'true' : 'false'})">
           <i class="fas fa-undo"></i> Restore
@@ -2945,30 +3132,25 @@ app.get('/admin/backup', async (c) => {
       <div class="adm-card" style="margin-bottom:20px;">
         <h3 style="font-size:1rem;margin-bottom:14px;"><i class="fas fa-download" style="color:#4A9B7F;margin-right:8px;"></i>Datenbank exportieren</h3>
 
-        <!-- JSON-Export: Für Genspark-Hochladen -->
+        <!-- JSON-Export -->
         <div style="background:linear-gradient(135deg,#FBF7F2,#F3EDE3);border:1.5px solid #D98A2B;border-radius:10px;padding:14px;margin-bottom:12px;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-            <i class="fas fa-star" style="color:#D98A2B;"></i>
-            <strong style="font-size:0.88rem;color:#2C2018;">Für Genspark-Import empfohlen</strong>
+            <i class="fas fa-file-export" style="color:#D98A2B;"></i>
+            <strong style="font-size:0.88rem;color:#2C2018;">Exportdatei für Updates</strong>
           </div>
           <p style="font-size:0.8rem;color:#7A6550;margin-bottom:10px;">
-            Exportiert alle Inhalte als <strong>JSON-Datei</strong>. Diese Datei können Sie bei Genspark hochladen,
-            damit der KI-Assistent Ihre aktuellen Daten kennt und darauf basierend Änderungen vornehmen kann.
+            Aktuelle Daten werden exportiert und können für Updates der Webseite verwendet werden, damit diese nicht überschrieben werden.
           </p>
           <a href="/admin/backup/json-export" class="adm-btn adm-btn-primary"><i class="fas fa-file-export"></i> Jetzt als JSON exportieren</a>
         </div>
-
-        <!-- SQL-Export: Für technische Sicherung -->
-        <p style="font-size:0.8rem;color:#7A6550;margin-bottom:10px;">SQL-Dump für technische Sicherung oder Datenbankwiederherstellung:</p>
-        <a href="/admin/backup/db-export" class="adm-btn adm-btn-secondary"><i class="fas fa-file-code"></i> DB als SQL exportieren</a>
       </div>
 
       <div class="adm-card">
-        <h3 style="font-size:1rem;margin-bottom:14px;"><i class="fas fa-upload" style="color:#8B1A1A;margin-right:8px;"></i>Datenbank importieren</h3>
-        <p style="font-size:0.83rem;color:#7A6550;margin-bottom:14px;">SQL-Dump einspielen. <strong style="color:#8B1A1A;">Achtung:</strong> Alle vorhandenen Daten werden überschrieben!</p>
-        <form method="POST" action="/admin/backup/db-import" enctype="multipart/form-data" class="adm-form" onsubmit="return confirm('Wirklich importieren? Alle aktuellen Daten werden überschrieben!')">
-          <input type="file" name="sqlfile" accept=".sql,.txt" required>
-          <button type="submit" class="adm-btn adm-btn-danger" style="margin-top:10px;"><i class="fas fa-upload"></i> SQL jetzt importieren</button>
+        <h3 style="font-size:1rem;margin-bottom:14px;"><i class="fas fa-upload" style="color:#4A9B7F;margin-right:8px;"></i>JSON importieren</h3>
+        <p style="font-size:0.83rem;color:#7A6550;margin-bottom:14px;">Zuvor exportierte JSON-Datei einspielen. <strong style="color:#8B1A1A;">Achtung:</strong> Alle vorhandenen Daten werden überschrieben!</p>
+        <form method="POST" action="/admin/backup/json-import" enctype="multipart/form-data" class="adm-form" onsubmit="return confirm('Wirklich importieren? Alle aktuellen Daten werden überschrieben!')">
+          <input type="file" name="jsonfile" accept=".json" required>
+          <button type="submit" class="adm-btn adm-btn-danger" style="margin-top:10px;"><i class="fas fa-upload"></i> JSON jetzt importieren</button>
         </form>
       </div>
     </div>
@@ -3274,7 +3456,7 @@ app.get('/admin/backup/db-export', async (c) => {
   })
 })
 
-// ─── JSON-Export: Alle Daten als JSON-Datei (für Genspark-Import) ─────────────
+// ─── JSON-Export: Alle Daten als JSON-Datei ───────────────────────────────────
 app.get('/admin/backup/json-export', async (c) => {
   const tables = ['settings','leistungen','kategorien','faqs','page_content','stellenangebote','testimonials']
   const exportData: Record<string, any[]> = {}
@@ -3291,7 +3473,7 @@ app.get('/admin/backup/json-export', async (c) => {
     total_rows: totalRows,
     tables: Object.keys(exportData),
     format: 'auxilium-json-v1',
-    note: 'Diese Datei bei Genspark hochladen, damit der KI-Assistent Ihre aktuellen Daten kennt.'
+    note: 'Auxilium Webseite – Exportierte Daten für Updates'
   }
   const output = JSON.stringify({ _meta: meta, data: exportData }, null, 2)
   const now = new Date()
@@ -3326,29 +3508,42 @@ app.get('/admin/backup/:id/download', async (c) => {
   })
 })
 
-// DB-Import: SQL-Dump verarbeiten
-app.post('/admin/backup/db-import', async (c) => {
+// ─── JSON-Import: JSON-Datei einspielen ──────────────────────────────────────
+app.post('/admin/backup/json-import', async (c) => {
   try {
     const form = await c.req.parseBody()
-    const file = form.sqlfile as File
+    const file = form.jsonfile as File
     if (!file) return c.redirect('/admin/backup?msg=error')
-    const sql = await file.text()
-    // SQL-Statements splitten und ausführen (einfaches Statement-by-Statement)
-    const statements = sql.split(';').map((s: string) => s.trim()).filter((s: string) => s.length > 0 && !s.startsWith('--'))
-    for (const stmt of statements) {
+    const raw = await file.text()
+    let importData: any
+    try { importData = JSON.parse(raw) } catch { return c.redirect('/admin/backup?msg=error') }
+    // Unterstützt { data: { tabelle: [...] } } und direkt { tabelle: [...] }
+    const tables = importData.data ?? importData
+    const allowedTables = ['settings','leistungen','kategorien','faqs','page_content','stellenangebote','testimonials']
+    let imported = 0
+    for (const table of allowedTables) {
+      if (!Array.isArray(tables[table]) || tables[table].length === 0) continue
       try {
-        await c.env.DB.prepare(stmt).run()
+        await c.env.DB.prepare(`DELETE FROM ${table}`).run()
+        for (const row of tables[table]) {
+          const cols = Object.keys(row)
+          const placeholders = cols.map(() => '?').join(', ')
+          const vals = Object.values(row)
+          await c.env.DB.prepare(`INSERT OR IGNORE INTO ${table} (${cols.join(', ')}) VALUES (${placeholders})`)
+            .bind(...vals).run()
+          imported++
+        }
       } catch {}
     }
-    // Auto-Backup vor Import
+    // Auto-Backup-Slot-Verwaltung
     const { results: existing } = await c.env.DB.prepare('SELECT id FROM backups ORDER BY created_at ASC').all<any>()
     if (existing.length >= 25) {
       await c.env.DB.prepare('DELETE FROM backups WHERE id=?').bind(existing[0].id).run()
     }
     const now = new Date()
-    const name = `Auto-Backup vor Import ${now.toLocaleDateString('de-DE')}`
+    const name = `Auto-Backup vor JSON-Import ${now.toLocaleDateString('de-DE')}`
     await c.env.DB.prepare('INSERT INTO backups (name,description,size_bytes,type) VALUES (?,?,?,?)')
-      .bind(name, 'Automatisch vor DB-Import erstellt', 0, 'auto').run()
+      .bind(name, `Automatisch vor JSON-Import erstellt (${imported} Datensätze)`, 0, 'auto').run()
     return c.redirect('/admin/backup?msg=restored')
   } catch {
     return c.redirect('/admin/backup?msg=error')

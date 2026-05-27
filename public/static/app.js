@@ -12,13 +12,13 @@
 
   if (navbar) {
     const isSubpage = window.location.pathname !== '/';
+    const siteHeader = document.getElementById('siteHeader');
 
-    // Navbar ist immer fixed – body braucht padding-top = Navbar-Höhe,
-    // damit Inhalt nicht unter der Navbar verschwindet.
-    // Bei aktivem Urlaubsbanner liegt der Banner statisch IM Dokumentfluss
-    // (ÜBER der Navbar-Lücke), deshalb: body padding-top = nur Navbar-Höhe.
+    // siteHeader ist position:fixed – body braucht padding-top = siteHeader-Höhe,
+    // damit Inhalt nicht darunter verschwindet.
     const applyBodyPadding = () => {
-      document.body.style.paddingTop = navbar.offsetHeight + 'px';
+      const h = siteHeader ? siteHeader.offsetHeight : navbar.offsetHeight;
+      document.body.style.paddingTop = h + 'px';
     };
     applyBodyPadding();
     window.addEventListener('resize', applyBodyPadding, { passive: true });
@@ -30,7 +30,6 @@
       } else {
         navbar.classList.remove('scrolled');
       }
-      // Padding nach Größenänderung aktualisieren
       applyBodyPadding();
     };
     window.addEventListener('scroll', onScroll, { passive: true });
