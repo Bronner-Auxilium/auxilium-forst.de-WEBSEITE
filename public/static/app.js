@@ -303,4 +303,91 @@
     });
   });
 
+  /* ─── Cookie-Banner ──────────────────────────────────────── */
+  const COOKIE_KEY = 'aux_cookie_consent';
+
+  function showCookieBanner() {
+    const banner = document.getElementById('cookieBanner');
+    const backdrop = document.getElementById('cookieBannerBackdrop');
+    if (!banner) return;
+    backdrop.style.display = 'block';
+    banner.style.display = 'flex';
+    // Fokus setzen für Barrierefreiheit
+    setTimeout(() => {
+      const firstBtn = banner.querySelector('.cookie-btn');
+      if (firstBtn) firstBtn.focus();
+    }, 100);
+  }
+
+  function hideCookieBanner() {
+    const banner = document.getElementById('cookieBanner');
+    const backdrop = document.getElementById('cookieBannerBackdrop');
+    if (banner) banner.style.display = 'none';
+    if (backdrop) backdrop.style.display = 'none';
+  }
+
+  window.openCookieSettings = function() {
+    const consent = JSON.parse(localStorage.getItem(COOKIE_KEY) || '{}');
+    const analyticsBox = document.getElementById('cookieAnalytics');
+    if (analyticsBox) analyticsBox.checked = consent.analytics === true;
+    showCookieBanner();
+  };
+
+  window.acceptAllCookies = function() {
+    const consent = { necessary: true, analytics: true, savedAt: Date.now() };
+    localStorage.setItem(COOKIE_KEY, JSON.stringify(consent));
+    hideCookieBanner();
+    applyConsent(consent);
+  };
+
+  window.acceptNecessaryCookies = function() {
+    const consent = { necessary: true, analytics: false, savedAt: Date.now() };
+    localStorage.setItem(COOKIE_KEY, JSON.stringify(consent));
+    hideCookieBanner();
+    applyConsent(consent);
+  };
+
+  window.saveCookieSettings = function() {
+    const analyticsBox = document.getElementById('cookieAnalytics');
+    const consent = {
+      necessary: true,
+      analytics: analyticsBox ? analyticsBox.checked : false,
+      savedAt: Date.now()
+    };
+    localStorage.setItem(COOKIE_KEY, JSON.stringify(consent));
+    hideCookieBanner();
+    applyConsent(consent);
+  };
+
+  function applyConsent(consent) {
+    // Google Analytics deaktivieren wenn nicht zugestimmt
+    if (!consent.analytics) {
+      window['ga-disable-' + (window.GA_ID || '')] = true;
+    }
+  }
+
+  // ESC schließt Cookie-Banner
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      const banner = document.getElementById('cookieBanner');
+      if (banner && banner.style.display !== 'none') window.saveCookieSettings();
+    }
+  });
+
+  // Beim Laden: Cookie-Consent prüfen
+  (function checkConsent() {
+    const raw = localStorage.getItem(COOKIE_KEY);
+    if (!raw) {
+      // Noch keine Entscheidung – Banner nach kurzer Verzögerung zeigen
+      setTimeout(showCookieBanner, 1200);
+    } else {
+      try {
+        const consent = JSON.parse(raw);
+        applyConsent(consent);
+      } catch {
+        setTimeout(showCookieBanner, 1200);
+      }
+    }
+  })();
+
 })();

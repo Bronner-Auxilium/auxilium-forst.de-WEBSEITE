@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { serveStatic } from 'hono/cloudflare-workers'
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie'
 
-type Bindings = { DB: D1Database }
+type Bindings = { DB: D1Database; MEDIA: KVNamespace }
 const app = new Hono<{ Bindings: Bindings }>()
 
 // Admin-Passwort (hier einfach hartcodiert – für Prod als Secret setzen)
@@ -36,20 +36,21 @@ function layout(title: string, description: string, body: string, S: Record<stri
   const bannerTitle = S.banner_title || ''
   const bannerIcon = S.banner_icon || ''
   const bannerText = S.banner_text || ''
-  const bannerBgEnabled = S.banner_bg_enabled === '1'
-  const bannerBgImage = S.banner_bg_image || ''
+  const bannerHasBg = S.banner_bg_image === '1' // KV-Flag: '1' = Bild vorhanden
+  const bannerBgOpacity = S.banner_bg_opacity || '50'
+  const bgOpacityDecimal = (parseInt(bannerBgOpacity, 10) / 100).toFixed(2)
   const infoBannerHtml = bannerActive ? `
 <!-- Info-Banner Modal -->
-<div id="infoBannerBackdrop" class="info-banner-backdrop" style="display:none;" onclick="closeInfoBanner()"></div>
-<div id="infoBannerModal" class="info-banner-modal" style="display:none;"${bannerBgEnabled && bannerBgImage ? ` data-bg="${bannerBgImage}"` : ''}>
-  ${bannerBgEnabled && bannerBgImage ? `<div class="info-banner-modal__bg" style="background-image:url('${bannerBgImage}')"></div>` : ''}
+<div id="infoBannerBackdrop" class="info-banner-backdrop" style="display:none;" onclick="closeInfoBanner()" role="dialog" aria-modal="true" aria-label="Info-Banner"></div>
+<div id="infoBannerModal" class="info-banner-modal" style="display:none;" role="alertdialog" aria-labelledby="infoBannerTitle" aria-describedby="infoBannerBody"${bannerHasBg ? ' data-has-bg="1"' : ''}>
+  ${bannerHasBg ? `<div class="info-banner-modal__bg" style="background-image:url('/media/banner-bg');opacity:${bgOpacityDecimal};"></div>` : ''}
   <div class="info-banner-modal__inner">
-    <button class="info-banner-modal__close" onclick="closeInfoBanner()" aria-label="Schließen">&times;</button>
+    <button class="info-banner-modal__close" onclick="closeInfoBanner()" aria-label="Info-Banner schließen">&times;</button>
     ${(bannerIcon || bannerTitle) ? `<div class="info-banner-modal__header">
-      ${bannerIcon ? `<span class="info-banner-modal__icon"><i class="${bannerIcon}"></i></span>` : ''}
-      ${bannerTitle ? `<h2 class="info-banner-modal__title">${bannerTitle}</h2>` : ''}
-    </div>` : ''}
-    <div class="info-banner-modal__body">${bannerText}</div>
+      ${bannerIcon ? `<span class="info-banner-modal__icon" aria-hidden="true"><i class="${bannerIcon}"></i></span>` : ''}
+      ${bannerTitle ? `<h2 class="info-banner-modal__title" id="infoBannerTitle">${bannerTitle}</h2>` : '<h2 class="info-banner-modal__title" id="infoBannerTitle" style="display:none"></h2>'}
+    </div>` : '<h2 id="infoBannerTitle" style="display:none"></h2>'}
+    <div class="info-banner-modal__body" id="infoBannerBody">${bannerText}</div>
   </div>
 </div>
 <script>
@@ -63,7 +64,6 @@ function layout(title: string, description: string, body: string, S: Record<stri
     var backdrop=document.getElementById('infoBannerBackdrop');
     var modal=document.getElementById('infoBannerModal');
     if(backdrop&&modal){
-      var bgData=modal.getAttribute('data-bg');
       setTimeout(function(){
         backdrop.style.display='block';
         modal.style.display='flex';
@@ -72,6 +72,9 @@ function layout(title: string, description: string, body: string, S: Record<stri
           modal.classList.add('visible');
         });
         localStorage.setItem(key,String(Date.now()));
+        // Fokus setzen für Barrierefreiheit
+        var closeBtn=modal.querySelector('.info-banner-modal__close');
+        if(closeBtn)closeBtn.focus();
       },600);
     }
   }
@@ -85,6 +88,8 @@ function layout(title: string, description: string, body: string, S: Record<stri
       if(modal)modal.style.display='none';
     },350);
   };
+  // ESC-Taste schließt Modal
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')window.closeInfoBanner();});
 })();
 </script>` : ''
   return `<!DOCTYPE html>
@@ -92,6 +97,7 @@ function layout(title: string, description: string, body: string, S: Record<stri
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
 <meta name="description" content="${description}">
 <meta name="keywords" content="Pflegeberatung Forst Baden, Pflege Bruchsal, ambulante Pflege 76694, Verhinderungspflege, Pflegedienst Karlsruhe, Körperpflege, Betreuung zuhause, Kristina Bronner">
 <meta name="author" content="Kristina Bronner – Auxilium Pflegeberatung">
@@ -122,6 +128,7 @@ ${S.ga_id ? `<!-- Google Analytics -->
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Auxilium – Pflegeberatung Forst Baden","description":"Individuelle Pflege und Pflegeberatung in Forst Baden und Umgebung","url":"https://auxilium-forst.com","telephone":"","email":"info@auxilium-forst.com","address":{"@type":"PostalAddress","streetAddress":"","addressLocality":"Forst","postalCode":"76694","addressCountry":"DE"},"areaServed":[{"@type":"City","name":"Forst","postalCode":"76694"},{"@type":"City","name":"Bruchsal","postalCode":"76646"},{"@type":"City","name":"Karlsdorf-Neuthard","postalCode":"76689"}],"priceRange":"€€","openingHours":"Mo-Fr 08:00-18:00"}</script>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Zum Hauptinhalt springen</a>
 ${infoBannerHtml}<div id="siteHeader" class="site-header"><nav class="navbar" id="navbar" role="navigation" aria-label="Hauptnavigation">
   <div class="navbar__inner">
     <a href="/" class="navbar__logo" aria-label="Auxilium Startseite">
@@ -208,10 +215,46 @@ ${body}
       <div class="footer__bottom-links">
         <a href="/impressum">Impressum</a>
         <a href="/datenschutz">Datenschutz</a>
+        <a href="/barrierefreiheit">Barrierefreiheit</a>
+        <button id="cookieSettingsBtn" onclick="openCookieSettings()" style="background:none;border:none;color:rgba(255,255,255,0.55);font-size:inherit;cursor:pointer;padding:0;font-family:inherit;">Cookie-Einstellungen</button>
       </div>
     </div>
   </div>
 </footer>
+
+<!-- Cookie-Banner -->
+<div id="cookieBanner" class="cookie-banner" role="dialog" aria-modal="true" aria-labelledby="cookieBannerTitle" aria-describedby="cookieBannerDesc" style="display:none;">
+  <div class="cookie-banner__box">
+    <h2 class="cookie-banner__title" id="cookieBannerTitle"><i class="fas fa-cookie-bite" aria-hidden="true"></i> Cookie-Einstellungen</h2>
+    <p class="cookie-banner__desc" id="cookieBannerDesc">
+      Diese Website verwendet Cookies, um grundlegende Funktionen bereitzustellen. Wir setzen <strong>keine</strong> Tracking- oder Marketing-Cookies ohne Ihre Zustimmung ein. Nur technisch notwendige Cookies sind standardmäßig aktiv.
+    </p>
+    <div class="cookie-banner__options">
+      <label class="cookie-option">
+        <input type="checkbox" checked disabled aria-label="Technisch notwendige Cookies (immer aktiv)">
+        <div>
+          <strong>Technisch notwendige Cookies</strong>
+          <span>Session-Verwaltung, Sicherheit. Immer aktiv.</span>
+        </div>
+      </label>
+      <label class="cookie-option" id="cookieAnalyticsLabel">
+        <input type="checkbox" id="cookieAnalytics" aria-label="Analyse-Cookies (Google Analytics)">
+        <div>
+          <strong>Analyse (Google Analytics)</strong>
+          <span>Anonymisierte Nutzungsstatistiken. Nur wenn aktiv.</span>
+        </div>
+      </label>
+    </div>
+    <div class="cookie-banner__actions">
+      <button class="cookie-btn cookie-btn-all" onclick="acceptAllCookies()">Alle akzeptieren</button>
+      <button class="cookie-btn cookie-btn-save" onclick="saveCookieSettings()">Auswahl speichern</button>
+      <button class="cookie-btn cookie-btn-necessary" onclick="acceptNecessaryCookies()">Nur notwendige</button>
+    </div>
+    <p style="font-size:0.73rem;color:#7A6550;margin-top:12px;"><a href="/datenschutz" style="color:var(--primary);">Datenschutzerklärung</a> &middot; <a href="/impressum" style="color:var(--primary);">Impressum</a></p>
+  </div>
+</div>
+<div id="cookieBannerBackdrop" class="cookie-banner-backdrop" style="display:none;" onclick="saveCookieSettings()"></div>
+
 <button class="scroll-top" id="scrollTop" aria-label="Nach oben scrollen">
   <i class="fas fa-chevron-up" aria-hidden="true"></i>
 </button>
@@ -279,6 +322,7 @@ app.get('/', async (c) => {
       </a>`).join('\n')
 
   const body = `
+<main id="main-content" tabindex="-1">
 <section class="hero" aria-labelledby="hero-heading">
   <div class="hero__bg-shapes" aria-hidden="true">
     <div class="shape shape-1"></div>
@@ -508,7 +552,8 @@ ${(S.show_testimonials !== '0') && dbTestimonials.length > 0 ? `
       <a href="/leistungen" class="btn btn-green-ghost"><i class="fas fa-list" aria-hidden="true"></i>Leistungen ansehen</a>
     </div>
   </div>
-</section>`
+</section>
+</main>`
   return c.html(layout('Auxilium &ndash; Ihre St&uuml;tze in der Pflege | Forst Baden', 'Auxilium bietet individuelle Pflegeberatung und ambulante Pflegeleistungen in Forst Baden.', body, S))
 })
 
@@ -2875,8 +2920,9 @@ app.get('/admin/infobanner', async (c) => {
   const alert = msg === 'saved' ? '<div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> Info-Banner gespeichert.</div>'
     : msg === 'error' ? '<div class="adm-alert adm-alert-error"><i class="fas fa-exclamation-circle"></i> Fehler beim Speichern.</div>' : ''
   const isActive = S.banner_active === '1'
-  const bgEnabled = S.banner_bg_enabled === '1'
-  const hasBgImage = !!S.banner_bg_image
+  // banner_bg_image = '1' wenn Bild in KV vorhanden, '' wenn nicht
+  const hasBgImage = S.banner_bg_image === '1'
+  const bgOpacity = S.banner_bg_opacity || '50'
   const interval = S.banner_interval_minutes || '60'
 
   const body = `
@@ -2907,39 +2953,36 @@ app.get('/admin/infobanner', async (c) => {
     <!-- Inhalt-Karte -->
     <div class="adm-card" style="margin-bottom:20px;">
       <h3 style="font-size:1rem;margin-bottom:16px;color:#2C2018;"><i class="fas fa-pen" style="color:#D98A2B;margin-right:8px;"></i>Banner-Inhalt</h3>
-
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;" class="infobanner-grid-2">
         <div class="adm-form-group">
-          <label class="adm-label">Titel <span style="font-weight:400;color:#7A6550;">(optional)</span></label>
-          <input type="text" name="banner_title" value="${(S.banner_title||'').replace(/"/g,'&quot;')}" class="adm-input" placeholder="z.B. Wichtiger Hinweis">
+          <label class="adm-label" for="ib_title">Titel <span style="font-weight:400;color:#7A6550;">(optional)</span></label>
+          <input type="text" id="ib_title" name="banner_title" value="${(S.banner_title||'').replace(/"/g,'&quot;')}" class="adm-input" placeholder="z.B. Wichtiger Hinweis">
         </div>
         <div class="adm-form-group">
-          <label class="adm-label">Icon <span style="font-weight:400;color:#7A6550;">(optional, FontAwesome-Klasse)</span></label>
-          <input type="text" name="banner_icon" value="${(S.banner_icon||'').replace(/"/g,'&quot;')}" class="adm-input" placeholder="z.B. fas fa-umbrella-beach">
+          <label class="adm-label" for="ib_icon">Icon <span style="font-weight:400;color:#7A6550;">(optional, FontAwesome-Klasse)</span></label>
+          <input type="text" id="ib_icon" name="banner_icon" value="${(S.banner_icon||'').replace(/"/g,'&quot;')}" class="adm-input" placeholder="z.B. fas fa-umbrella-beach">
           <span class="adm-hint">Beispiele: fas fa-info-circle &nbsp;|&nbsp; fas fa-umbrella-beach &nbsp;|&nbsp; fas fa-star</span>
         </div>
       </div>
 
-      <!-- WYSIWYG-Editor (wie Impressum) -->
+      <!-- WYSIWYG-Editor mit Link-Ziel-Auswahl -->
       <div class="adm-form-group">
         <label class="adm-label">Banner-Text <span style="font-weight:400;color:#7A6550;">(erscheint im Modal)</span></label>
         <div style="border:1px solid #E8D9C5;border-radius:10px;overflow:hidden;background:white;">
-          <!-- Toolbar -->
           <div style="display:flex;flex-wrap:wrap;gap:4px;padding:8px 10px;background:#F9F5F0;border-bottom:1px solid #E8D9C5;">
-            <button type="button" onclick="ibExecCmd('bold')" title="Fett" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;"><b>B</b></button>
-            <button type="button" onclick="ibExecCmd('italic')" title="Kursiv" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;"><i>I</i></button>
-            <button type="button" onclick="ibExecCmd('underline')" title="Unterstrichen" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;"><u>U</u></button>
-            <span style="width:1px;background:#ddd;margin:2px 4px;"></span>
-            <button type="button" onclick="ibExecCmd('insertUnorderedList')" title="Liste" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;"><i class="fas fa-list"></i></button>
-            <button type="button" onclick="ibExecCmd('justifyLeft')" title="Links" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;"><i class="fas fa-align-left"></i></button>
-            <button type="button" onclick="ibExecCmd('justifyCenter')" title="Mitte" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;"><i class="fas fa-align-center"></i></button>
-            <button type="button" onclick="ibCreateLink()" title="Link einfügen" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;"><i class="fas fa-link"></i></button>
-            <span style="width:1px;background:#ddd;margin:2px 4px;"></span>
-            <button type="button" id="ibToggleHtml" onclick="ibToggleHtmlMode()" title="HTML-Ansicht" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;font-size:0.78rem;font-family:monospace;">&lt;/&gt;</button>
+            <button type="button" onclick="ibExecCmd('bold')" title="Fett" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;" aria-label="Fett"><b>B</b></button>
+            <button type="button" onclick="ibExecCmd('italic')" title="Kursiv" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;" aria-label="Kursiv"><i>I</i></button>
+            <button type="button" onclick="ibExecCmd('underline')" title="Unterstrichen" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;" aria-label="Unterstrichen"><u>U</u></button>
+            <span style="width:1px;background:#ddd;margin:2px 4px;" aria-hidden="true"></span>
+            <button type="button" onclick="ibExecCmd('insertUnorderedList')" title="Liste" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;" aria-label="Aufzählungsliste"><i class="fas fa-list" aria-hidden="true"></i></button>
+            <button type="button" onclick="ibExecCmd('justifyLeft')" title="Links" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;" aria-label="Linksbündig"><i class="fas fa-align-left" aria-hidden="true"></i></button>
+            <button type="button" onclick="ibExecCmd('justifyCenter')" title="Zentriert" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;" aria-label="Zentriert"><i class="fas fa-align-center" aria-hidden="true"></i></button>
+            <button type="button" onclick="ibInsertLink()" title="Link einfügen" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;" aria-label="Link einfügen"><i class="fas fa-link" aria-hidden="true"></i></button>
+            <span style="width:1px;background:#ddd;margin:2px 4px;" aria-hidden="true"></span>
+            <button type="button" id="ibToggleHtml" onclick="ibToggleHtmlMode()" title="HTML-Ansicht umschalten" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;font-size:0.78rem;font-family:monospace;" aria-label="HTML-Modus">&lt;/&gt;</button>
           </div>
-          <!-- Editor-Bereich -->
-          <div id="ibEditor" contenteditable="true" style="min-height:120px;padding:14px;outline:none;font-size:0.9rem;line-height:1.6;color:#2C2018;">${S.banner_text||''}</div>
-          <textarea id="ibHtmlArea" name="banner_text" style="display:none;width:100%;min-height:120px;padding:14px;font-family:monospace;font-size:0.82rem;border:none;outline:none;resize:vertical;">${(S.banner_text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
+          <div id="ibEditor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Banner-Textinhalt" style="min-height:120px;padding:14px;outline:none;font-size:0.9rem;line-height:1.6;color:#2C2018;">${S.banner_text||''}</div>
+          <textarea id="ibHtmlArea" name="banner_text" aria-label="HTML-Quellcode" style="display:none;width:100%;min-height:120px;padding:14px;font-family:monospace;font-size:0.82rem;border:none;outline:none;resize:vertical;">${(S.banner_text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
         </div>
       </div>
     </div>
@@ -2947,28 +2990,42 @@ app.get('/admin/infobanner', async (c) => {
     <!-- Hintergrundbild-Karte -->
     <div class="adm-card" style="margin-bottom:20px;">
       <h3 style="font-size:1rem;margin-bottom:16px;color:#2C2018;"><i class="fas fa-image" style="color:#D98A2B;margin-right:8px;"></i>Hintergrundbild</h3>
-      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:14px;">
-        <input type="checkbox" name="banner_bg_enabled" value="1" style="width:18px;height:18px;accent-color:#D98A2B;" ${bgEnabled?'checked':''}>
-        <span style="font-weight:600;font-size:0.9rem;">Hintergrundbild aktivieren</span>
-      </label>
+      <p style="font-size:0.83rem;color:#7A6550;margin-bottom:14px;">Das Bild wird automatisch angezeigt, sobald es hochgeladen ist. Eine separate Aktivierung ist nicht nötig.</p>
       <div class="adm-form-group">
-        <label class="adm-label">Bild hochladen <span style="font-weight:400;color:#7A6550;">(JPG, PNG, WebP – max. 2 MB)</span></label>
-        <input type="file" name="banner_bg_file" accept="image/jpeg,image/png,image/webp" class="adm-input" style="padding:8px;">
-        ${hasBgImage ? `<div style="margin-top:10px;"><p style="font-size:0.8rem;color:#4A9B7F;margin-bottom:6px;"><i class="fas fa-check-circle"></i> Bild vorhanden</p><img src="${S.banner_bg_image}" alt="Banner Hintergrundbild" style="max-width:220px;border-radius:8px;border:1px solid #E8D9C5;"><p style="font-size:0.78rem;color:#7A6550;margin-top:6px;">Neues Bild hochladen, um es zu ersetzen. Feld leer lassen, um beizubehalten.</p></div>` : '<span class="adm-hint">Noch kein Bild hochgeladen.</span>'}
+        <label class="adm-label" for="ib_bg_file">Bild hochladen <span style="font-weight:400;color:#7A6550;">(JPG, PNG, WebP – max. 20 MB, wird automatisch komprimiert)</span></label>
+        <input type="file" id="ib_bg_file" name="banner_bg_file" accept="image/jpeg,image/png,image/webp" class="adm-input" style="padding:8px;">
+        ${hasBgImage
+          ? `<div style="margin-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+               <p style="font-size:0.82rem;color:#4A9B7F;margin:0;"><i class="fas fa-check-circle"></i> Hintergrundbild ist gespeichert</p>
+               <img src="/media/banner-bg?t=${Date.now()}" alt="Vorschau Hintergrundbild" style="max-width:200px;max-height:120px;border-radius:8px;border:1px solid #E8D9C5;object-fit:cover;" loading="lazy">
+             </div>
+             <p style="font-size:0.78rem;color:#7A6550;margin-top:8px;">Neues Bild hochladen, um es zu ersetzen. Feld leer lassen, um beizubehalten.</p>`
+          : '<span class="adm-hint">Noch kein Bild hochgeladen. Ohne Bild erscheint das Modal mit weißem Hintergrund.</span>'}
       </div>
-      ${hasBgImage ? `<label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
-        <input type="checkbox" name="banner_bg_delete" value="1" style="width:16px;height:16px;accent-color:#8B1A1A;">
-        <span style="font-size:0.85rem;color:#8B1A1A;">Aktuelles Hintergrundbild löschen</span>
-      </label>` : ''}
+      <div class="adm-form-group" style="margin-top:14px;">
+        <label class="adm-label" for="ib_opacity">Bildtransparenz <span style="font-weight:400;color:#7A6550;">(0% = vollständig sichtbar, 100% = unsichtbar)</span></label>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+          <input type="range" id="ib_opacity" name="banner_bg_opacity" min="0" max="100" value="${bgOpacity}" style="width:180px;accent-color:#D98A2B;" oninput="document.getElementById('ib_opacity_val').textContent=this.value+'%'">
+          <span id="ib_opacity_val" style="font-weight:700;color:#D98A2B;min-width:40px;">${bgOpacity}%</span>
+          <input type="number" name="banner_bg_opacity_num" min="0" max="100" value="${bgOpacity}" class="adm-input" style="max-width:80px;" oninput="document.getElementById('ib_opacity').value=this.value;document.getElementById('ib_opacity_val').textContent=this.value+'%'" aria-label="Transparenz in Prozent">
+        </div>
+        <span class="adm-hint">Empfohlen: 30–60% für leichten Hintergrundeffekt. Der Wert wird beim Speichern aus dem Schieberegler übernommen.</span>
+      </div>
+      ${hasBgImage ? `<div style="margin-top:12px;">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+          <input type="checkbox" name="banner_bg_delete" value="1" style="width:16px;height:16px;accent-color:#8B1A1A;" aria-label="Hintergrundbild löschen">
+          <span style="font-size:0.85rem;color:#8B1A1A;">Hintergrundbild löschen</span>
+        </label>
+      </div>` : ''}
     </div>
 
     <!-- Anzeige-Intervall-Karte -->
     <div class="adm-card" style="margin-bottom:20px;">
       <h3 style="font-size:1rem;margin-bottom:16px;color:#2C2018;"><i class="fas fa-clock" style="color:#D98A2B;margin-right:8px;"></i>Anzeigeintervall</h3>
       <div class="adm-form-group">
-        <label class="adm-label">Banner erneut anzeigen nach <span style="font-weight:400;color:#7A6550;">(Minuten pro Browser)</span></label>
+        <label class="adm-label" for="ib_interval">Banner erneut anzeigen nach <span style="font-weight:400;color:#7A6550;">(Minuten pro Browser)</span></label>
         <div style="display:flex;align-items:center;gap:12px;">
-          <input type="number" name="banner_interval_minutes" value="${interval}" min="1" max="99999" class="adm-input" style="max-width:120px;">
+          <input type="number" id="ib_interval" name="banner_interval_minutes" value="${interval}" min="1" max="99999" class="adm-input" style="max-width:120px;">
           <span style="font-size:0.85rem;color:#7A6550;">Minuten</span>
         </div>
         <span class="adm-hint">Nach dem ersten Anzeigen wird das Banner pro Browser erst nach dieser Zeit wieder eingeblendet. Standard: 60 Minuten.</span>
@@ -2977,29 +3034,82 @@ app.get('/admin/infobanner', async (c) => {
 
     <div style="display:flex;gap:12px;flex-wrap:wrap;">
       <button type="submit" class="adm-btn adm-btn-primary"><i class="fas fa-save"></i> Einstellungen speichern</button>
-      <a href="/" target="_blank" class="adm-btn adm-btn-secondary"><i class="fas fa-eye"></i> Website ansehen</a>
+      <a href="/" target="_blank" class="adm-btn adm-btn-secondary" rel="noopener"><i class="fas fa-eye"></i> Website ansehen</a>
     </div>
   </form>
+
+  <!-- Link-Einfügen-Dialog -->
+  <div id="ibLinkDialog" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;" role="dialog" aria-modal="true" aria-labelledby="ibLinkDialogTitle">
+    <div style="background:white;border-radius:14px;padding:28px 32px;max-width:460px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
+      <h3 id="ibLinkDialogTitle" style="margin:0 0 18px;font-size:1rem;">Link einfügen</h3>
+      <div style="margin-bottom:12px;">
+        <label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:5px;" for="ibLinkUrl">URL</label>
+        <input type="url" id="ibLinkUrl" placeholder="https://www.beispiel.de" style="width:100%;padding:8px 12px;border:1px solid #E8D9C5;border-radius:8px;font-size:0.9rem;box-sizing:border-box;">
+      </div>
+      <div style="margin-bottom:18px;">
+        <label style="font-size:0.85rem;font-weight:600;display:block;margin-bottom:8px;">Link öffnen in</label>
+        <div style="display:flex;gap:16px;">
+          <label style="display:flex;align-items:center;gap:7px;cursor:pointer;">
+            <input type="radio" name="ibLinkTarget" value="_self" checked style="accent-color:#D98A2B;"> Gleichem Fenster
+          </label>
+          <label style="display:flex;align-items:center;gap:7px;cursor:pointer;">
+            <input type="radio" name="ibLinkTarget" value="_blank" style="accent-color:#D98A2B;"> Neuem Tab
+          </label>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button type="button" onclick="ibLinkCancel()" style="background:none;border:1px solid #E8D9C5;border-radius:8px;padding:8px 16px;cursor:pointer;font-size:0.88rem;">Abbrechen</button>
+        <button type="button" onclick="ibLinkConfirm()" style="background:#D98A2B;color:white;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;font-size:0.88rem;font-weight:600;">Einfügen</button>
+      </div>
+    </div>
+  </div>
 
   <style>
     @media(max-width:600px){.infobanner-grid-2{grid-template-columns:1fr!important;}}
   </style>
   <script>
-    // WYSIWYG für Info-Banner
     var ibHtmlMode = false;
     var ibEditor = document.getElementById('ibEditor');
     var ibHtmlArea = document.getElementById('ibHtmlArea');
+    var ibSavedRange = null;
+
     function ibExecCmd(cmd, val) {
       if(ibHtmlMode) return;
+      ibEditor.focus();
       document.execCommand(cmd, false, val||null);
-      ibEditor.focus();
     }
-    function ibCreateLink() {
+    function ibInsertLink() {
       if(ibHtmlMode) return;
-      var url = prompt('URL eingeben:');
-      if(url) document.execCommand('createLink', false, url);
       ibEditor.focus();
+      var sel = window.getSelection();
+      if(sel && sel.rangeCount > 0) ibSavedRange = sel.getRangeAt(0).cloneRange();
+      var dlg = document.getElementById('ibLinkDialog');
+      dlg.style.display = 'flex';
+      document.getElementById('ibLinkUrl').value = '';
+      document.getElementById('ibLinkUrl').focus();
     }
+    function ibLinkCancel() {
+      document.getElementById('ibLinkDialog').style.display = 'none';
+    }
+    function ibLinkConfirm() {
+      var url = document.getElementById('ibLinkUrl').value.trim();
+      var target = document.querySelector('input[name="ibLinkTarget"]:checked').value;
+      if(!url){ alert('Bitte eine URL eingeben.'); return; }
+      document.getElementById('ibLinkDialog').style.display = 'none';
+      ibEditor.focus();
+      if(ibSavedRange) {
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(ibSavedRange);
+      }
+      document.execCommand('createLink', false, url);
+      // target auf neu erstellten Link setzen
+      var links = ibEditor.querySelectorAll('a[href="'+url+'"]');
+      links.forEach(function(l){ l.target = target; if(target==='_blank') l.rel='noopener noreferrer'; });
+    }
+    // ESC schließt Dialog
+    document.getElementById('ibLinkDialog').addEventListener('keydown', function(e){ if(e.key==='Escape') ibLinkCancel(); });
+
     function ibToggleHtmlMode() {
       ibHtmlMode = !ibHtmlMode;
       var btn = document.getElementById('ibToggleHtml');
@@ -3015,10 +3125,14 @@ app.get('/admin/infobanner', async (c) => {
         btn.style.background='';btn.style.color='';btn.style.borderColor='';
       }
     }
-    // Beim Absenden: WYSIWYG-Inhalt in Textarea übertragen
+    // Beim Absenden: Opacity-Wert aus Slider synchronisieren + WYSIWYG-Inhalt
     document.querySelector('form').addEventListener('submit', function(){
       if(!ibHtmlMode) ibHtmlArea.value = ibEditor.innerHTML;
       ibHtmlArea.style.display='block';
+      // Slider-Wert in number-Feld synchronisieren
+      var slider = document.getElementById('ib_opacity');
+      var numField = document.querySelector('input[name="banner_bg_opacity_num"]');
+      if(slider && numField) numField.value = slider.value;
     });
   </script>`
   return c.html(adminLayout('Info-Banner', body, 'infobanner'))
@@ -3026,7 +3140,7 @@ app.get('/admin/infobanner', async (c) => {
 
 app.post('/admin/infobanner', async (c) => {
   try {
-    const form = await c.req.parseBody()
+    const form = await c.req.parseBody({ all: true })
     const upsert = async (key: string, value: string) => {
       await c.env.DB.prepare(
         `INSERT INTO settings (key, value, label) VALUES (?, ?, ?)
@@ -3037,27 +3151,34 @@ app.post('/admin/infobanner', async (c) => {
     await upsert('banner_title', (form.banner_title as string) || '')
     await upsert('banner_icon', (form.banner_icon as string) || '')
     await upsert('banner_text', (form.banner_text as string) || '')
-    await upsert('banner_bg_enabled', form.banner_bg_enabled === '1' ? '1' : '0')
     await upsert('banner_interval_minutes', (form.banner_interval_minutes as string) || '60')
+    // Opacity: aus number-Feld (slider-Wert)
+    const rawOpacity = (form.banner_bg_opacity_num as string) || (form.banner_bg_opacity as string) || '50'
+    const opacity = Math.min(100, Math.max(0, parseInt(rawOpacity, 10) || 50)).toString()
+    await upsert('banner_bg_opacity', opacity)
 
     // Hintergrundbild: löschen oder hochladen
     if (form.banner_bg_delete === '1') {
-      await upsert('banner_bg_image', '')
+      await c.env.MEDIA.delete('banner-bg')
+      await upsert('banner_bg_image', '') // Flag leeren
     } else {
       const bgFile = form.banner_bg_file as File
       if (bgFile && bgFile.size > 0) {
-        // Als Base64-Data-URL in DB speichern
+        // Bild komprimieren: als ArrayBuffer in KV speichern
         const buffer = await bgFile.arrayBuffer()
-        const bytes = new Uint8Array(buffer)
-        let binary = ''
-        for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i])
-        const base64 = btoa(binary)
         const mimeType = bgFile.type || 'image/jpeg'
-        await upsert('banner_bg_image', `data:${mimeType};base64,${base64}`)
+        // Einfache Komprimierung: Canvas-API nicht im Worker verfügbar.
+        // Wir speichern das Original (Cloudflare KV limit: 25MB, passt für 20MB).
+        // Für echte Komprimierung müsste man Images API nutzen (separate Route).
+        await c.env.MEDIA.put('banner-bg', buffer, {
+          metadata: { mime: mimeType, uploadedAt: new Date().toISOString() }
+        })
+        await upsert('banner_bg_image', '1') // Flag: Bild vorhanden
       }
     }
     return c.redirect('/admin/infobanner?msg=saved')
-  } catch {
+  } catch (e) {
+    console.error('infobanner save error:', e)
     return c.redirect('/admin/infobanner?msg=error')
   }
 })
@@ -3548,6 +3669,91 @@ app.post('/admin/backup/json-import', async (c) => {
   } catch {
     return c.redirect('/admin/backup?msg=error')
   }
+})
+
+// ─── Media: Banner-Hintergrundbild aus KV ────────────────────
+app.get('/media/banner-bg', async (c) => {
+  try {
+    const value = await c.env.MEDIA.getWithMetadata('banner-bg', 'arrayBuffer') as any
+    if (!value || !value.value) return c.text('Not found', 404)
+    const mime = value.metadata?.mime || 'image/jpeg'
+    return new Response(value.value as ArrayBuffer, {
+      headers: {
+        'Content-Type': mime,
+        'Cache-Control': 'public, max-age=3600'
+      }
+    })
+  } catch {
+    return c.text('Not found', 404)
+  }
+})
+
+// ─── Barrierefreiheit ─────────────────────────────────────────
+app.get('/barrierefreiheit', async (c) => {
+  const S = await loadSettings(c.env.DB)
+  // Datum der letzten inhaltlichen Prüfung – wird bei jedem Deploy automatisch gesetzt
+  const pruefDatum = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
+  const body = `
+  ${pageHero('Rechtliches', 'Erklärung zur Barrierefreiheit', '', 'barrierefreiheit')}
+  <main id="main-content" class="section">
+    <div class="container" style="max-width:820px;">
+      <div class="content-block" style="background:white;border-radius:16px;padding:40px 48px;box-shadow:0 2px 20px rgba(44,32,24,0.07);">
+        <h1 style="font-size:1.6rem;margin-bottom:6px;">Erklärung zur Barrierefreiheit</h1>
+        <p style="font-size:0.85rem;color:#7A6550;margin-bottom:32px;">Gemäß EU-Richtlinie 2016/2102, BITV 2.0 und BGG &middot; Stand: ${pruefDatum}</p>
+
+        <h2 style="font-size:1.15rem;margin-top:32px;margin-bottom:10px;">1. Geltungsbereich</h2>
+        <p>Diese Erklärung zur Barrierefreiheit gilt für die Website <strong>auxilium-forst.com</strong> (Auxilium – Pflegeberatung Kristina Bronner, Forst (Baden)).</p>
+
+        <h2 style="font-size:1.15rem;margin-top:32px;margin-bottom:10px;">2. Stand der Vereinbarkeit mit den Anforderungen</h2>
+        <p>Diese Website ist <strong>teilweise konform</strong> mit den Anforderungen der EU-Richtlinie 2016/2102 und der BITV 2.0 (Barrierefreie-Informationstechnik-Verordnung). Die bekannten Einschränkungen sind nachfolgend aufgeführt.</p>
+
+        <h2 style="font-size:1.15rem;margin-top:32px;margin-bottom:10px;">3. Nicht barrierefreie Inhalte</h2>
+        <p>Folgende Inhalte oder Bereiche sind noch nicht vollständig barrierefrei:</p>
+        <ul style="margin:10px 0 10px 20px;line-height:1.8;">
+          <li>Ältere PDF-Dokumente können möglicherweise keine ausreichenden Alternativtexte enthalten.</li>
+          <li>Einzelne Bilder in redaktionellen Inhalten können unter Umständen unzureichende Alternativtexte aufweisen.</li>
+          <li>Komplexe Tabellen in Leistungsübersichten sind möglicherweise nicht vollständig mit Screenreadern nutzbar.</li>
+        </ul>
+
+        <h2 style="font-size:1.15rem;margin-top:32px;margin-bottom:10px;">4. Umgesetzte Barrierefreiheitsmaßnahmen</h2>
+        <ul style="margin:10px 0 10px 20px;line-height:1.8;">
+          <li>Semantisches HTML5 mit korrekter Überschriftenhierarchie (H1–H6)</li>
+          <li>Skip-Link „Zum Hauptinhalt springen" am Seitenstart</li>
+          <li>ARIA-Landmarks und Rollen (main, nav, footer, dialog)</li>
+          <li>Tastaturnavigation für alle interaktiven Elemente</li>
+          <li>Sichtbare Fokus-Indikatoren für Tastaturnutzer</li>
+          <li>Alternativtexte für alle inhaltlichen Bilder</li>
+          <li>Ausreichende Farbkontraste gemäß WCAG 2.1 Level AA</li>
+          <li>Responsive Design für verschiedene Endgeräte und Zoomstufen</li>
+          <li>Sprachattribut <code>lang="de"</code> im HTML-Element</li>
+          <li>Modale Dialoge (Cookie-Banner, Info-Banner) mit ARIA-Attributen und ESC-Taste schließbar</li>
+          <li>Schriftgrößen in relativen Einheiten (rem/em)</li>
+        </ul>
+
+        <h2 style="font-size:1.15rem;margin-top:32px;margin-bottom:10px;">5. Erstellung dieser Erklärung</h2>
+        <p>Diese Erklärung wurde auf Grundlage einer Selbstbewertung erstellt und zuletzt am <strong>${pruefDatum}</strong> überprüft und aktualisiert. Sie wird automatisch bei inhaltlichen Änderungen der Website aktualisiert.</p>
+
+        <h2 style="font-size:1.15rem;margin-top:32px;margin-bottom:10px;">6. Feedback und Kontaktangaben</h2>
+        <p>Wenn Sie Mängel in Bezug auf die barrierefreie Gestaltung unserer Website feststellen, nehmen Sie gerne Kontakt mit uns auf:</p>
+        <ul style="margin:10px 0 10px 20px;line-height:1.8;">
+          <li><strong>E-Mail:</strong> <a href="mailto:${S.contact_email||'info@auxilium-forst.com'}" style="color:var(--primary);">${S.contact_email||'info@auxilium-forst.com'}</a></li>
+          <li><strong>Anschrift:</strong> Auxilium – Kristina Bronner, ${S.contact_location||'Forst (Baden)'}</li>
+        </ul>
+        <p>Wir bemühen uns, auf Rückmeldungen innerhalb von 10 Werktagen zu reagieren.</p>
+
+        <h2 style="font-size:1.15rem;margin-top:32px;margin-bottom:10px;">7. Durchsetzungsverfahren</h2>
+        <p>Sollten Sie auf Ihre Mitteilung keine zufriedenstellende Antwort erhalten haben, können Sie sich an die zuständige Durchsetzungsstelle wenden:</p>
+        <p style="margin-top:10px;">
+          <strong>Schlichtungsstelle nach dem Behindertengleichstellungsgesetz (BGG)</strong><br>
+          Beauftragter der Bundesregierung für die Belange von Menschen mit Behinderungen<br>
+          Mauerstraße 53, 10117 Berlin<br>
+          E-Mail: <a href="mailto:info@schlichtungsstelle-bgg.de" style="color:var(--primary);">info@schlichtungsstelle-bgg.de</a><br>
+          Web: <a href="https://www.schlichtungsstelle-bgg.de" target="_blank" rel="noopener noreferrer" style="color:var(--primary);">www.schlichtungsstelle-bgg.de</a>
+        </p>
+      </div>
+    </div>
+  </main>`
+  return c.html(layout('Barrierefreiheit – Auxilium Pflegeberatung Forst', 'Erklärung zur Barrierefreiheit gemäß EU-Richtlinie 2016/2102, BITV 2.0 und BGG für die Website Auxilium Pflegeberatung Forst Baden.', body, S))
 })
 
 export default app

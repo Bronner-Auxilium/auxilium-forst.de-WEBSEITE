@@ -12,5 +12,12 @@
       "database_name": "auxilium-production",
       "database_id": "bcab4d11-9f48-4a86-92d1-946581c71e97"
     }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "MEDIA",
+      "id": "d32f2bb02ccf41fe89d2614521df34f3",
+      "preview_id": "28678708480b4fe299fd54bed00947d6"
+    }
   ]
 }

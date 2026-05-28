@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'auxilium',
       script: 'npx',
-      args: 'wrangler pages dev dist --ip 0.0.0.0 --port 3000',
+      args: 'wrangler pages dev dist --kv=MEDIA --ip 0.0.0.0 --port 3000',
       env: {
         NODE_ENV: 'development',
         PORT: 3000
