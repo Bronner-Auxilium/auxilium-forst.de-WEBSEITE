@@ -2927,7 +2927,10 @@ app.get('/admin/infobanner', async (c) => {
 
   const body = `
   ${alert}
-  <form method="POST" action="/admin/infobanner" enctype="multipart/form-data" class="adm-form" style="max-width:780px;">
+  <!-- 2-Spalten-Layout: Formular links, Live-Vorschau rechts -->
+  <div style="display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start;" class="ib-page-grid">
+
+  <form method="POST" action="/admin/infobanner" enctype="multipart/form-data" class="adm-form" id="ibForm">
 
     <!-- Status-Karte -->
     <div class="adm-card" style="margin-bottom:20px;">
@@ -2940,11 +2943,11 @@ app.get('/admin/infobanner', async (c) => {
             <div style="font-weight:700;font-size:0.97rem;color:${isActive?'#D98A2B':'#7A6550'};">
               Info-Banner ist ${isActive?'<span style="color:#D98A2B;">AKTIV</span>':'<span>inaktiv</span>'}
             </div>
-            <div style="font-size:0.78rem;color:#7A6550;margin-top:2px;">${isActive?'Modal erscheint auf der Website für Besucher.':'Kein Modal wird auf der Website angezeigt.'}</div>
+            <div style="font-size:0.78rem;color:#7A6550;margin-top:2px;">${isActive?'Banner erscheint auf der Website für Besucher.':'Kein Banner wird auf der Website angezeigt.'}</div>
           </div>
         </div>
         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;background:${isActive?'#FFF3E0':'#F4F6F9'};padding:10px 16px;border-radius:10px;border:2px solid ${isActive?'#D98A2B':'#E8D9C5'};">
-          <input type="checkbox" name="banner_active" value="1" style="width:18px;height:18px;accent-color:#D98A2B;" ${isActive?'checked':''}>
+          <input type="checkbox" name="banner_active" value="1" style="width:18px;height:18px;accent-color:#D98A2B;" ${isActive?'checked':''} id="ib_active_cb">
           <span style="font-weight:600;font-size:0.9rem;">Banner aktivieren</span>
         </label>
       </div>
@@ -2956,18 +2959,31 @@ app.get('/admin/infobanner', async (c) => {
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;" class="infobanner-grid-2">
         <div class="adm-form-group">
           <label class="adm-label" for="ib_title">Titel <span style="font-weight:400;color:#7A6550;">(optional)</span></label>
-          <input type="text" id="ib_title" name="banner_title" value="${(S.banner_title||'').replace(/"/g,'&quot;')}" class="adm-input" placeholder="z.B. Wichtiger Hinweis">
+          <input type="text" id="ib_title" name="banner_title" value="${(S.banner_title||'').replace(/"/g,'&quot;')}" class="adm-input" placeholder="z.B. Wichtiger Hinweis" oninput="ibUpdatePreview()">
         </div>
         <div class="adm-form-group">
-          <label class="adm-label" for="ib_icon">Icon <span style="font-weight:400;color:#7A6550;">(optional, FontAwesome-Klasse)</span></label>
-          <input type="text" id="ib_icon" name="banner_icon" value="${(S.banner_icon||'').replace(/"/g,'&quot;')}" class="adm-input" placeholder="z.B. fas fa-umbrella-beach">
-          <span class="adm-hint">Beispiele: fas fa-info-circle &nbsp;|&nbsp; fas fa-umbrella-beach &nbsp;|&nbsp; fas fa-star</span>
+          <label class="adm-label" for="ib_icon">
+            Icon <span style="font-weight:400;color:#7A6550;">(optional)</span>
+            <a href="https://fontawesome.com/icons?q=&s=solid" target="_blank" rel="noopener noreferrer" style="font-size:0.75rem;color:#D98A2B;margin-left:6px;text-decoration:none;" title="FontAwesome Icons durchsuchen"><i class="fas fa-external-link-alt" style="font-size:0.65rem;"></i> fontawesome.com</a>
+          </label>
+          <input type="text" id="ib_icon" name="banner_icon" value="${(S.banner_icon||'').replace(/"/g,'&quot;')}" class="adm-input" placeholder="z.B. fas fa-umbrella-beach" oninput="ibUpdatePreview()">
+          <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;">
+            <span style="font-size:0.75rem;color:#7A6550;width:100%;margin-bottom:2px;">Beispiele (klicken zum Übernehmen):</span>
+            <button type="button" class="ib-icon-example" onclick="ibSetIcon('fas fa-info-circle')" title="fas fa-info-circle"><i class="fas fa-info-circle"></i> fas fa-info-circle</button>
+            <button type="button" class="ib-icon-example" onclick="ibSetIcon('fas fa-umbrella-beach')" title="fas fa-umbrella-beach"><i class="fas fa-umbrella-beach"></i> fas fa-umbrella-beach</button>
+            <button type="button" class="ib-icon-example" onclick="ibSetIcon('fas fa-star')" title="fas fa-star"><i class="fas fa-star"></i> fas fa-star</button>
+            <button type="button" class="ib-icon-example" onclick="ibSetIcon('fas fa-exclamation-triangle')" title="fas fa-exclamation-triangle"><i class="fas fa-exclamation-triangle"></i> fas fa-exclamation-triangle</button>
+            <button type="button" class="ib-icon-example" onclick="ibSetIcon('fas fa-calendar-alt')" title="fas fa-calendar-alt"><i class="fas fa-calendar-alt"></i> fas fa-calendar-alt</button>
+            <button type="button" class="ib-icon-example" onclick="ibSetIcon('fas fa-heart')" title="fas fa-heart"><i class="fas fa-heart"></i> fas fa-heart</button>
+            <button type="button" class="ib-icon-example" onclick="ibSetIcon('fas fa-bullhorn')" title="fas fa-bullhorn"><i class="fas fa-bullhorn"></i> fas fa-bullhorn</button>
+            <button type="button" class="ib-icon-example" onclick="ibSetIcon('fas fa-clock')" title="fas fa-clock"><i class="fas fa-clock"></i> fas fa-clock</button>
+          </div>
         </div>
       </div>
 
       <!-- WYSIWYG-Editor mit Link-Ziel-Auswahl -->
       <div class="adm-form-group">
-        <label class="adm-label">Banner-Text <span style="font-weight:400;color:#7A6550;">(erscheint im Modal)</span></label>
+        <label class="adm-label">Banner-Text</label>
         <div style="border:1px solid #E8D9C5;border-radius:10px;overflow:hidden;background:white;">
           <div style="display:flex;flex-wrap:wrap;gap:4px;padding:8px 10px;background:#F9F5F0;border-bottom:1px solid #E8D9C5;">
             <button type="button" onclick="ibExecCmd('bold')" title="Fett" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;" aria-label="Fett"><b>B</b></button>
@@ -2981,8 +2997,8 @@ app.get('/admin/infobanner', async (c) => {
             <span style="width:1px;background:#ddd;margin:2px 4px;" aria-hidden="true"></span>
             <button type="button" id="ibToggleHtml" onclick="ibToggleHtmlMode()" title="HTML-Ansicht umschalten" style="background:none;border:1px solid #ddd;border-radius:5px;padding:4px 8px;cursor:pointer;font-size:0.78rem;font-family:monospace;" aria-label="HTML-Modus">&lt;/&gt;</button>
           </div>
-          <div id="ibEditor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Banner-Textinhalt" style="min-height:120px;padding:14px;outline:none;font-size:0.9rem;line-height:1.6;color:#2C2018;">${S.banner_text||''}</div>
-          <textarea id="ibHtmlArea" name="banner_text" aria-label="HTML-Quellcode" style="display:none;width:100%;min-height:120px;padding:14px;font-family:monospace;font-size:0.82rem;border:none;outline:none;resize:vertical;">${(S.banner_text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
+          <div id="ibEditor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Banner-Textinhalt" style="min-height:120px;padding:14px;outline:none;font-size:0.9rem;line-height:1.6;color:#2C2018;" oninput="ibUpdatePreview()">${S.banner_text||''}</div>
+          <textarea id="ibHtmlArea" name="banner_text" aria-label="HTML-Quellcode" style="display:none;width:100%;min-height:120px;padding:14px;font-family:monospace;font-size:0.82rem;border:none;outline:none;resize:vertical;" oninput="ibUpdatePreview()">${(S.banner_text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
         </div>
       </div>
     </div>
@@ -2990,10 +3006,10 @@ app.get('/admin/infobanner', async (c) => {
     <!-- Hintergrundbild-Karte -->
     <div class="adm-card" style="margin-bottom:20px;">
       <h3 style="font-size:1rem;margin-bottom:16px;color:#2C2018;"><i class="fas fa-image" style="color:#D98A2B;margin-right:8px;"></i>Hintergrundbild</h3>
-      <p style="font-size:0.83rem;color:#7A6550;margin-bottom:14px;">Das Bild wird automatisch angezeigt, sobald es hochgeladen ist. Eine separate Aktivierung ist nicht nötig.</p>
+
       <div class="adm-form-group">
-        <label class="adm-label" for="ib_bg_file">Bild hochladen <span style="font-weight:400;color:#7A6550;">(JPG, PNG, WebP – max. 20 MB, wird automatisch komprimiert)</span></label>
-        <input type="file" id="ib_bg_file" name="banner_bg_file" accept="image/jpeg,image/png,image/webp" class="adm-input" style="padding:8px;">
+        <label class="adm-label" for="ib_bg_file">Bild hochladen <span style="font-weight:400;color:#7A6550;">(JPG, PNG, WebP – max. 20 MB)</span></label>
+        <input type="file" id="ib_bg_file" name="banner_bg_file" accept="image/jpeg,image/png,image/webp" class="adm-input" style="padding:8px;" onchange="ibPreviewBgImage(this)">
         ${hasBgImage
           ? `<div style="margin-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
                <p style="font-size:0.82rem;color:#4A9B7F;margin:0;"><i class="fas fa-check-circle"></i> Hintergrundbild ist gespeichert</p>
@@ -3005,11 +3021,11 @@ app.get('/admin/infobanner', async (c) => {
       <div class="adm-form-group" style="margin-top:14px;">
         <label class="adm-label" for="ib_opacity">Bildtransparenz <span style="font-weight:400;color:#7A6550;">(0% = vollständig sichtbar, 100% = unsichtbar)</span></label>
         <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
-          <input type="range" id="ib_opacity" name="banner_bg_opacity" min="0" max="100" value="${bgOpacity}" style="width:180px;accent-color:#D98A2B;" oninput="document.getElementById('ib_opacity_val').textContent=this.value+'%'">
+          <input type="range" id="ib_opacity" name="banner_bg_opacity" min="0" max="100" value="${bgOpacity}" style="width:180px;accent-color:#D98A2B;" oninput="document.getElementById('ib_opacity_val').textContent=this.value+'%';ibUpdatePreview()">
           <span id="ib_opacity_val" style="font-weight:700;color:#D98A2B;min-width:40px;">${bgOpacity}%</span>
-          <input type="number" name="banner_bg_opacity_num" min="0" max="100" value="${bgOpacity}" class="adm-input" style="max-width:80px;" oninput="document.getElementById('ib_opacity').value=this.value;document.getElementById('ib_opacity_val').textContent=this.value+'%'" aria-label="Transparenz in Prozent">
+          <input type="number" name="banner_bg_opacity_num" min="0" max="100" value="${bgOpacity}" class="adm-input" style="max-width:80px;" oninput="document.getElementById('ib_opacity').value=this.value;document.getElementById('ib_opacity_val').textContent=this.value+'%';ibUpdatePreview()" aria-label="Transparenz in Prozent">
         </div>
-        <span class="adm-hint">Empfohlen: 30–60% für leichten Hintergrundeffekt. Der Wert wird beim Speichern aus dem Schieberegler übernommen.</span>
+        <span class="adm-hint">Empfohlen: 30–60% für leichten Hintergrundeffekt.</span>
       </div>
       ${hasBgImage ? `<div style="margin-top:12px;">
         <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
@@ -3038,6 +3054,40 @@ app.get('/admin/infobanner', async (c) => {
     </div>
   </form>
 
+  <!-- Live-Vorschau rechts -->
+  <div class="ib-preview-panel" style="position:sticky;top:90px;">
+    <div style="background:white;border:1px solid #E8D9C5;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(44,32,24,0.08);">
+      <div style="padding:14px 18px;background:#F9F5F0;border-bottom:1px solid #E8D9C5;display:flex;align-items:center;gap:8px;">
+        <i class="fas fa-eye" style="color:#D98A2B;"></i>
+        <span style="font-size:0.88rem;font-weight:600;color:#2C2018;">Live-Vorschau</span>
+        <span style="font-size:0.75rem;color:#7A6550;margin-left:auto;">aktualisiert sich live</span>
+      </div>
+      <!-- Mini-Modal-Preview -->
+      <div style="padding:20px;background:#e8e0d4;min-height:340px;display:flex;align-items:center;justify-content:center;position:relative;">
+        <!-- Backdrop-Simulation -->
+        <div style="position:absolute;inset:0;background:rgba(30,20,10,0.55);border-radius:0 0 0 0;"></div>
+        <!-- Modal-Box -->
+        <div id="ibPreviewModal" style="position:relative;z-index:2;background:white;border-radius:14px;padding:28px 24px;width:100%;max-width:320px;box-shadow:0 8px 40px rgba(0,0,0,0.25);overflow:hidden;">
+          <!-- Hintergrundbild-Overlay in Vorschau -->
+          <div id="ibPreviewBg" style="position:absolute;inset:0;background-size:cover;background-position:center;border-radius:14px;pointer-events:none;opacity:${(parseInt(bgOpacity,10)/100).toFixed(2)};${hasBgImage?'background-image:url(/media/banner-bg);':''}" aria-hidden="true"></div>
+          <!-- Schließen-Button -->
+          <button type="button" style="position:absolute;top:10px;right:12px;background:none;border:none;font-size:1.3rem;color:#7A6550;cursor:pointer;line-height:1;z-index:1;" aria-label="Schließen">×</button>
+          <!-- Inhalt -->
+          <div style="position:relative;z-index:1;text-align:center;">
+            <div id="ibPreviewIcon" style="font-size:2rem;color:#D98A2B;margin-bottom:10px;min-height:2.5rem;">${S.banner_icon?`<i class="${(S.banner_icon||'').replace(/"/g,'&quot;')}"></i>`:''}</div>
+            <div id="ibPreviewTitle" style="font-weight:700;font-size:1rem;color:#2C2018;margin-bottom:10px;min-height:1.2rem;">${(S.banner_title||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+            <div id="ibPreviewText" style="font-size:0.82rem;color:#4A3728;line-height:1.6;text-align:left;">${S.banner_text||'<span style="color:#999;font-style:italic;">Kein Text eingegeben</span>'}</div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:10px 18px;background:#F9F5F0;border-top:1px solid #E8D9C5;">
+        <span style="font-size:0.75rem;color:#7A6550;"><i class="fas fa-info-circle" style="margin-right:4px;"></i>So erscheint der Banner auf der Website</span>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- end ib-page-grid -->
+
   <!-- Link-Einfügen-Dialog -->
   <div id="ibLinkDialog" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;" role="dialog" aria-modal="true" aria-labelledby="ibLinkDialogTitle">
     <div style="background:white;border-radius:14px;padding:28px 32px;max-width:460px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.25);">
@@ -3065,7 +3115,16 @@ app.get('/admin/infobanner', async (c) => {
   </div>
 
   <style>
+    @media(max-width:900px){.ib-page-grid{grid-template-columns:1fr!important;}}
     @media(max-width:600px){.infobanner-grid-2{grid-template-columns:1fr!important;}}
+    @media(max-width:900px){.ib-preview-panel{position:static!important;}}
+    .ib-icon-example {
+      display:inline-flex;align-items:center;gap:5px;
+      background:#F9F5F0;border:1px solid #E8D9C5;border-radius:7px;
+      padding:4px 10px;cursor:pointer;font-size:0.78rem;color:#4A3728;
+      transition:background 0.15s,border-color 0.15s;white-space:nowrap;
+    }
+    .ib-icon-example:hover { background:#FFF3E0;border-color:#D98A2B;color:#D98A2B; }
   </style>
   <script>
     var ibHtmlMode = false;
@@ -3077,6 +3136,7 @@ app.get('/admin/infobanner', async (c) => {
       if(ibHtmlMode) return;
       ibEditor.focus();
       document.execCommand(cmd, false, val||null);
+      ibUpdatePreview();
     }
     function ibInsertLink() {
       if(ibHtmlMode) return;
@@ -3103,11 +3163,10 @@ app.get('/admin/infobanner', async (c) => {
         sel.addRange(ibSavedRange);
       }
       document.execCommand('createLink', false, url);
-      // target auf neu erstellten Link setzen
       var links = ibEditor.querySelectorAll('a[href="'+url+'"]');
       links.forEach(function(l){ l.target = target; if(target==='_blank') l.rel='noopener noreferrer'; });
+      ibUpdatePreview();
     }
-    // ESC schließt Dialog
     document.getElementById('ibLinkDialog').addEventListener('keydown', function(e){ if(e.key==='Escape') ibLinkCancel(); });
 
     function ibToggleHtmlMode() {
@@ -3124,16 +3183,56 @@ app.get('/admin/infobanner', async (c) => {
         ibEditor.style.display='block';
         btn.style.background='';btn.style.color='';btn.style.borderColor='';
       }
+      ibUpdatePreview();
     }
-    // Beim Absenden: Opacity-Wert aus Slider synchronisieren + WYSIWYG-Inhalt
-    document.querySelector('form').addEventListener('submit', function(){
+
+    // Icon-Beispiel anklicken → Feld befüllen
+    function ibSetIcon(cls) {
+      document.getElementById('ib_icon').value = cls;
+      ibUpdatePreview();
+    }
+
+    // Datei-Vorschau im Preview aktualisieren
+    function ibPreviewBgImage(input) {
+      if(input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          var bg = document.getElementById('ibPreviewBg');
+          if(bg) { bg.style.backgroundImage = 'url(' + e.target.result + ')'; }
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    // Live-Vorschau aktualisieren
+    function ibUpdatePreview() {
+      var title = document.getElementById('ib_title') ? document.getElementById('ib_title').value : '';
+      var icon  = document.getElementById('ib_icon')  ? document.getElementById('ib_icon').value.trim()  : '';
+      var text  = ibHtmlMode ? ibHtmlArea.value : ibEditor.innerHTML;
+      var opacity = document.getElementById('ib_opacity') ? (parseInt(document.getElementById('ib_opacity').value,10)/100).toFixed(2) : '0.5';
+
+      var prevIcon  = document.getElementById('ibPreviewIcon');
+      var prevTitle = document.getElementById('ibPreviewTitle');
+      var prevText  = document.getElementById('ibPreviewText');
+      var prevBg    = document.getElementById('ibPreviewBg');
+
+      if(prevIcon)  prevIcon.innerHTML  = icon  ? '<i class="' + icon + '"></i>' : '';
+      if(prevTitle) prevTitle.textContent = title || '';
+      if(prevText)  prevText.innerHTML  = text  || '<span style="color:#999;font-style:italic;">Kein Text eingegeben</span>';
+      if(prevBg)    prevBg.style.opacity = opacity;
+    }
+
+    // Beim Absenden: Slider + WYSIWYG synchronisieren
+    document.getElementById('ibForm').addEventListener('submit', function(){
       if(!ibHtmlMode) ibHtmlArea.value = ibEditor.innerHTML;
       ibHtmlArea.style.display='block';
-      // Slider-Wert in number-Feld synchronisieren
       var slider = document.getElementById('ib_opacity');
       var numField = document.querySelector('input[name="banner_bg_opacity_num"]');
       if(slider && numField) numField.value = slider.value;
     });
+
+    // Initial-Preview
+    ibUpdatePreview();
   </script>`
   return c.html(adminLayout('Info-Banner', body, 'infobanner'))
 })
@@ -3674,16 +3773,19 @@ app.post('/admin/backup/json-import', async (c) => {
 // ─── Media: Banner-Hintergrundbild aus KV ────────────────────
 app.get('/media/banner-bg', async (c) => {
   try {
-    const value = await c.env.MEDIA.getWithMetadata('banner-bg', 'arrayBuffer') as any
-    if (!value || !value.value) return c.text('Not found', 404)
-    const mime = value.metadata?.mime || 'image/jpeg'
-    return new Response(value.value as ArrayBuffer, {
+    // Korrekte KV-API: getWithMetadata gibt { value, metadata } zurück
+    const result = await c.env.MEDIA.getWithMetadata<{ mime: string; uploadedAt: string }>('banner-bg', { type: 'arrayBuffer' })
+    if (!result || result.value === null) return c.text('Not found', 404)
+    const mime = result.metadata?.mime || 'image/jpeg'
+    return new Response(result.value as ArrayBuffer, {
       headers: {
         'Content-Type': mime,
-        'Cache-Control': 'public, max-age=3600'
+        'Cache-Control': 'public, max-age=1800',
+        'Vary': 'Accept'
       }
     })
-  } catch {
+  } catch (e) {
+    console.error('media/banner-bg error:', e)
     return c.text('Not found', 404)
   }
 })
