@@ -3066,17 +3066,21 @@ app.get('/admin/infobanner', async (c) => {
       <div style="padding:20px;background:#e8e0d4;min-height:340px;display:flex;align-items:center;justify-content:center;position:relative;">
         <!-- Backdrop-Simulation -->
         <div style="position:absolute;inset:0;background:rgba(30,20,10,0.55);border-radius:0 0 0 0;"></div>
-        <!-- Modal-Box -->
-        <div id="ibPreviewModal" style="position:relative;z-index:2;background:white;border-radius:14px;padding:28px 24px;width:100%;max-width:320px;box-shadow:0 8px 40px rgba(0,0,0,0.25);overflow:hidden;">
-          <!-- Hintergrundbild-Overlay in Vorschau -->
-          <div id="ibPreviewBg" style="position:absolute;inset:0;background-size:cover;background-position:center;border-radius:14px;pointer-events:none;opacity:${(parseInt(bgOpacity,10)/100).toFixed(2)};${hasBgImage?'background-image:url(/media/banner-bg);':''}" aria-hidden="true"></div>
-          <!-- Schließen-Button -->
-          <button type="button" style="position:absolute;top:10px;right:12px;background:none;border:none;font-size:1.3rem;color:#7A6550;cursor:pointer;line-height:1;z-index:1;" aria-label="Schließen">×</button>
-          <!-- Inhalt -->
-          <div style="position:relative;z-index:1;text-align:center;">
-            <div id="ibPreviewIcon" style="font-size:2rem;color:#D98A2B;margin-bottom:10px;min-height:2.5rem;">${S.banner_icon?`<i class="${(S.banner_icon||'').replace(/"/g,'&quot;')}"></i>`:''}</div>
-            <div id="ibPreviewTitle" style="font-weight:700;font-size:1rem;color:#2C2018;margin-bottom:10px;min-height:1.2rem;">${(S.banner_title||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
-            <div id="ibPreviewText" style="font-size:0.82rem;color:#4A3728;line-height:1.6;text-align:left;">${S.banner_text||'<span style="color:#999;font-style:italic;">Kein Text eingegeben</span>'}</div>
+        <!-- Modal-Box (1:1 wie echtes Modal) -->
+        <div id="ibPreviewModal" style="position:relative;z-index:2;background:white;border-radius:20px;width:100%;max-width:320px;box-shadow:0 8px 40px rgba(0,0,0,0.3);overflow:hidden;">
+          <!-- Hintergrundbild-Overlay -->
+          <div id="ibPreviewBg" style="position:absolute;inset:0;background-size:cover;background-position:center;border-radius:20px;pointer-events:none;opacity:${(parseInt(bgOpacity,10)/100).toFixed(2)};${hasBgImage?'background-image:url(/media/banner-bg);':''}" aria-hidden="true"></div>
+          <!-- Innenbereich (glasartig wenn Bild vorhanden) -->
+          <div id="ibPreviewInner" style="position:relative;z-index:1;padding:32px 28px 28px;${hasBgImage?'background:rgba(255,255,255,0.82);backdrop-filter:blur(10px);':'background:white;'}display:flex;flex-direction:column;gap:16px;">
+            <!-- Schließen-Button -->
+            <button type="button" style="position:absolute;top:10px;right:12px;width:30px;height:30px;border-radius:50%;background:rgba(44,32,24,0.1);border:none;font-size:1.2rem;color:#2C2018;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;" aria-label="Schließen">×</button>
+            <!-- Header: Icon + Titel (wie .info-banner-modal__header) -->
+            <div id="ibPreviewHeader" style="display:flex;align-items:center;gap:12px;padding-right:28px;">
+              <div id="ibPreviewIcon" style="width:44px;height:44px;min-width:44px;border-radius:12px;background:linear-gradient(135deg,#D98A2B,#B5701A);display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:white;box-shadow:0 4px 12px rgba(217,138,43,0.35);${S.banner_icon?'':'display:none;'}">${S.banner_icon?`<i class="${(S.banner_icon||'').replace(/"/g,'&quot;')}"></i>`:''}</div>
+              <div id="ibPreviewTitle" style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1rem;color:#2C2018;line-height:1.25;${(S.banner_title||'')?'':'color:#bbb;font-style:italic;font-family:inherit;font-weight:400;'}">${(S.banner_title||'')||'Kein Titel'}</div>
+            </div>
+            <!-- Body -->
+            <div id="ibPreviewText" style="font-size:0.82rem;color:#3D2B1A;line-height:1.7;">${S.banner_text||'<span style="color:#999;font-style:italic;">Kein Text eingegeben</span>'}</div>
           </div>
         </div>
       </div>
@@ -3204,22 +3208,67 @@ app.get('/admin/infobanner', async (c) => {
       }
     }
 
-    // Live-Vorschau aktualisieren
+    // Live-Vorschau aktualisieren (1:1 echtes Modal-Layout)
     function ibUpdatePreview() {
-      var title = document.getElementById('ib_title') ? document.getElementById('ib_title').value : '';
-      var icon  = document.getElementById('ib_icon')  ? document.getElementById('ib_icon').value.trim()  : '';
-      var text  = ibHtmlMode ? ibHtmlArea.value : ibEditor.innerHTML;
+      var title   = document.getElementById('ib_title') ? document.getElementById('ib_title').value.trim() : '';
+      var icon    = document.getElementById('ib_icon')  ? document.getElementById('ib_icon').value.trim()  : '';
+      var text    = ibHtmlMode ? ibHtmlArea.value : ibEditor.innerHTML;
       var opacity = document.getElementById('ib_opacity') ? (parseInt(document.getElementById('ib_opacity').value,10)/100).toFixed(2) : '0.5';
+      var hasBg   = document.getElementById('ibPreviewBg') && document.getElementById('ibPreviewBg').style.backgroundImage && document.getElementById('ibPreviewBg').style.backgroundImage !== 'none' && document.getElementById('ibPreviewBg').style.backgroundImage !== '';
 
-      var prevIcon  = document.getElementById('ibPreviewIcon');
-      var prevTitle = document.getElementById('ibPreviewTitle');
-      var prevText  = document.getElementById('ibPreviewText');
-      var prevBg    = document.getElementById('ibPreviewBg');
+      var prevIcon   = document.getElementById('ibPreviewIcon');
+      var prevTitle  = document.getElementById('ibPreviewTitle');
+      var prevText   = document.getElementById('ibPreviewText');
+      var prevBg     = document.getElementById('ibPreviewBg');
+      var prevInner  = document.getElementById('ibPreviewInner');
+      var prevHeader = document.getElementById('ibPreviewHeader');
 
-      if(prevIcon)  prevIcon.innerHTML  = icon  ? '<i class="' + icon + '"></i>' : '';
-      if(prevTitle) prevTitle.textContent = title || '';
-      if(prevText)  prevText.innerHTML  = text  || '<span style="color:#999;font-style:italic;">Kein Text eingegeben</span>';
-      if(prevBg)    prevBg.style.opacity = opacity;
+      // Icon: Box anzeigen/verstecken
+      if(prevIcon) {
+        if(icon) {
+          prevIcon.innerHTML = '<i class="' + icon + '"></i>';
+          prevIcon.style.display = 'flex';
+        } else {
+          prevIcon.innerHTML = '';
+          prevIcon.style.display = 'none';
+        }
+      }
+      // Titel
+      if(prevTitle) {
+        if(title) {
+          prevTitle.textContent = title;
+          prevTitle.style.color = '#2C2018';
+          prevTitle.style.fontStyle = 'normal';
+          prevTitle.style.fontWeight = '700';
+        } else {
+          prevTitle.textContent = 'Kein Titel';
+          prevTitle.style.color = '#bbb';
+          prevTitle.style.fontStyle = 'italic';
+          prevTitle.style.fontWeight = '400';
+        }
+      }
+      // Header (nur anzeigen wenn Icon oder Titel gesetzt)
+      if(prevHeader) {
+        prevHeader.style.display = (icon || title) ? 'flex' : 'none';
+      }
+      // Text
+      if(prevText) {
+        prevText.innerHTML = text || '<span style="color:#999;font-style:italic;">Kein Text eingegeben</span>';
+      }
+      // Hintergrundbild Opacity
+      if(prevBg) prevBg.style.opacity = opacity;
+      // Inner-Hintergrund: glasartig wenn Bild vorhanden
+      if(prevInner) {
+        var bgImg = prevBg ? prevBg.style.backgroundImage : '';
+        var hasBgNow = bgImg && bgImg !== 'none' && bgImg !== '';
+        if(hasBgNow) {
+          prevInner.style.background = 'rgba(255,255,255,0.82)';
+          prevInner.style.backdropFilter = 'blur(10px)';
+        } else {
+          prevInner.style.background = 'white';
+          prevInner.style.backdropFilter = '';
+        }
+      }
     }
 
     // Beim Absenden: Slider + WYSIWYG synchronisieren

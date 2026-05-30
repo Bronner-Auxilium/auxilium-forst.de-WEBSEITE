@@ -337,24 +337,14 @@ p  { color: var(--text-light); line-height: 1.75; }
 .hero {
   /* Echtes Naturfoto als Hintergrund */
   background-image: url('/static/hero-bg.jpg');
-  background-size: 108%; /* etwas größer → Raum für sanfte Bewegung */
+  background-size: cover;
   background-position: center 40%;
   background-repeat: no-repeat;
-  /* Mikroanimation: Sehr langsame, kaum wahrnehmbare Bewegung des Hintergrundbilds */
-  animation: heroBgDrift 28s ease-in-out infinite alternate;
 }
 
-/* ── Hero Mikroanimation: Blätter im Wind & Lichtschimmer ─────────────────── */
+/* ── Hero Mikroanimation: Lichtschimmer ──────────────────────────────────── */
 
-/* 1. Hintergrundbild: sanfte Drift-Bewegung (simuliert Blattbewegung) */
-@keyframes heroBgDrift {
-  0%   { background-position: 48% 38%; background-size: 108%; }
-  30%  { background-position: 50% 40%; background-size: 109%; }
-  60%  { background-position: 52% 39%; background-size: 108.5%; }
-  100% { background-position: 50% 42%; background-size: 109%; }
-}
-
-/* 2. Lichtschimmer: Overlay pulsiert minimal – simuliert Sonnenlicht durch Blätter */
+/* Lichtschimmer: Overlay pulsiert minimal – simuliert Sonnenlicht durch Blätter */
 .hero::before {
   content: '';
   position: absolute; inset: 0;
@@ -400,11 +390,6 @@ p  { color: var(--text-light); line-height: 1.75; }
 
 /* Respektiert "reduce motion" – alle Hero-Animationen deaktivieren */
 @media (prefers-reduced-motion: reduce) {
-  .hero {
-    animation: none;
-    background-size: cover;
-    background-position: center 40%;
-  }
   .hero::before { animation: none; }
   .hero::after  { animation: none; }
 }
@@ -1706,12 +1691,7 @@ p  { color: var(--text-light); line-height: 1.75; }
   background-position: center;
   background-repeat: no-repeat;
   z-index: 0;
-}
-.info-banner-modal__bg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(26, 13, 6, 0.45);
+  /* Das Opacity-Attribut kommt direkt per inline-style vom Server */
 }
 
 .info-banner-modal__inner {
@@ -1725,11 +1705,11 @@ p  { color: var(--text-light); line-height: 1.75; }
   flex-direction: column;
   gap: 18px;
 }
-/* Wenn Hintergrundbild aktiv: Innenbereich glasartig */
-.info-banner-modal[data-bg] .info-banner-modal__inner {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+/* Wenn Hintergrundbild aktiv (data-has-bg="1"): Innenbereich glasartig transparent */
+.info-banner-modal[data-has-bg="1"] .info-banner-modal__inner {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .info-banner-modal__close {
@@ -1793,9 +1773,9 @@ p  { color: var(--text-light); line-height: 1.75; }
 .info-banner-modal__body ul { padding-left: 20px; margin: 0 0 10px; }
 .info-banner-modal__body a { color: #D98A2B; text-decoration: underline; }
 .info-banner-modal__body strong { color: #2C2018; }
-/* Wenn Hintergrundbild – Text auf dunklem Hintergrund möglich */
-.info-banner-modal[data-bg] .info-banner-modal__title { color: #1A0D06; }
-.info-banner-modal[data-bg] .info-banner-modal__body { color: #2C2018; }
+/* Wenn Hintergrundbild – Text auf Hintergrund */
+.info-banner-modal[data-has-bg="1"] .info-banner-modal__title { color: #1A0D06; }
+.info-banner-modal[data-has-bg="1"] .info-banner-modal__body { color: #2C2018; }
 
 @media (max-width: 540px) {
   .info-banner-modal { width: 96vw; border-radius: 16px; }
