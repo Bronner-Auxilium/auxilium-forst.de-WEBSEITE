@@ -1684,32 +1684,16 @@ p  { color: var(--text-light); line-height: 1.75; }
   transform: translate(-50%, -50%) scale(1);
 }
 
-.info-banner-modal__bg {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: 0;
-  /* Das Opacity-Attribut kommt direkt per inline-style vom Server */
-}
-
+/* __bg wird nicht mehr genutzt – Bild direkt am Modal-Element als background-image */
 .info-banner-modal__inner {
-  position: relative;
-  z-index: 1;
+  /* background kommt per inline-style vom Server (weiß oder halbtransparent) */
   padding: 40px 40px 36px;
-  background: white;
   overflow-y: auto;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
   gap: 18px;
-}
-/* Wenn Hintergrundbild aktiv (data-has-bg="1"): Innenbereich glasartig transparent */
-.info-banner-modal[data-has-bg="1"] .info-banner-modal__inner {
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  /* Kein z-index, kein position:relative nötig – normaler flex-child */
 }
 
 .info-banner-modal__close {
@@ -1773,9 +1757,7 @@ p  { color: var(--text-light); line-height: 1.75; }
 .info-banner-modal__body ul { padding-left: 20px; margin: 0 0 10px; }
 .info-banner-modal__body a { color: #D98A2B; text-decoration: underline; }
 .info-banner-modal__body strong { color: #2C2018; }
-/* Wenn Hintergrundbild – Text auf Hintergrund */
-.info-banner-modal[data-has-bg="1"] .info-banner-modal__title { color: #1A0D06; }
-.info-banner-modal[data-has-bg="1"] .info-banner-modal__body { color: #2C2018; }
+/* Textfarben – bei Hintergrundbild wird Kontrast durch halbtransparenten __inner gewährleistet */
 
 @media (max-width: 540px) {
   .info-banner-modal { width: 96vw; border-radius: 16px; }

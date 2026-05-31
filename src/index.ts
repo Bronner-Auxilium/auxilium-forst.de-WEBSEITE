@@ -39,12 +39,17 @@ function layout(title: string, description: string, body: string, S: Record<stri
   const bannerHasBg = S.banner_bg_image === '1' // KV-Flag: '1' = Bild vorhanden
   const bannerBgOpacity = S.banner_bg_opacity || '50'
   const bgOpacityDecimal = (parseInt(bannerBgOpacity, 10) / 100).toFixed(2)
+  const modalBgStyle = bannerHasBg
+    ? "background-image:url('/media/banner-bg');background-size:cover;background-position:center;"
+    : ''
+  const innerBgStyle = bannerHasBg
+    ? 'background:rgba(255,255,255,' + bgOpacityDecimal + ');'
+    : 'background:white;'
   const infoBannerHtml = bannerActive ? `
 <!-- Info-Banner Modal -->
 <div id="infoBannerBackdrop" class="info-banner-backdrop" style="display:none;" onclick="closeInfoBanner()" role="dialog" aria-modal="true" aria-label="Info-Banner"></div>
-<div id="infoBannerModal" class="info-banner-modal" style="display:none;" role="alertdialog" aria-labelledby="infoBannerTitle" aria-describedby="infoBannerBody"${bannerHasBg ? ' data-has-bg="1"' : ''}>
-  ${bannerHasBg ? `<div class="info-banner-modal__bg" style="background-image:url('/media/banner-bg');opacity:${bgOpacityDecimal};"></div>` : ''}
-  <div class="info-banner-modal__inner">
+<div id="infoBannerModal" class="info-banner-modal" style="display:none;${modalBgStyle}" role="alertdialog" aria-labelledby="infoBannerTitle" aria-describedby="infoBannerBody">
+  <div class="info-banner-modal__inner" style="${innerBgStyle}">
     <button class="info-banner-modal__close" onclick="closeInfoBanner()" aria-label="Info-Banner schließen">&times;</button>
     ${(bannerIcon || bannerTitle) ? `<div class="info-banner-modal__header">
       ${bannerIcon ? `<span class="info-banner-modal__icon" aria-hidden="true"><i class="${bannerIcon}"></i></span>` : ''}
@@ -3066,18 +3071,16 @@ app.get('/admin/infobanner', async (c) => {
       <div style="padding:20px;background:#e8e0d4;min-height:340px;display:flex;align-items:center;justify-content:center;position:relative;">
         <!-- Backdrop-Simulation -->
         <div style="position:absolute;inset:0;background:rgba(30,20,10,0.55);border-radius:0 0 0 0;"></div>
-        <!-- Modal-Box (1:1 wie echtes Modal) -->
-        <div id="ibPreviewModal" style="position:relative;z-index:2;background:white;border-radius:20px;width:100%;max-width:320px;box-shadow:0 8px 40px rgba(0,0,0,0.3);overflow:hidden;">
-          <!-- Hintergrundbild-Overlay -->
-          <div id="ibPreviewBg" style="position:absolute;inset:0;background-size:cover;background-position:center;border-radius:20px;pointer-events:none;opacity:${(parseInt(bgOpacity,10)/100).toFixed(2)};${hasBgImage?'background-image:url(/media/banner-bg);':''}" aria-hidden="true"></div>
-          <!-- Innenbereich (glasartig wenn Bild vorhanden) -->
-          <div id="ibPreviewInner" style="position:relative;z-index:1;padding:32px 28px 28px;${hasBgImage?'background:rgba(255,255,255,0.82);backdrop-filter:blur(10px);':'background:white;'}display:flex;flex-direction:column;gap:16px;">
+        <!-- Modal-Box: background-image direkt am Modal (1:1 wie echtes Modal) -->
+        <div id="ibPreviewModal" style="position:relative;z-index:2;border-radius:20px;width:100%;max-width:320px;box-shadow:0 8px 40px rgba(0,0,0,0.3);overflow:hidden;${hasBgImage ? "background-image:url('/media/banner-bg?t=" + Date.now() + "');background-size:cover;background-position:center;" : 'background:white;'}">
+          <!-- Innenbereich: weißer oder halbtransparenter Hintergrund -->
+          <div id="ibPreviewInner" style="padding:32px 28px 28px;${hasBgImage ? 'background:rgba(255,255,255,' + (parseInt(bgOpacity,10)/100).toFixed(2) + ');' : 'background:white;'}display:flex;flex-direction:column;gap:16px;position:relative;">
             <!-- Schließen-Button -->
             <button type="button" style="position:absolute;top:10px;right:12px;width:30px;height:30px;border-radius:50%;background:rgba(44,32,24,0.1);border:none;font-size:1.2rem;color:#2C2018;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;" aria-label="Schließen">×</button>
             <!-- Header: Icon + Titel (wie .info-banner-modal__header) -->
-            <div id="ibPreviewHeader" style="display:flex;align-items:center;gap:12px;padding-right:28px;">
-              <div id="ibPreviewIcon" style="width:44px;height:44px;min-width:44px;border-radius:12px;background:linear-gradient(135deg,#D98A2B,#B5701A);display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:white;box-shadow:0 4px 12px rgba(217,138,43,0.35);${S.banner_icon?'':'display:none;'}">${S.banner_icon?`<i class="${(S.banner_icon||'').replace(/"/g,'&quot;')}"></i>`:''}</div>
-              <div id="ibPreviewTitle" style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1rem;color:#2C2018;line-height:1.25;${(S.banner_title||'')?'':'color:#bbb;font-style:italic;font-family:inherit;font-weight:400;'}">${(S.banner_title||'')||'Kein Titel'}</div>
+            <div id="ibPreviewHeader" style="display:${(S.banner_icon||S.banner_title)?'flex':'none'};align-items:center;gap:12px;padding-right:28px;">
+              <div id="ibPreviewIcon" style="width:44px;height:44px;min-width:44px;border-radius:12px;background:linear-gradient(135deg,#D98A2B,#B5701A);display:${S.banner_icon?'flex':'none'};align-items:center;justify-content:center;font-size:1.25rem;color:white;box-shadow:0 4px 12px rgba(217,138,43,0.35);">${S.banner_icon ? '<i class="' + (S.banner_icon||'').replace(/"/g,'&quot;') + '"></i>' : ''}</div>
+              <div id="ibPreviewTitle" style="font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:1rem;color:#2C2018;line-height:1.25;">${(S.banner_title||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')||'<span style="color:#bbb;font-style:italic;font-weight:400;font-family:inherit;">Kein Titel</span>'}</div>
             </div>
             <!-- Body -->
             <div id="ibPreviewText" style="font-size:0.82rem;color:#3D2B1A;line-height:1.7;">${S.banner_text||'<span style="color:#999;font-style:italic;">Kein Text eingegeben</span>'}</div>
@@ -3210,18 +3213,21 @@ app.get('/admin/infobanner', async (c) => {
 
     // Live-Vorschau aktualisieren (1:1 echtes Modal-Layout)
     function ibUpdatePreview() {
-      var title   = document.getElementById('ib_title') ? document.getElementById('ib_title').value.trim() : '';
-      var icon    = document.getElementById('ib_icon')  ? document.getElementById('ib_icon').value.trim()  : '';
+      var title   = (document.getElementById('ib_title')||{value:''}).value.trim();
+      var icon    = (document.getElementById('ib_icon')||{value:''}).value.trim();
       var text    = ibHtmlMode ? ibHtmlArea.value : ibEditor.innerHTML;
-      var opacity = document.getElementById('ib_opacity') ? (parseInt(document.getElementById('ib_opacity').value,10)/100).toFixed(2) : '0.5';
-      var hasBg   = document.getElementById('ibPreviewBg') && document.getElementById('ibPreviewBg').style.backgroundImage && document.getElementById('ibPreviewBg').style.backgroundImage !== 'none' && document.getElementById('ibPreviewBg').style.backgroundImage !== '';
+      var opacityPct = document.getElementById('ib_opacity') ? parseInt(document.getElementById('ib_opacity').value,10) : 50;
+      var opacityDecimal = (opacityPct/100).toFixed(2);
 
+      var prevModal  = document.getElementById('ibPreviewModal');
       var prevIcon   = document.getElementById('ibPreviewIcon');
       var prevTitle  = document.getElementById('ibPreviewTitle');
       var prevText   = document.getElementById('ibPreviewText');
-      var prevBg     = document.getElementById('ibPreviewBg');
       var prevInner  = document.getElementById('ibPreviewInner');
       var prevHeader = document.getElementById('ibPreviewHeader');
+
+      // Hintergrundbild: prüfen ob vorhanden (backgroundImage am Modal selbst)
+      var hasBg = prevModal && prevModal.style.backgroundImage && prevModal.style.backgroundImage !== '' && prevModal.style.backgroundImage !== 'none';
 
       // Icon: Box anzeigen/verstecken
       if(prevIcon) {
@@ -3236,38 +3242,39 @@ app.get('/admin/infobanner', async (c) => {
       // Titel
       if(prevTitle) {
         if(title) {
+          prevTitle.innerHTML = '';
           prevTitle.textContent = title;
           prevTitle.style.color = '#2C2018';
           prevTitle.style.fontStyle = 'normal';
           prevTitle.style.fontWeight = '700';
         } else {
-          prevTitle.textContent = 'Kein Titel';
-          prevTitle.style.color = '#bbb';
-          prevTitle.style.fontStyle = 'italic';
-          prevTitle.style.fontWeight = '400';
+          prevTitle.innerHTML = '<span style="color:#bbb;font-style:italic;font-weight:400;font-family:inherit;">Kein Titel</span>';
         }
       }
-      // Header (nur anzeigen wenn Icon oder Titel gesetzt)
-      if(prevHeader) {
-        prevHeader.style.display = (icon || title) ? 'flex' : 'none';
-      }
+      // Header: nur anzeigen wenn Icon oder Titel
+      if(prevHeader) prevHeader.style.display = (icon || title) ? 'flex' : 'none';
       // Text
-      if(prevText) {
-        prevText.innerHTML = text || '<span style="color:#999;font-style:italic;">Kein Text eingegeben</span>';
-      }
-      // Hintergrundbild Opacity
-      if(prevBg) prevBg.style.opacity = opacity;
-      // Inner-Hintergrund: glasartig wenn Bild vorhanden
+      if(prevText) prevText.innerHTML = text || '<span style="color:#999;font-style:italic;">Kein Text eingegeben</span>';
+      // Inner-Hintergrund: halbtransparent wenn Bild vorhanden
       if(prevInner) {
-        var bgImg = prevBg ? prevBg.style.backgroundImage : '';
-        var hasBgNow = bgImg && bgImg !== 'none' && bgImg !== '';
-        if(hasBgNow) {
-          prevInner.style.background = 'rgba(255,255,255,0.82)';
-          prevInner.style.backdropFilter = 'blur(10px)';
-        } else {
-          prevInner.style.background = 'white';
-          prevInner.style.backdropFilter = '';
-        }
+        prevInner.style.background = hasBg ? 'rgba(255,255,255,' + opacityDecimal + ')' : 'white';
+      }
+    }
+
+    // Datei-Vorschau: Bild direkt am Modal-Element setzen
+    function ibPreviewBgImage(input) {
+      var prevModal = document.getElementById('ibPreviewModal');
+      var prevInner = document.getElementById('ibPreviewInner');
+      if(input.files && input.files[0] && prevModal) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          prevModal.style.backgroundImage = 'url(' + e.target.result + ')';
+          prevModal.style.backgroundSize = 'cover';
+          prevModal.style.backgroundPosition = 'center';
+          prevModal.style.background = ''; // background shorthand zurücksetzen
+          ibUpdatePreview();
+        };
+        reader.readAsDataURL(input.files[0]);
       }
     }
 
