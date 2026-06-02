@@ -39,8 +39,11 @@ function layout(title: string, description: string, body: string, S: Record<stri
   const bannerHasBg = S.banner_bg_image === '1' // KV-Flag: '1' = Bild vorhanden
   const bannerBgOpacity = S.banner_bg_opacity || '50'
   const bgOpacityDecimal = (parseInt(bannerBgOpacity, 10) / 100).toFixed(2)
+  // Cache-Buster: jedes neue Upload setzt einen neuen Timestamp in banner_bg_ts
+  const bannerBgTs = S.banner_bg_ts || '1'
+  const bannerBgUrl = "/media/banner-bg?v=" + bannerBgTs
   const modalBgStyle = bannerHasBg
-    ? "background-image:url('/media/banner-bg');background-size:cover;background-position:center;"
+    ? "background-image:url('" + bannerBgUrl + "');background-size:cover;background-position:center;"
     : ''
   const innerBgStyle = bannerHasBg
     ? 'background:rgba(255,255,255,' + bgOpacityDecimal + ');'
@@ -2929,6 +2932,9 @@ app.get('/admin/infobanner', async (c) => {
   const hasBgImage = S.banner_bg_image === '1'
   const bgOpacity = S.banner_bg_opacity || '50'
   const interval = S.banner_interval_minutes || '60'
+  // Cache-Buster-URL für Admin-Vorschau und Thumbnail
+  const adminBgTs = S.banner_bg_ts || '1'
+  const adminBgUrl = '/media/banner-bg?v=' + adminBgTs
 
   const body = `
   ${alert}
@@ -3018,7 +3024,7 @@ app.get('/admin/infobanner', async (c) => {
         ${hasBgImage
           ? `<div style="margin-top:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
                <p style="font-size:0.82rem;color:#4A9B7F;margin:0;"><i class="fas fa-check-circle"></i> Hintergrundbild ist gespeichert</p>
-               <img src="/media/banner-bg?t=${Date.now()}" alt="Vorschau Hintergrundbild" style="max-width:200px;max-height:120px;border-radius:8px;border:1px solid #E8D9C5;object-fit:cover;" loading="lazy">
+               <img src="${adminBgUrl}" alt="Vorschau Hintergrundbild" style="max-width:200px;max-height:120px;border-radius:8px;border:1px solid #E8D9C5;object-fit:cover;" loading="lazy">
              </div>
              <p style="font-size:0.78rem;color:#7A6550;margin-top:8px;">Neues Bild hochladen, um es zu ersetzen. Feld leer lassen, um beizubehalten.</p>`
           : '<span class="adm-hint">Noch kein Bild hochgeladen. Ohne Bild erscheint das Modal mit weißem Hintergrund.</span>'}
@@ -3072,7 +3078,7 @@ app.get('/admin/infobanner', async (c) => {
         <!-- Backdrop-Simulation -->
         <div style="position:absolute;inset:0;background:rgba(30,20,10,0.55);border-radius:0 0 0 0;"></div>
         <!-- Modal-Box: background-image direkt am Modal (1:1 wie echtes Modal) -->
-        <div id="ibPreviewModal" style="position:relative;z-index:2;border-radius:20px;width:100%;max-width:320px;box-shadow:0 8px 40px rgba(0,0,0,0.3);overflow:hidden;${hasBgImage ? "background-image:url('/media/banner-bg?t=" + Date.now() + "');background-size:cover;background-position:center;" : 'background:white;'}">
+        <div id="ibPreviewModal" style="position:relative;z-index:2;border-radius:20px;width:100%;max-width:320px;box-shadow:0 8px 40px rgba(0,0,0,0.3);overflow:hidden;${hasBgImage ? "background-image:url('" + adminBgUrl + "');background-size:cover;background-position:center;" : 'background:white;'}">
           <!-- Innenbereich: weißer oder halbtransparenter Hintergrund -->
           <div id="ibPreviewInner" style="padding:32px 28px 28px;${hasBgImage ? 'background:rgba(255,255,255,' + (parseInt(bgOpacity,10)/100).toFixed(2) + ');' : 'background:white;'}display:flex;flex-direction:column;gap:16px;position:relative;">
             <!-- Schließen-Button -->
@@ -3315,20 +3321,18 @@ app.post('/admin/infobanner', async (c) => {
     // Hintergrundbild: löschen oder hochladen
     if (form.banner_bg_delete === '1') {
       await c.env.MEDIA.delete('banner-bg')
-      await upsert('banner_bg_image', '') // Flag leeren
+      await upsert('banner_bg_image', '')   // Flag leeren
+      await upsert('banner_bg_ts', '')      // Version-Token leeren
     } else {
       const bgFile = form.banner_bg_file as File
       if (bgFile && bgFile.size > 0) {
-        // Bild komprimieren: als ArrayBuffer in KV speichern
         const buffer = await bgFile.arrayBuffer()
         const mimeType = bgFile.type || 'image/jpeg'
-        // Einfache Komprimierung: Canvas-API nicht im Worker verfügbar.
-        // Wir speichern das Original (Cloudflare KV limit: 25MB, passt für 20MB).
-        // Für echte Komprimierung müsste man Images API nutzen (separate Route).
         await c.env.MEDIA.put('banner-bg', buffer, {
           metadata: { mime: mimeType, uploadedAt: new Date().toISOString() }
         })
-        await upsert('banner_bg_image', '1') // Flag: Bild vorhanden
+        await upsert('banner_bg_image', '1')                  // Flag: Bild vorhanden
+        await upsert('banner_bg_ts', Date.now().toString())   // Cache-Buster: neuer Timestamp bei jedem Upload
       }
     }
     return c.redirect('/admin/infobanner?msg=saved')
@@ -3833,10 +3837,15 @@ app.get('/media/banner-bg', async (c) => {
     const result = await c.env.MEDIA.getWithMetadata<{ mime: string; uploadedAt: string }>('banner-bg', { type: 'arrayBuffer' })
     if (!result || result.value === null) return c.text('Not found', 404)
     const mime = result.metadata?.mime || 'image/jpeg'
+    // Cache-Control: immutable wenn ?v= Parameter vorhanden (Cache-Buster)
+    // Ohne Parameter: kein Cache (Fallback für direkte Aufrufe)
+    const hasVersion = c.req.query('v')
     return new Response(result.value as ArrayBuffer, {
       headers: {
         'Content-Type': mime,
-        'Cache-Control': 'public, max-age=1800',
+        'Cache-Control': hasVersion
+          ? 'public, max-age=31536000, immutable'  // Mit ?v=: 1 Jahr cachen – neue URL = neues Bild
+          : 'no-store',                              // Ohne ?v=: nie cachen
         'Vary': 'Accept'
       }
     })
@@ -3893,10 +3902,15 @@ app.get('/barrierefreiheit', async (c) => {
 
         <h2 style="font-size:1.15rem;margin-top:32px;margin-bottom:10px;">6. Feedback und Kontaktangaben</h2>
         <p>Wenn Sie Mängel in Bezug auf die barrierefreie Gestaltung unserer Website feststellen, nehmen Sie gerne Kontakt mit uns auf:</p>
-        <ul style="margin:10px 0 10px 20px;line-height:1.8;">
-          <li><strong>E-Mail:</strong> <a href="mailto:${S.contact_email||'info@auxilium-forst.com'}" style="color:var(--primary);">${S.contact_email||'info@auxilium-forst.com'}</a></li>
-          <li><strong>Anschrift:</strong> Auxilium – Kristina Bronner, ${S.contact_location||'Forst (Baden)'}</li>
-        </ul>
+        <address style="font-style:normal;margin:14px 0 14px 20px;line-height:2;">
+          <strong>Auxilium – Kristina Bronner</strong><br>
+          c/o Autorenglück #91926<br>
+          Albert-Einstein-Str. 47<br>
+          02977 Hoyerswerda<br>
+          <br>
+          <strong>Telefon:</strong> <a href="tel:+4915751559177" style="color:var(--primary);">01575 – 1559177</a><br>
+          <strong>E-Mail:</strong> <a href="mailto:auxilium-bronner@web.de" style="color:var(--primary);">auxilium-bronner@web.de</a>
+        </address>
         <p>Wir bemühen uns, auf Rückmeldungen innerhalb von 10 Werktagen zu reagieren.</p>
 
         <h2 style="font-size:1.15rem;margin-top:32px;margin-bottom:10px;">7. Durchsetzungsverfahren</h2>
