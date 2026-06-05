@@ -151,6 +151,7 @@ ${infoBannerHtml}<div id="siteHeader" class="site-header"><nav class="navbar" id
       <a href="/ueber-auxilium">&Uuml;ber Auxilium</a>
       <a href="/leistungen">Leistungen &amp; Kosten</a>
       <a href="/beratung">Beratung</a>
+      <a href="/ratgeber">Ratgeber</a>
       <a href="/stellenangebote">Stellenangebote</a>
       <a href="/kontakt">Kontakt</a>
       <a href="/kontakt" class="navbar__nav-cta-mobile"><i class="fas fa-calendar-check" aria-hidden="true"></i>Jetzt anfragen</a>
@@ -185,6 +186,7 @@ ${body}
           <li><a href="/ueber-auxilium">&Uuml;ber Auxilium</a></li>
           <li><a href="/leistungen">Leistungen &amp; Kosten</a></li>
           <li><a href="/beratung">Pflegeberatung</a></li>
+          <li><a href="/ratgeber">Ratgeber &amp; Tipps</a></li>
           <li><a href="/stellenangebote">Stellenangebote</a></li>
           <li><a href="/kontakt">Kontakt</a></li>
         </ul>
@@ -3926,6 +3928,495 @@ app.get('/barrierefreiheit', async (c) => {
     </div>
   </main>`
   return c.html(layout('Barrierefreiheit – Auxilium Pflegeberatung Forst', 'Erklärung zur Barrierefreiheit gemäß EU-Richtlinie 2016/2102, BITV 2.0 und BGG für die Website Auxilium Pflegeberatung Forst Baden.', body, S))
+})
+
+// ─── Sitemap.xml ──────────────────────────────────────────────
+app.get('/sitemap.xml', async (c) => {
+  const base = 'https://auxilium-forst.com'
+  const now  = new Date().toISOString().split('T')[0]
+  const staticUrls = [
+    { loc: '/',               changefreq: 'weekly',  priority: '1.0' },
+    { loc: '/ueber-auxilium', changefreq: 'monthly', priority: '0.8' },
+    { loc: '/leistungen',     changefreq: 'monthly', priority: '0.9' },
+    { loc: '/beratung',       changefreq: 'monthly', priority: '0.8' },
+    { loc: '/ratgeber',       changefreq: 'weekly',  priority: '0.8' },
+    { loc: '/stellenangebote',changefreq: 'weekly',  priority: '0.7' },
+    { loc: '/kontakt',        changefreq: 'monthly', priority: '0.8' },
+    { loc: '/impressum',      changefreq: 'yearly',  priority: '0.3' },
+    { loc: '/datenschutz',    changefreq: 'yearly',  priority: '0.3' },
+  ]
+  // Statische Ratgeber-Slugs
+  const ratgeberSlugs = [
+    'verhinderungspflege-richtig-nutzen',
+    'pflegegrade-erklaert',
+    'pflege-zuhause-statt-pflegeheim',
+    'entlastungsbetrag-131-euro-nutzen',
+    'pflegende-angehoerige-selbst-schuetzen',
+  ]
+  let dbSlugs: string[] = []
+  try {
+    const { results } = await c.env.DB.prepare(
+      'SELECT slug FROM ratgeber WHERE active=1'
+    ).all<any>()
+    dbSlugs = results.map((r: any) => r.slug)
+  } catch (_) {}
+  const ratgeberUrls = [...ratgeberSlugs, ...dbSlugs].map(slug => ({
+    loc: `/ratgeber/${slug}`, changefreq: 'monthly', priority: '0.7'
+  }))
+  const plzUrls = [
+    'forst-76694','bruchsal-76646','hambruecken-76707',
+    'karlsdorf-neuthard-76689','oestringen-76684','ubstadt-weiher-76698',
+    'bad-schoenborn-76669','kraichtal-76703','kronau-76709',
+    'waghausel-68753','philippsburg-76661','graben-neudorf-76676'
+  ].map(s => ({ loc: `/pflege/${s}`, changefreq: 'monthly', priority: '0.6' }))
+  const all = [...staticUrls, ...ratgeberUrls, ...plzUrls]
+  const entries = all.map(u =>
+    `  <url>\n    <loc>${base}${u.loc}</loc>\n    <lastmod>${now}</lastmod>\n    <changefreq>${u.changefreq}</changefreq>\n    <priority>${u.priority}</priority>\n  </url>`
+  ).join('\n')
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>`
+  return new Response(xml, {
+    headers: { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=86400' }
+  })
+})
+
+// ─── robots.txt ───────────────────────────────────────────────
+app.get('/robots.txt', (c) => {
+  const txt = `User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /api/\n\nSitemap: https://auxilium-forst.com/sitemap.xml\n`
+  return new Response(txt, {
+    headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=86400' }
+  })
+})
+
+// ═══════════════════════════════════════════════════════════════
+// RATGEBER / BLOG – 5 statische SEO-Artikel
+// ═══════════════════════════════════════════════════════════════
+
+const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;category:string;intro:string;content:string}> = [
+  {
+    slug: 'verhinderungspflege-richtig-nutzen',
+    title: 'Verhinderungspflege richtig nutzen – so sichern Sie sich bis zu 1.612 Euro',
+    meta_desc: 'Verhinderungspflege: Was ist erlaubt, wie beantragen, wie viel bekomme ich? Auxilium erklärt alle Möglichkeiten und hilft bei der Abrechnung über die Pflegekasse.',
+    category: 'Pflegefinanzierung',
+    intro: 'Pflegende Angehörige haben Anspruch auf Verhinderungspflege – doch viele nutzen ihn nicht vollständig aus. Auxilium zeigt, was möglich ist.',
+    content: `<h2>Was ist Verhinderungspflege?</h2>
+<p>Wenn die pflegende Person vorübergehend ausfällt (Urlaub, Krankheit), springt die Pflegekasse ein. Ab <strong>Pflegegrad 2</strong>, mindestens 6 Monate Vorpflegezeit.</p>
+<h2>Wie viel steht mir zu?</h2>
+<ul>
+  <li><strong>1.612 Euro jährlich</strong> für Verhinderungspflege</li>
+  <li>Zusätzlich halbes Kurzzeitpflege-Budget: bis zu <strong>2.418 Euro</strong> gesamt</li>
+  <li>Bis zu 6 Wochen pro Kalenderjahr</li>
+</ul>
+<h2>Wofür darf Verhinderungspflege genutzt werden?</h2>
+<p>Körperpflege, Betreuung, Hauswirtschaft, Begleitung – und <strong>ausdrücklich auch durch Auxilium</strong> als selbstständige Pflegeperson.</p>
+<h2>So hilft Auxilium</h2>
+<p>Auxilium ist als Verhinderungspflegeperson anerkannt. Sie erhalten alle Leistungen und rechnen direkt über die Pflegekasse ab.</p>
+<blockquote style="border-left:4px solid var(--primary);padding:12px 20px;background:#FBF7F2;border-radius:0 8px 8px 0;margin:20px 0;"><p style="margin:0;font-style:italic;">„Viele unserer Kunden wussten erst durch Auxilium, dass ihnen mehrere tausend Euro pro Jahr zustehen."</p><cite style="font-size:0.85rem;color:var(--text-light);display:block;margin-top:8px;">– Kristina Bronner, Auxilium</cite></blockquote>
+<p><a href="/beratung" style="color:var(--accent);font-weight:600;">Jetzt kostenlose Pflegeberatung anfragen →</a></p>`
+  },
+  {
+    slug: 'pflegegrade-erklaert',
+    title: 'Pflegegrade einfach erklärt – von Grad 1 bis 5 und was dahintersteckt',
+    meta_desc: 'Pflegegrade 1 bis 5 einfach erklärt: Voraussetzungen, Leistungen und Geldbeträge. Auxilium hilft beim Antrag und der optimalen Nutzung aller Pflegekassen-Leistungen.',
+    category: 'Pflegegrundlagen',
+    intro: 'Welcher Pflegegrad ist der richtige? Was sind die Voraussetzungen? Auxilium erklärt das System verständlich – und unterstützt beim Antrag.',
+    content: `<h2>Was sind Pflegegrade?</h2>
+<p>Seit 2017 gibt es 5 Pflegegrade statt der alten Pflegestufen. Bewertet wird die <strong>Selbstständigkeit in 6 Lebensbereichen</strong>: Mobilität, Kognition, Selbstversorgung, Alltagsgestaltung u.a.</p>
+<h2>Die 5 Pflegegrade im Überblick</h2>
+<table style="width:100%;border-collapse:collapse;margin:20px 0;font-size:0.9rem;">
+  <thead><tr style="background:var(--primary);color:white;"><th style="padding:10px 14px;text-align:left;">Grad</th><th style="padding:10px 14px;text-align:left;">Pflegegeld</th><th style="padding:10px 14px;text-align:left;">Sachleistung</th></tr></thead>
+  <tbody>
+    <tr style="border-bottom:1px solid #E8D9C5;"><td style="padding:10px 14px;"><strong>PG 1</strong></td><td style="padding:10px 14px;">–</td><td style="padding:10px 14px;">–</td></tr>
+    <tr style="border-bottom:1px solid #E8D9C5;background:#FBF7F2;"><td style="padding:10px 14px;"><strong>PG 2</strong></td><td style="padding:10px 14px;">332 €/Monat</td><td style="padding:10px 14px;">761 €/Monat</td></tr>
+    <tr style="border-bottom:1px solid #E8D9C5;"><td style="padding:10px 14px;"><strong>PG 3</strong></td><td style="padding:10px 14px;">573 €/Monat</td><td style="padding:10px 14px;">1.432 €/Monat</td></tr>
+    <tr style="border-bottom:1px solid #E8D9C5;background:#FBF7F2;"><td style="padding:10px 14px;"><strong>PG 4</strong></td><td style="padding:10px 14px;">765 €/Monat</td><td style="padding:10px 14px;">1.778 €/Monat</td></tr>
+    <tr><td style="padding:10px 14px;"><strong>PG 5</strong></td><td style="padding:10px 14px;">947 €/Monat</td><td style="padding:10px 14px;">2.200 €/Monat</td></tr>
+  </tbody>
+</table>
+<h2>So hilft Auxilium</h2>
+<p>Auxilium begleitet Sie durch den Begutachtungsprozess, bereitet Sie auf das MDK-Gespräch vor und unterstützt beim Widerspruch bei zu niedrigem Bescheid.</p>
+<p><a href="/kontakt" style="color:var(--accent);font-weight:600;">Jetzt Pflegeberatung anfragen →</a></p>`
+  },
+  {
+    slug: 'pflege-zuhause-statt-pflegeheim',
+    title: 'Pflege zu Hause statt Pflegeheim – wie es gelingt und was Sie wissen müssen',
+    meta_desc: 'Häusliche Pflege statt Pflegeheim: Vorteile, Kosten, Finanzierung und wie Auxilium in Forst Baden die professionelle Betreuung zuhause organisiert.',
+    category: 'Häusliche Pflege',
+    intro: 'Über 80 % aller Pflegebedürftigen werden zu Hause versorgt. Was Sie für eine gelungene häusliche Pflege brauchen, erklärt Auxilium.',
+    content: `<h2>Warum zu Hause statt Pflegeheim?</h2>
+<p>Das eigene Zuhause bedeutet Vertrautheit, Selbstbestimmung und Würde. Menschen in gewohnter Umgebung bleiben länger kognitiv fit.</p>
+<h2>Was kostet ein Pflegeheim wirklich?</h2>
+<p>Die durchschnittliche monatliche Eigenleistung liegt 2024 bei <strong>über 2.400 Euro</strong> – nach Abzug der Pflegekasse.</p>
+<h2>Was Auxilium zu Hause leistet</h2>
+<ul>
+  <li>Körperpflege, Mobilisation, Betreuung &amp; Begleitung</li>
+  <li>Hauswirtschaft: Kochen, Einkaufen, Reinigung</li>
+  <li>Nachtbetreuung nach Absprache</li>
+</ul>
+<h2>Finanzierung über die Pflegekasse</h2>
+<p>Auxilium rechnet als anerkannte Pflegeperson <strong>vollständig über Verhinderungspflege, Kurzzeitpflege und Entlastungsbetrag</strong> ab. Oft keine Eigenkosten.</p>
+<blockquote style="border-left:4px solid var(--primary);padding:12px 20px;background:#FBF7F2;border-radius:0 8px 8px 0;margin:20px 0;"><p style="margin:0;font-style:italic;">„Zuhause zu bleiben ist für die meisten der sehnlichste Wunsch. Auxilium macht das möglich."</p><cite style="font-size:0.85rem;color:var(--text-light);display:block;margin-top:8px;">– Kristina Bronner</cite></blockquote>
+<p><a href="/leistungen" style="color:var(--accent);font-weight:600;">Alle Leistungen und Preise ansehen →</a></p>`
+  },
+  {
+    slug: 'entlastungsbetrag-131-euro-nutzen',
+    title: 'Entlastungsbetrag 131 Euro: Wer bekommt ihn und wie kann er genutzt werden?',
+    meta_desc: 'Der Entlastungsbetrag von 131 Euro monatlich steht allen Pflegebedürftigen ab Pflegegrad 1 zu – auch für Auxilium-Leistungen in Forst Baden.',
+    category: 'Pflegefinanzierung',
+    intro: '131 Euro monatlich – diesen Betrag übersehen viele. Auxilium zeigt, wie Sie den Entlastungsbetrag optimal für häusliche Betreuung nutzen.',
+    content: `<h2>Was ist der Entlastungsbetrag?</h2>
+<p>Ab <strong>Pflegegrad 1</strong> stehen Pflegebedürftigen monatlich <strong>131 Euro</strong> für anerkannte Entlastungsleistungen zu.</p>
+<h2>Wofür darf er genutzt werden?</h2>
+<ul>
+  <li>Häusliche Betreuung durch anerkannte Pflegepersonen – <strong>auch Auxilium</strong></li>
+  <li>Haushaltshilfen, Tages-/Nachtpflege, Begleitdienste</li>
+</ul>
+<h2>Kann nicht genutzter Betrag übertragen werden?</h2>
+<p>Ja – bis 30. Juni des Folgejahres. Das ergibt bis zu <strong>3.144 Euro</strong> auf 24 Monate angespart.</p>
+<h2>Kombination mit anderen Leistungen</h2>
+<p>Der Entlastungsbetrag ist <strong>zusätzlich</strong> zu Pflegegeld und Sachleistungen nutzbar. Mit Auxilium kommen Sie auf bis zu mehrere tausend Euro jährlich.</p>
+<p><a href="/beratung" style="color:var(--accent);font-weight:600;">Kostenlose Beratung anfragen →</a></p>`
+  },
+  {
+    slug: 'pflegende-angehoerige-selbst-schuetzen',
+    title: 'Pflegende Angehörige: Wie Sie sich selbst schützen und Auszeiten nehmen können',
+    meta_desc: 'Pflegende Angehörige sind oft überlastet. Auxilium zeigt, wie Sie Auszeiten finanzieren, Verhinderungspflege nutzen und die eigene Gesundheit schützen.',
+    category: 'Angehörige',
+    intro: 'Wer pflegt, braucht selbst Pflege. Auxilium entlastet pflegende Angehörige – finanziell und praktisch.',
+    content: `<h2>Die Last der pflegenden Angehörigen</h2>
+<p>Über 3,1 Mio. Menschen pflegen Angehörige ausschließlich zu Hause – meist unbezahlt. Erschöpfung und Isolation sind häufige Folgen.</p>
+<h2>Was Ihnen als pflegender Angehöriger zusteht</h2>
+<ul>
+  <li><strong>Pflegeunterstützungsgeld:</strong> 10 Tage Freistellung pro Pflegefall</li>
+  <li><strong>Pflegezeit:</strong> Bis zu 6 Monate Freistellung vom Job</li>
+  <li><strong>Rentenversicherung:</strong> Pflegekasse zahlt Rentenbeiträge für nicht-erwerbstätige Pflegepersonen</li>
+  <li><strong>Verhinderungspflege:</strong> Bis zu 1.612 Euro jährlich für Vertretung – damit Sie Urlaub machen können</li>
+</ul>
+<h2>So hilft Auxilium</h2>
+<p>Kristina Bronner springt während Ihrer Auszeit als professionelle Pflegeperson ein – nahtlos, zuverlässig und über die Pflegekasse finanzierbar.</p>
+<blockquote style="border-left:4px solid var(--primary);padding:12px 20px;background:#FBF7F2;border-radius:0 8px 8px 0;margin:20px 0;"><p style="margin:0;font-style:italic;">„Ich habe viele pflegende Töchter kennengelernt, die sich selbst aufgeopfert haben. Das muss nicht sein – Auxilium ist für Sie da."</p><cite style="font-size:0.85rem;color:var(--text-light);display:block;margin-top:8px;">– Kristina Bronner</cite></blockquote>
+<p><a href="/kontakt" style="color:var(--accent);font-weight:600;">Jetzt Entlastung anfragen →</a></p>`
+  }
+]
+
+// ─── Ratgeber Übersicht ────────────────────────────────────────
+app.get('/ratgeber', async (c) => {
+  const S = await loadSettings(c.env.DB)
+  let dbArticles: any[] = []
+  try {
+    const { results } = await c.env.DB.prepare(
+      'SELECT slug, title, meta_desc, category, intro FROM ratgeber WHERE active=1 ORDER BY sort_order, created_at DESC'
+    ).all<any>()
+    dbArticles = results
+  } catch (_) {}
+  const allArticles = [...RATGEBER_ARTICLES, ...dbArticles]
+  const cards = allArticles.map(a => `
+  <article class="ratgeber-card">
+    <div class="ratgeber-card__category">${a.category}</div>
+    <h2 class="ratgeber-card__title"><a href="/ratgeber/${a.slug}">${a.title}</a></h2>
+    <p class="ratgeber-card__intro">${a.intro || a.meta_desc}</p>
+    <a href="/ratgeber/${a.slug}" class="ratgeber-card__link">Artikel lesen <i class="fas fa-arrow-right"></i></a>
+  </article>`).join('\n')
+  const body = pageHero('Ratgeber &amp; Tipps', 'Pflegewissen für Betroffene und Angehörige', 'Praxisnahe Informationen rund um Pflege, Finanzierung und Pflegekassen-Leistungen – von Auxilium für Sie aufbereitet.', 'Ratgeber') + `
+<main id="main-content" tabindex="-1">
+<section class="section"><div class="container"><div class="ratgeber-grid">${cards}</div></div></section>
+<section class="cta-section-green" aria-labelledby="ratgeber-cta-h">
+  <div class="container text-center">
+    <h2 id="ratgeber-cta-h" class="cta-section-green__title">Ihre Frage ist nicht dabei?</h2>
+    <p class="cta-section-green__text">Auxilium berät Sie pers&ouml;nlich und unverbindlich &ndash; kostenlos und auf Ihre Situation zugeschnitten.</p>
+    <div class="flex justify-center gap-4 flex-wrap">
+      <a href="/kontakt" class="btn btn-green-solid"><i class="fas fa-envelope" aria-hidden="true"></i>Pers&ouml;nliche Beratung anfragen</a>
+      <a href="/beratung" class="btn btn-green-ghost"><i class="fas fa-info-circle" aria-hidden="true"></i>Beratungsleistungen ansehen</a>
+    </div>
+  </div>
+</section>
+</main>`
+  return c.html(layout('Ratgeber Pflege &ndash; Auxilium Pflegeberatung Forst', 'Ratgeber-Artikel zu Pflege, Pflegegraden, Finanzierung und Entlastung für Betroffene und Angehörige in Forst Baden.', body, { ...S, _canonical: '/ratgeber' }))
+})
+
+// ─── Ratgeber Einzelartikel ────────────────────────────────────
+app.get('/ratgeber/:slug', async (c) => {
+  const S = await loadSettings(c.env.DB)
+  const slug = c.req.param('slug')
+  let article: any = RATGEBER_ARTICLES.find(a => a.slug === slug)
+  if (!article) {
+    try {
+      article = await c.env.DB.prepare(
+        'SELECT * FROM ratgeber WHERE slug=? AND active=1'
+      ).bind(slug).first<any>()
+    } catch (_) {}
+  }
+  if (!article) return c.notFound()
+  const others = RATGEBER_ARTICLES.filter(a => a.slug !== slug).slice(0, 3)
+  const articleSchema = JSON.stringify({
+    "@context": "https://schema.org", "@type": "Article",
+    "headline": article.title, "description": article.meta_desc,
+    "author": { "@type": "Person", "name": "Kristina Bronner" },
+    "publisher": { "@type": "Organization", "name": "Auxilium – Pflegeberatung Forst Baden", "url": "https://auxilium-forst.com" },
+    "url": `https://auxilium-forst.com/ratgeber/${slug}`
+  })
+  const body = pageHero(article.category, article.title, article.intro || article.meta_desc, 'Ratgeber') + `
+<main id="main-content" tabindex="-1">
+<section class="section">
+  <div class="container" style="max-width:820px;">
+    <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:24px;">
+      <a href="/">Start</a><span class="sep" aria-hidden="true">&rsaquo;</span>
+      <a href="/ratgeber">Ratgeber</a><span class="sep" aria-hidden="true">&rsaquo;</span>
+      <span class="current">${article.category}</span>
+    </nav>
+    <article class="ratgeber-article">
+      <div class="ratgeber-article__meta">
+        <span class="ratgeber-article__category">${article.category}</span>
+        <span class="ratgeber-article__divider">&middot;</span>
+        <span class="ratgeber-article__read">ca. 5 Min. Lesezeit</span>
+      </div>
+      <h1 class="ratgeber-article__title">${article.title}</h1>
+      ${article.intro ? `<p class="ratgeber-article__intro">${article.intro}</p>` : ''}
+      <div class="ratgeber-article__content">${article.content}</div>
+      <div class="ratgeber-article__cta">
+        <div class="ratgeber-cta-box">
+          <div class="ratgeber-cta-box__icon"><i class="fas fa-hand-holding-heart"></i></div>
+          <div>
+            <h3 class="ratgeber-cta-box__title">Auxilium hilft Ihnen pers&ouml;nlich</h3>
+            <p class="ratgeber-cta-box__text">Sie haben Fragen zu diesem Thema? Kristina Bronner berät Sie kostenlos und unverbindlich.</p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;">
+              <a href="/kontakt" class="btn btn-accent"><i class="fas fa-envelope" aria-hidden="true"></i>Jetzt anfragen</a>
+              <a href="/leistungen" class="btn btn-outline"><i class="fas fa-list" aria-hidden="true"></i>Leistungen ansehen</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+    ${others.length > 0 ? `
+    <div class="ratgeber-related">
+      <h2 style="font-size:1.2rem;margin-bottom:20px;">Weitere Ratgeber-Artikel</h2>
+      <div class="ratgeber-related__grid">
+        ${others.map(o => `<a href="/ratgeber/${o.slug}" class="ratgeber-related__card">
+          <span class="ratgeber-card__category">${o.category}</span>
+          <strong>${o.title}</strong>
+          <span class="ratgeber-card__link">Lesen <i class="fas fa-arrow-right"></i></span>
+        </a>`).join('')}
+      </div>
+    </div>` : ''}
+  </div>
+</section>
+</main>`
+  return c.html(layout(article.title + ' – Auxilium Ratgeber', article.meta_desc, body, { ...S, _canonical: '/ratgeber/' + slug }) + `<script type="application/ld+json">${articleSchema}</script>`)
+})
+
+// ═══════════════════════════════════════════════════════════════
+// ADMIN: Testimonials
+// ═══════════════════════════════════════════════════════════════
+
+app.get('/admin/testimonials', async (c) => {
+  const msg = c.req.query('msg')
+  const alert = msg === 'saved'   ? `<div class="adm-alert adm-alert--success"><i class="fas fa-check-circle"></i> Gespeichert.</div>`
+              : msg === 'deleted' ? `<div class="adm-alert adm-alert--success"><i class="fas fa-check-circle"></i> Gel&ouml;scht.</div>` : ''
+  let testimonials: any[] = []
+  try {
+    const { results } = await c.env.DB.prepare('SELECT * FROM testimonials ORDER BY sort_order, created_at').all<any>()
+    testimonials = results
+  } catch (_) {
+    return c.html(adminLayout('Kundenstimmen', `<div class="adm-alert adm-alert--error"><i class="fas fa-exclamation-circle"></i> Tabelle nicht gefunden. Bitte Migration 0012 einspielen.</div>`, 'testimonials'))
+  }
+  const rows = testimonials.map(t => `
+  <tr>
+    <td style="padding:10px 12px;">${t.id}</td>
+    <td style="padding:10px 12px;font-weight:600;">${t.name}</td>
+    <td style="padding:10px 12px;color:var(--text-light);">${t.role||'–'}</td>
+    <td style="padding:10px 12px;">${'★'.repeat(t.stars)}</td>
+    <td style="padding:10px 12px;max-width:260px;font-size:0.85rem;">${t.text.substring(0,70)}…</td>
+    <td style="padding:10px 12px;"><span class="adm-badge ${t.active?'adm-badge--green':'adm-badge--grey'}">${t.active?'Aktiv':'Inaktiv'}</span></td>
+    <td style="padding:10px 12px;white-space:nowrap;">
+      <a href="/admin/testimonials/edit/${t.id}" class="adm-btn adm-btn--secondary" style="padding:4px 10px;font-size:0.8rem;"><i class="fas fa-edit"></i></a>
+      <form method="POST" action="/admin/testimonials/delete/${t.id}" style="display:inline;" onsubmit="return confirm('Wirklich löschen?')">
+        <button type="submit" class="adm-btn" style="padding:4px 10px;font-size:0.8rem;background:#fee2e2;color:#991b1b;"><i class="fas fa-trash"></i></button>
+      </form>
+    </td>
+  </tr>`).join('')
+  const body = `${alert}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+  <div><h2 style="font-size:1.25rem;margin-bottom:4px;">Kundenstimmen verwalten</h2><p style="font-size:0.85rem;color:var(--text-light);">Erscheinen auf der Startseite im Slider</p></div>
+  <a href="/admin/testimonials/neu" class="adm-btn adm-btn--primary"><i class="fas fa-plus"></i> Neue Kundenstimme</a>
+</div>
+${testimonials.length === 0 ? `<div class="adm-empty"><p>Noch keine Kundenstimmen vorhanden.</p></div>` : `
+<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(44,32,24,0.07);">
+  <thead style="background:#F5F0EB;"><tr>
+    <th style="padding:10px 12px;text-align:left;font-size:0.8rem;">#</th>
+    <th style="padding:10px 12px;text-align:left;font-size:0.8rem;">Name</th>
+    <th style="padding:10px 12px;text-align:left;font-size:0.8rem;">Rolle</th>
+    <th style="padding:10px 12px;text-align:left;font-size:0.8rem;">Sterne</th>
+    <th style="padding:10px 12px;text-align:left;font-size:0.8rem;">Text</th>
+    <th style="padding:10px 12px;text-align:left;font-size:0.8rem;">Status</th>
+    <th style="padding:10px 12px;text-align:left;font-size:0.8rem;">Aktionen</th>
+  </tr></thead>
+  <tbody>${rows}</tbody>
+</table></div>`}
+<p style="font-size:0.8rem;color:var(--text-light);margin-top:14px;"><i class="fas fa-info-circle"></i> Keine aktiven Kundenstimmen = Bereich auf Startseite ausgeblendet.</p>`
+  return c.html(adminLayout('Kundenstimmen', body, 'testimonials'))
+})
+
+app.get('/admin/testimonials/neu', async (c) => {
+  const body = `<h2 style="font-size:1.2rem;margin-bottom:20px;">Neue Kundenstimme</h2>
+<form method="POST" action="/admin/testimonials/neu">
+  <div class="adm-form-group"><label class="adm-label">Name *</label><input type="text" name="name" required class="adm-input" placeholder="z. B. Maria S."><small class="adm-hint">Aus Datenschutzgründen reicht ein abgekürzter Name</small></div>
+  <div class="adm-form-group"><label class="adm-label">Rolle / Bezug</label><input type="text" name="role" class="adm-input" placeholder="z. B. Tochter eines Pflegebedürftigen"></div>
+  <div class="adm-form-group"><label class="adm-label">Bewertungstext *</label><textarea name="text" rows="4" required class="adm-input adm-textarea"></textarea></div>
+  <div class="adm-form-group"><label class="adm-label">Sterne</label><select name="stars" class="adm-input" style="width:auto;"><option value="5" selected>★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select></div>
+  <div class="adm-form-group"><label class="adm-label">Sort-Reihenfolge</label><input type="number" name="sort_order" value="0" class="adm-input" style="width:100px;"></div>
+  <div class="adm-form-group" style="flex-direction:row;align-items:center;gap:10px;"><input type="checkbox" name="active" value="1" checked id="act" style="width:18px;height:18px;accent-color:var(--accent);"><label for="act" class="adm-label" style="margin:0;">Aktiv</label></div>
+  <div style="display:flex;gap:12px;margin-top:20px;"><button type="submit" class="adm-btn adm-btn--primary"><i class="fas fa-save"></i> Speichern</button><a href="/admin/testimonials" class="adm-btn adm-btn--secondary">Abbrechen</a></div>
+</form>`
+  return c.html(adminLayout('Neue Kundenstimme', body, 'testimonials'))
+})
+
+app.post('/admin/testimonials/neu', async (c) => {
+  const d = await c.req.parseBody()
+  await c.env.DB.prepare(`INSERT INTO testimonials (name,role,text,stars,active,sort_order) VALUES (?,?,?,?,?,?)`)
+    .bind((d.name as string)||'',(d.role as string)||'',(d.text as string)||'',parseInt((d.stars as string)||'5',10),d.active==='1'?1:0,parseInt((d.sort_order as string)||'0',10)).run()
+  return c.redirect('/admin/testimonials?msg=saved')
+})
+
+app.get('/admin/testimonials/edit/:id', async (c) => {
+  const id = parseInt(c.req.param('id'), 10)
+  const t = await c.env.DB.prepare('SELECT * FROM testimonials WHERE id=?').bind(id).first<any>()
+  if (!t) return c.redirect('/admin/testimonials')
+  const body = `<h2 style="font-size:1.2rem;margin-bottom:20px;">Kundenstimme bearbeiten</h2>
+<form method="POST" action="/admin/testimonials/edit/${id}">
+  <div class="adm-form-group"><label class="adm-label">Name *</label><input type="text" name="name" value="${(t.name||'').replace(/"/g,'&quot;')}" required class="adm-input"></div>
+  <div class="adm-form-group"><label class="adm-label">Rolle</label><input type="text" name="role" value="${(t.role||'').replace(/"/g,'&quot;')}" class="adm-input"></div>
+  <div class="adm-form-group"><label class="adm-label">Text *</label><textarea name="text" rows="4" required class="adm-input adm-textarea">${(t.text||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea></div>
+  <div class="adm-form-group"><label class="adm-label">Sterne</label><select name="stars" class="adm-input" style="width:auto;">${[5,4,3,2,1].map(s=>`<option value="${s}"${t.stars===s?' selected':''}>${'★'.repeat(s)}${'☆'.repeat(5-s)}</option>`).join('')}</select></div>
+  <div class="adm-form-group"><label class="adm-label">Sort-Reihenfolge</label><input type="number" name="sort_order" value="${t.sort_order||0}" class="adm-input" style="width:100px;"></div>
+  <div class="adm-form-group" style="flex-direction:row;align-items:center;gap:10px;"><input type="checkbox" name="active" value="1" ${t.active?'checked':''} id="act" style="width:18px;height:18px;accent-color:var(--accent);"><label for="act" class="adm-label" style="margin:0;">Aktiv</label></div>
+  <div style="display:flex;gap:12px;margin-top:20px;"><button type="submit" class="adm-btn adm-btn--primary"><i class="fas fa-save"></i> Speichern</button><a href="/admin/testimonials" class="adm-btn adm-btn--secondary">Abbrechen</a></div>
+</form>`
+  return c.html(adminLayout('Kundenstimme bearbeiten', body, 'testimonials'))
+})
+
+app.post('/admin/testimonials/edit/:id', async (c) => {
+  const id = parseInt(c.req.param('id'), 10)
+  const d = await c.req.parseBody()
+  await c.env.DB.prepare(`UPDATE testimonials SET name=?,role=?,text=?,stars=?,active=?,sort_order=? WHERE id=?`)
+    .bind((d.name as string)||'',(d.role as string)||'',(d.text as string)||'',parseInt((d.stars as string)||'5',10),d.active==='1'?1:0,parseInt((d.sort_order as string)||'0',10),id).run()
+  return c.redirect('/admin/testimonials?msg=saved')
+})
+
+app.post('/admin/testimonials/delete/:id', async (c) => {
+  const id = parseInt(c.req.param('id'), 10)
+  await c.env.DB.prepare('DELETE FROM testimonials WHERE id=?').bind(id).run()
+  return c.redirect('/admin/testimonials?msg=deleted')
+})
+
+// ═══════════════════════════════════════════════════════════════
+// ADMIN: Ratgeber (DB-verwaltete Zusatz-Artikel)
+// ═══════════════════════════════════════════════════════════════
+
+app.get('/admin/ratgeber', async (c) => {
+  const msg = c.req.query('msg')
+  const alert = msg === 'saved' ? `<div class="adm-alert adm-alert--success"><i class="fas fa-check-circle"></i> Gespeichert.</div>`
+    : msg === 'deleted' ? `<div class="adm-alert adm-alert--success"><i class="fas fa-check-circle"></i> Gel&ouml;scht.</div>` : ''
+  let articles: any[] = []
+  try {
+    const { results } = await c.env.DB.prepare('SELECT id,slug,title,category,active,sort_order FROM ratgeber ORDER BY sort_order,created_at DESC').all<any>()
+    articles = results
+  } catch (_) {
+    return c.html(adminLayout('Ratgeber', `<div class="adm-alert adm-alert--error">Tabelle nicht gefunden. Bitte Migration 0013 einspielen.</div>`, 'ratgeber'))
+  }
+  const rows = articles.map(a => `
+  <tr>
+    <td style="padding:10px 12px;">${a.id}</td>
+    <td style="padding:10px 12px;font-weight:600;max-width:260px;">${a.title}</td>
+    <td style="padding:10px 12px;"><code style="font-size:0.78rem;background:#F5F0EB;padding:2px 6px;border-radius:4px;">${a.slug}</code></td>
+    <td style="padding:10px 12px;">${a.category}</td>
+    <td style="padding:10px 12px;"><span class="adm-badge ${a.active?'adm-badge--green':'adm-badge--grey'}">${a.active?'Aktiv':'Inaktiv'}</span></td>
+    <td style="padding:10px 12px;white-space:nowrap;">
+      <a href="/admin/ratgeber/edit/${a.id}" class="adm-btn adm-btn--secondary" style="padding:4px 10px;font-size:0.8rem;"><i class="fas fa-edit"></i></a>
+      <a href="/ratgeber/${a.slug}" target="_blank" class="adm-btn adm-btn--secondary" style="padding:4px 10px;font-size:0.8rem;"><i class="fas fa-eye"></i></a>
+      <form method="POST" action="/admin/ratgeber/delete/${a.id}" style="display:inline;" onsubmit="return confirm('Wirklich löschen?')"><button type="submit" class="adm-btn" style="padding:4px 10px;font-size:0.8rem;background:#fee2e2;color:#991b1b;"><i class="fas fa-trash"></i></button></form>
+    </td>
+  </tr>`).join('')
+  const body = `${alert}
+<div style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:8px;padding:12px 16px;font-size:0.85rem;color:#1E40AF;margin-bottom:20px;">
+  <i class="fas fa-info-circle"></i> <strong>5 statische Artikel</strong> sind fest im Code hinterlegt. Hier verwalten Sie <strong>zusätzliche</strong> DB-Artikel.
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+  <div><h2 style="font-size:1.25rem;margin-bottom:4px;">Zus&auml;tzliche Ratgeber-Artikel</h2></div>
+  <div style="display:flex;gap:8px;"><a href="/admin/ratgeber/neu" class="adm-btn adm-btn--primary"><i class="fas fa-plus"></i> Neuer Artikel</a><a href="/ratgeber" target="_blank" class="adm-btn adm-btn--secondary"><i class="fas fa-eye"></i> Ratgeber ansehen</a></div>
+</div>
+${articles.length===0?`<div class="adm-empty"><p>Noch keine DB-Artikel vorhanden. Die 5 statischen Artikel sind immer sichtbar.</p></div>`:`
+<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;background:white;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(44,32,24,0.07);">
+  <thead style="background:#F5F0EB;"><tr>
+    <th style="padding:10px 12px;text-align:left;font-size:0.8rem;">#</th>
+    <th style="padding:10px 12px;text-align:left;font-size:0.8rem;">Titel</th>
+    <th style="padding:10px 12px;text-align:left;font-size:0.8rem;">Slug</th>
+    <th style="padding:10px 12px;text-align:left;font-size:0.8rem;">Kategorie</th>
+    <th style="padding:10px 12px;text-align:left;font-size:0.8rem;">Status</th>
+    <th style="padding:10px 12px;text-align:left;font-size:0.8rem;">Aktionen</th>
+  </tr></thead>
+  <tbody>${rows}</tbody>
+</table></div>`}`
+  return c.html(adminLayout('Ratgeber', body, 'ratgeber'))
+})
+
+app.get('/admin/ratgeber/neu', async (c) => {
+  const body = `<h2 style="font-size:1.2rem;margin-bottom:20px;">Neuer Ratgeber-Artikel</h2>
+<form method="POST" action="/admin/ratgeber/neu">
+  <div class="adm-form-group"><label class="adm-label">Titel *</label><input type="text" name="title" required class="adm-input"></div>
+  <div class="adm-form-group"><label class="adm-label">Slug (URL) *</label><input type="text" name="slug" required class="adm-input" placeholder="nur-kleinbuchstaben-und-bindestriche"><small class="adm-hint">Wird zu /ratgeber/[slug]</small></div>
+  <div class="adm-form-group"><label class="adm-label">Kategorie</label><input type="text" name="category" class="adm-input" value="Ratgeber"></div>
+  <div class="adm-form-group"><label class="adm-label">Meta-Beschreibung</label><textarea name="meta_desc" rows="2" class="adm-input adm-textarea"></textarea></div>
+  <div class="adm-form-group"><label class="adm-label">Einleitung</label><textarea name="intro" rows="2" class="adm-input adm-textarea"></textarea></div>
+  <div class="adm-form-group"><label class="adm-label">Inhalt (HTML) *</label><textarea name="content" rows="15" required class="adm-input adm-textarea" style="font-family:monospace;font-size:0.85rem;"></textarea><small class="adm-hint">HTML erlaubt: h2, h3, p, ul, ol, li, strong, a, blockquote</small></div>
+  <div class="adm-form-group"><label class="adm-label">Sort-Reihenfolge</label><input type="number" name="sort_order" value="10" class="adm-input" style="width:100px;"></div>
+  <div class="adm-form-group" style="flex-direction:row;align-items:center;gap:10px;"><input type="checkbox" name="active" value="1" checked id="act" style="width:18px;height:18px;accent-color:var(--accent);"><label for="act" class="adm-label" style="margin:0;">Aktiv</label></div>
+  <div style="display:flex;gap:12px;margin-top:20px;"><button type="submit" class="adm-btn adm-btn--primary"><i class="fas fa-save"></i> Speichern</button><a href="/admin/ratgeber" class="adm-btn adm-btn--secondary">Abbrechen</a></div>
+</form>`
+  return c.html(adminLayout('Neuer Ratgeber-Artikel', body, 'ratgeber'))
+})
+
+app.post('/admin/ratgeber/neu', async (c) => {
+  const d = await c.req.parseBody()
+  await c.env.DB.prepare(`INSERT OR IGNORE INTO ratgeber (slug,title,meta_desc,category,intro,content,active,sort_order) VALUES (?,?,?,?,?,?,?,?)`)
+    .bind((d.slug as string)||'',(d.title as string)||'',(d.meta_desc as string)||'',(d.category as string)||'Ratgeber',(d.intro as string)||'',(d.content as string)||'',d.active==='1'?1:0,parseInt((d.sort_order as string)||'10',10)).run()
+  return c.redirect('/admin/ratgeber?msg=saved')
+})
+
+app.get('/admin/ratgeber/edit/:id', async (c) => {
+  const id = parseInt(c.req.param('id'), 10)
+  const a = await c.env.DB.prepare('SELECT * FROM ratgeber WHERE id=?').bind(id).first<any>()
+  if (!a) return c.redirect('/admin/ratgeber')
+  const esc = (s: string) => (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  const body = `<h2 style="font-size:1.2rem;margin-bottom:20px;">Ratgeber-Artikel bearbeiten</h2>
+<form method="POST" action="/admin/ratgeber/edit/${id}">
+  <div class="adm-form-group"><label class="adm-label">Titel *</label><input type="text" name="title" value="${esc(a.title)}" required class="adm-input"></div>
+  <div class="adm-form-group"><label class="adm-label">Slug</label><input type="text" name="slug" value="${esc(a.slug)}" required class="adm-input"></div>
+  <div class="adm-form-group"><label class="adm-label">Kategorie</label><input type="text" name="category" value="${esc(a.category)}" class="adm-input"></div>
+  <div class="adm-form-group"><label class="adm-label">Meta-Beschreibung</label><textarea name="meta_desc" rows="2" class="adm-input adm-textarea">${esc(a.meta_desc)}</textarea></div>
+  <div class="adm-form-group"><label class="adm-label">Einleitung</label><textarea name="intro" rows="2" class="adm-input adm-textarea">${esc(a.intro)}</textarea></div>
+  <div class="adm-form-group"><label class="adm-label">Inhalt (HTML)</label><textarea name="content" rows="15" required class="adm-input adm-textarea" style="font-family:monospace;font-size:0.85rem;">${esc(a.content)}</textarea></div>
+  <div class="adm-form-group"><label class="adm-label">Sort-Reihenfolge</label><input type="number" name="sort_order" value="${a.sort_order||0}" class="adm-input" style="width:100px;"></div>
+  <div class="adm-form-group" style="flex-direction:row;align-items:center;gap:10px;"><input type="checkbox" name="active" value="1" ${a.active?'checked':''} id="act" style="width:18px;height:18px;accent-color:var(--accent);"><label for="act" class="adm-label" style="margin:0;">Aktiv</label></div>
+  <div style="display:flex;gap:12px;margin-top:20px;">
+    <button type="submit" class="adm-btn adm-btn--primary"><i class="fas fa-save"></i> Speichern</button>
+    <a href="/admin/ratgeber" class="adm-btn adm-btn--secondary">Abbrechen</a>
+    <a href="/ratgeber/${a.slug}" target="_blank" class="adm-btn adm-btn--secondary"><i class="fas fa-eye"></i> Vorschau</a>
+  </div>
+</form>`
+  return c.html(adminLayout('Ratgeber bearbeiten', body, 'ratgeber'))
+})
+
+app.post('/admin/ratgeber/edit/:id', async (c) => {
+  const id = parseInt(c.req.param('id'), 10)
+  const d = await c.req.parseBody()
+  await c.env.DB.prepare(`UPDATE ratgeber SET slug=?,title=?,meta_desc=?,category=?,intro=?,content=?,active=?,sort_order=?,updated_at=CURRENT_TIMESTAMP WHERE id=?`)
+    .bind((d.slug as string)||'',(d.title as string)||'',(d.meta_desc as string)||'',(d.category as string)||'Ratgeber',(d.intro as string)||'',(d.content as string)||'',d.active==='1'?1:0,parseInt((d.sort_order as string)||'0',10),id).run()
+  return c.redirect('/admin/ratgeber?msg=saved')
+})
+
+app.post('/admin/ratgeber/delete/:id', async (c) => {
+  const id = parseInt(c.req.param('id'), 10)
+  await c.env.DB.prepare('DELETE FROM ratgeber WHERE id=?').bind(id).run()
+  return c.redirect('/admin/ratgeber?msg=deleted')
 })
 
 export default app

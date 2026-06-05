@@ -2355,3 +2355,101 @@ textarea:focus:not(:focus-visible) {
 /* main-content für Skip-Link-Ziel */
 #main-content:focus { outline: none; }
 
+/* ─── Ratgeber ──────────────────────────────────────────────── */
+.ratgeber-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 28px;
+  margin-top: 8px;
+}
+.ratgeber-card {
+  background: white;
+  border-radius: 14px;
+  padding: 28px 28px 24px;
+  box-shadow: 0 2px 12px rgba(44,32,24,0.07);
+  border: 1px solid #F0E8DE;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.ratgeber-card:hover { box-shadow: 0 6px 28px rgba(44,32,24,0.13); transform: translateY(-2px); }
+.ratgeber-card__category {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+  background: rgba(193,120,45,0.10);
+  padding: 3px 10px;
+  border-radius: 20px;
+  display: inline-block;
+}
+.ratgeber-card__title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 0;
+}
+.ratgeber-card__title a { color: var(--text); text-decoration: none; }
+.ratgeber-card__title a:hover { color: var(--accent); }
+.ratgeber-card__intro { font-size: 0.875rem; color: var(--text-light); line-height: 1.6; flex: 1; }
+.ratgeber-card__link { font-size: 0.85rem; font-weight: 600; color: var(--accent); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; margin-top: auto; }
+.ratgeber-card__link:hover { gap: 10px; }
+
+/* Ratgeber Artikel */
+.ratgeber-article__meta { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.ratgeber-article__category { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--primary); background: rgba(193,120,45,0.10); padding: 3px 10px; border-radius: 20px; }
+.ratgeber-article__divider { color: var(--text-light); }
+.ratgeber-article__read { font-size: 0.8rem; color: var(--text-light); }
+.ratgeber-article__title { font-size: 1.8rem; font-weight: 800; line-height: 1.25; margin-bottom: 16px; }
+.ratgeber-article__intro { font-size: 1.05rem; color: var(--text-light); line-height: 1.7; margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid #F0E8DE; }
+.ratgeber-article__content { line-height: 1.8; color: var(--text); }
+.ratgeber-article__content h2 { font-size: 1.3rem; font-weight: 700; margin: 32px 0 14px; color: var(--text); }
+.ratgeber-article__content h3 { font-size: 1.1rem; font-weight: 600; margin: 24px 0 10px; }
+.ratgeber-article__content p { margin-bottom: 16px; }
+.ratgeber-article__content ul, .ratgeber-article__content ol { margin: 0 0 16px 20px; }
+.ratgeber-article__content li { margin-bottom: 6px; }
+.ratgeber-article__content table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; }
+.ratgeber-article__content blockquote { border-left: 4px solid var(--primary); padding: 12px 20px; background: #FBF7F2; border-radius: 0 8px 8px 0; margin: 20px 0; }
+.ratgeber-article__cta { margin-top: 40px; }
+
+.ratgeber-cta-box {
+  background: linear-gradient(135deg, #FBF7F2 0%, #F5EFE7 100%);
+  border: 1px solid #E8D9C5;
+  border-radius: 14px;
+  padding: 28px 32px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+.ratgeber-cta-box__icon { font-size: 2rem; color: var(--primary); flex-shrink: 0; margin-top: 4px; }
+.ratgeber-cta-box__title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+.ratgeber-cta-box__text { font-size: 0.9rem; color: var(--text-light); line-height: 1.6; }
+
+/* Verwandte Artikel */
+.ratgeber-related { margin-top: 48px; padding-top: 32px; border-top: 1px solid #F0E8DE; }
+.ratgeber-related__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.ratgeber-related__card {
+  background: white;
+  border: 1px solid #F0E8DE;
+  border-radius: 10px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 0.88rem;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.ratgeber-related__card:hover { box-shadow: 0 4px 16px rgba(44,32,24,0.10); transform: translateY(-2px); color: var(--accent); }
+.ratgeber-related__card strong { font-size: 0.9rem; line-height: 1.4; }
+
+@media (max-width: 640px) {
+  .ratgeber-grid { grid-template-columns: 1fr; }
+  .ratgeber-article__title { font-size: 1.4rem; }
+  .ratgeber-cta-box { flex-direction: column; padding: 20px; }
+  .ratgeber-related__grid { grid-template-columns: 1fr; }
+}
+
