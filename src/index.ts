@@ -80,9 +80,9 @@ function layout(title: string, description: string, body: string, S: Record<stri
           modal.classList.add('visible');
         });
         localStorage.setItem(key,String(Date.now()));
-        // Fokus setzen für Barrierefreiheit
+        // Fokus auf Modal setzen (kein sichtbarer Ring am Button)
         var closeBtn=modal.querySelector('.info-banner-modal__close');
-        if(closeBtn)closeBtn.focus();
+        if(closeBtn){closeBtn.setAttribute('tabindex','0');modal.setAttribute('tabindex','-1');modal.focus();}
       },600);
     }
   }
@@ -4000,7 +4000,10 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     intro: 'Pflegende Angehörige haben Anspruch auf Verhinderungspflege – doch viele nutzen ihn nicht vollständig aus. Auxilium Forst zeigt Ihnen, wie Sie alle Ihnen zustehenden Leistungen beanspruchen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
-  <img src="https://images.unsplash.com/photo-1576765608622-067973a79f53?w=820&q=80&auto=format&fit=crop" alt="Pflegeperson betreut Seniorin zu Hause – Verhinderungspflege in Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
+  <picture>
+    <source srcset="/static/ratgeber-verhinderungspflege.webp" type="image/webp">
+    <img src="/static/ratgeber-verhinderungspflege.jpg" alt="Pflegekraft hält Seniorin einfühlsam die Hand – Verhinderungspflege durch Auxilium in Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
+  </picture>
   <figcaption style="font-size:0.8rem;color:var(--text-light);padding:8px 12px;background:#FBF7F2;">Professionelle Verhinderungspflege: Auxilium übernimmt, wenn die Hauptpflegeperson eine Auszeit braucht.</figcaption>
 </figure>
 
@@ -4077,7 +4080,10 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     intro: 'Welcher Pflegegrad ist der richtige? Wie läuft die MDK-Begutachtung ab? Auxilium erklärt das Pflegegrad-System verständlich – und unterstützt Sie persönlich beim Antrag und bei Widersprüchen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
-  <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=820&q=80&auto=format&fit=crop" alt="Pflegekraft unterstützt ältere Dame – Pflegegrade beantragen in Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
+  <picture>
+    <source srcset="/static/ratgeber-pflegegrade.webp" type="image/webp">
+    <img src="/static/ratgeber-pflegegrade.jpg" alt="Pflegeberaterin bespricht Pflegegrad-Unterlagen mit älterem Ehepaar – persönliche Erstberatung bei Auxilium Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
+  </picture>
   <figcaption style="font-size:0.8rem;color:var(--text-light);padding:8px 12px;background:#FBF7F2;">Der richtige Pflegegrad entscheidet über Ihren Leistungsanspruch – Auxilium begleitet Sie durch den gesamten Begutachtungsprozess.</figcaption>
 </figure>
 
@@ -4185,7 +4191,10 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     intro: 'Über 80 % aller Pflegebedürftigen wünschen sich Pflege im eigenen Zuhause. Was Sie dafür brauchen, was es kostet und wie Auxilium in Forst (Baden) die häusliche Pflege professionell und pflegekassenfinanziert übernimmt.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
-  <img src="https://images.unsplash.com/photo-1516728778615-2d590ea1855e?w=820&q=80&auto=format&fit=crop" alt="Seniorin in ihrer vertrauten Wohnung – häusliche Pflege statt Pflegeheim in Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
+  <picture>
+    <source srcset="/static/ratgeber-pflege-zuhause.webp" type="image/webp">
+    <img src="/static/ratgeber-pflege-zuhause.jpg" alt="Senior genießt Tee zu Hause mit Pflegekraft – häusliche Pflege statt Pflegeheim durch Auxilium Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
+  </picture>
   <figcaption style="font-size:0.8rem;color:var(--text-light);padding:8px 12px;background:#FBF7F2;">Das eigene Zuhause als bester Ort zum Älterwerden – Auxilium macht häusliche Pflege professionell und finanzierbar.</figcaption>
 </figure>
 
@@ -4230,7 +4239,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 <h2>Wie läuft die Betreuung durch Auxilium konkret ab?</h2>
 <p>Nach dem ersten Gespräch und einer Bedarfsanalyse erstellt Auxilium einen individuellen Betreuungsplan. Dieser legt fest, welche Leistungen zu welchen Zeiten erbracht werden und wie die Abrechnung mit der Pflegekasse erfolgt. Regelmäßige Feedbackgespräche mit Angehörigen sorgen dafür, dass die Pflege stets optimal angepasst wird.</p>
 <h3>Service-Gebiet: Wo ist Auxilium aktiv?</h3>
-<p>Auxilium betreut Pflegebedürftige in <strong>Forst (Baden), Bruchsal, Kraichtal, Bretten, Bad Schönborn</strong> und der gesamten Region Karlsruhe. Auch Einsätze in der Region Hoyerswerda sind möglich.</p>
+<p>Auxilium betreut Pflegebedürftige in <strong>Forst (Baden), Bruchsal, Kraichtal, Bretten, Bad Schönborn</strong> und der gesamten Region Karlsruhe.</p>
 
 <blockquote style="border-left:4px solid var(--primary);padding:16px 24px;background:#FBF7F2;border-radius:0 10px 10px 0;margin:32px 0;">
   <p style="margin:0 0 8px;font-style:italic;font-size:1.05rem;">„Zuhause zu bleiben ist der sehnlichste Wunsch der meisten pflegebedürftigen Menschen. Mit der richtigen Unterstützung ist das möglich – und oft günstiger als das Pflegeheim."</p>
@@ -4246,8 +4255,11 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     intro: '131 Euro monatlich – diesen Betrag übersehen viele Familien komplett. Auxilium zeigt, wer ihn bekommt, wofür er genutzt werden darf, wie er übertragen werden kann und warum er in Kombination mit anderen Leistungen besonders wertvoll ist.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
-  <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=820&q=80&auto=format&fit=crop" alt="Pflegeleistungen planen und finanzieren – Entlastungsbetrag 131 Euro für häusliche Betreuung" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
-  <figcaption style="font-size:0.8rem;color:var(--text-light);padding:8px 12px;background:#FBF7F2;">Der Entlastungsbetrag ist eine oft ungenutzte Finanzierungsquelle für professionelle häusliche Betreuung.</figcaption>
+  <picture>
+    <source srcset="/static/ratgeber-entlastungsbetrag.webp" type="image/webp">
+    <img src="/static/ratgeber-entlastungsbetrag.jpg" alt="Glückliche Seniorin mit Kaffeetasse im Garten – Entlastungsbetrag 131 Euro für häusliche Betreuung durch Auxilium" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
+  </picture>
+  <figcaption style="font-size:0.8rem;color:var(--text-light);padding:8px 12px;background:#FBF7F2;">Der Entlastungsbetrag ermöglicht professionelle Betreuung zu Hause – Auxilium rechnet direkt mit der Pflegekasse ab.</figcaption>
 </figure>
 
 <h2>Was ist der Entlastungsbetrag? – Definition und gesetzliche Grundlage</h2>
