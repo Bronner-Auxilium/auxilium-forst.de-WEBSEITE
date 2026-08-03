@@ -28,8 +28,8 @@ app.use('/static/*', serveStatic({ root: './' }))
 function layout(title: string, description: string, body: string, S: Record<string,string> = {}): string {
   const year = new Date().getFullYear()
   const loc   = S.contact_location || 'Forst (Baden) &amp; Umgebung'
-  const email = S.contact_email    || 'info@auxilium-forst.com'
-  const hours = S.contact_hours    || 'Mo&ndash;Fr &middot; 8:00 &ndash; 18:00 Uhr'
+  const email = S.contact_email    || 'info@auxilium-forst.de'
+  const hours = S.contact_hours    || 'Mo&ndash;Fr &middot; 9:00 &ndash; 16:00 Uhr'
   // Info-Banner (Modal)
   const bannerActive = S.banner_active === '1'
   const bannerIntervalMinutes = S.banner_interval_minutes || '60'
@@ -119,7 +119,7 @@ function layout(title: string, description: string, body: string, S: Record<stri
 <meta property="og:image" content="/static/logo.png">
 <meta property="og:locale" content="de_DE">
 <meta property="og:site_name" content="Auxilium – Pflegeberatung Forst Baden">
-<link rel="canonical" href="https://auxilium-forst.com${S._canonical||''}">
+<link rel="canonical" href="https://auxilium-forst.de${S._canonical||''}">
 <title>${title}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -133,7 +133,7 @@ ${S.ga_id ? `<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=${S.ga_id}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${S.ga_id}',{anonymize_ip:true});</script>` : ''}
 <!-- Strukturierte Daten: LocalBusiness -->
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Auxilium – Pflegeberatung Forst Baden","description":"Individuelle Pflege und Pflegeberatung in Forst Baden und Umgebung","url":"https://auxilium-forst.com","telephone":"","email":"info@auxilium-forst.com","address":{"@type":"PostalAddress","streetAddress":"","addressLocality":"Forst","postalCode":"76694","addressCountry":"DE"},"areaServed":[{"@type":"City","name":"Forst","postalCode":"76694"},{"@type":"City","name":"Bruchsal","postalCode":"76646"},{"@type":"City","name":"Karlsdorf-Neuthard","postalCode":"76689"}],"priceRange":"€€","openingHours":"Mo-Fr 08:00-18:00"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Auxilium – Pflegeberatung Forst Baden","description":"Individuelle Pflege und Pflegeberatung in Forst Baden und Umgebung","url":"https://auxilium-forst.de","telephone":"","email":"info@auxilium-forst.de","address":{"@type":"PostalAddress","streetAddress":"","addressLocality":"Forst","postalCode":"76694","addressCountry":"DE"},"areaServed":[{"@type":"City","name":"Forst","postalCode":"76694"},{"@type":"City","name":"Bruchsal","postalCode":"76646"},{"@type":"City","name":"Karlsdorf-Neuthard","postalCode":"76689"}],"priceRange":"€€","openingHours":"Mo-Fr 09:00-16:00"}</script>
 </head>
 <body>
 <a href="#main-content" class="skip-link">Zum Hauptinhalt springen</a>
@@ -174,7 +174,7 @@ ${body}
           <img src="/static/logo.png" alt="Auxilium Pflegeberatung Logo – Kristina Bronner Forst Baden" class="footer__logo-img">
           <span class="footer__logo-name">AUXILIUM</span>
         </div>
-        <p class="footer__desc">Individuelle Pflege &amp; Pflegeberatung in Forst (Baden) und Umgebung &ndash; Kristina Bronner begleitet pflegebed&uuml;rftige Menschen und ihre Angeh&ouml;rigen mit Fachkenntnis, Herz und Leidenschaft.</p>
+        <p class="footer__desc">Individuelle Pflege, Betreuung &amp; Pflegeberatung in Forst (Baden) und Umgebung &ndash; Kristina Bronner begleitet pflegebed&uuml;rftige Menschen und ihre Angeh&ouml;rigen mit Fachkenntnis, Herz und Leidenschaft.</p>
         <a href="mailto:${email}" style="display:inline-flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--primary);">
           <i class="fas fa-envelope" aria-hidden="true"></i> ${email}
         </a>
@@ -192,7 +192,7 @@ ${body}
         </ul>
       </div>
       <div>
-        <p class="footer__heading">Pflege in Ihrer N&auml;he</p>
+        <p class="footer__heading">Wo ist Auxilium &uuml;berall t&auml;tig?</p>
         <ul class="footer__links" style="column-count:2;column-gap:12px;">
           <li><a href="/pflege/forst-76694" title="Pflegeberatung 76694 Forst">76694 Forst</a></li>
           <li><a href="/pflege/bruchsal-76646" title="Pflegeberatung 76646 Bruchsal">76646 Bruchsal</a></li>
@@ -346,7 +346,7 @@ app.get('/', async (c) => {
     <div class="hero__content animate-fade-in">
       <div class="hero__badge"><span class="badge-dot"></span>Individuelle Pflege in Forst (Baden) &amp; Umgebung</div>
       <h1 id="hero-heading" class="hero__title">Ihre pers&ouml;nliche<br><span class="highlight">St&uuml;tze</span> &ndash;<br><span class="highlight-amber">wenn Sie sie brauchen</span></h1>
-      <p class="hero__text">Mit langjähriger Erfahrung in der Pflege begleite ich pflegebedürftige Menschen und ihre Angehörigen – persönlich, kompetent und mit echtem Herz. Jeder Mensch verdient individuelle Aufmerksamkeit.</p>
+      <p class="hero__text">Mit Auxilium biete ich Ihnen individuelle Betreuung, Beratung sowie Pflege im Raum Forst (Baden) und Umgebung an. Mit langjähriger Erfahrung in der Pflege begleite ich pflegebedürftige Menschen und ihre Angehörigen – persönlich, kompetent und mit Herz. Dabei steht für mich im Fokus, dass jeder Mensch individuelle Aufmerksamkeit verdient.</p>
       <div class="hero__actions">
         <a href="/kontakt" class="btn btn-accent"><i class="fas fa-envelope" aria-hidden="true"></i>Kontakt aufnehmen</a>
         <a href="/leistungen" class="btn btn-outline"><i class="fas fa-list" aria-hidden="true"></i>Alle Leistungen</a>
@@ -364,7 +364,7 @@ app.get('/', async (c) => {
       <div class="feature-strip__item"><i class="fas fa-tag" aria-hidden="true"></i>G&uuml;nstigere Preise als ambulante Dienste</div>
       <div class="feature-strip__item"><i class="fas fa-user" aria-hidden="true"></i>Pers&ouml;nlicher Ansprechpartner</div>
       <div class="feature-strip__item"><i class="fas fa-home" aria-hidden="true"></i>Pflege in Ihrem Zuhause</div>
-      <div class="feature-strip__item"><i class="fas fa-file-invoice" aria-hidden="true"></i>Abrechnung &uuml;ber Pflegekasse</div>
+      <div class="feature-strip__item"><i class="fas fa-file-invoice" aria-hidden="true"></i>Abrechnung &uuml;ber die Pflegekasse</div>
     </div>
   </div>
 </div>
@@ -372,17 +372,17 @@ app.get('/', async (c) => {
 <section class="section" aria-labelledby="why-heading">
   <div class="container">
     <div class="text-center mb-12">
-      <span class="section-label">Warum Auxilium?</span>
-      <h2 id="why-heading">Pflege, die wirklich hilft</h2>
+      <span class="section-label">Wieso Auxilium?</span>
+      <h2 id="why-heading">Pflege, die wirklich ankommt</h2>
       <p style="max-width:580px;margin:14px auto 0;">Die Entscheidung f&uuml;r einen Pflegedienst ist nicht leicht. Auxilium bietet Ihnen eine bewusste Alternative &ndash; professionell, menschlich und bezahlbar.</p>
     </div>
     <div class="grid-3">
-      <article class="card"><div class="card__icon"><i class="fas fa-user-circle" aria-hidden="true"></i></div><h3 class="card__title">Einzigartigkeit</h3><p class="card__text">Jeder Mensch verdient individuelle Aufmerksamkeit. Bei Auxilium steht Ihre pers&ouml;nliche Situation immer im Mittelpunkt.</p></article>
-      <article class="card"><div class="card__icon"><i class="fas fa-coins" aria-hidden="true"></i></div><h3 class="card__title">G&uuml;nstigere Preise</h3><p class="card__text">Auxilium ist deutlich g&uuml;nstiger als herk&ouml;mmliche ambulante Pflegedienste &ndash; und kann &uuml;ber Verhinderungspflege abgerechnet werden.</p></article>
-      <article class="card"><div class="card__icon"><i class="fas fa-graduation-cap" aria-hidden="true"></i></div><h3 class="card__title">Professionelle Beratung</h3><p class="card__text">Sie erhalten eine vollst&auml;ndige &Uuml;bersicht aller Leistungsanspr&uuml;che aus der Pflegekasse &ndash; optimal f&uuml;r Ihre Situation genutzt.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-user-circle" aria-hidden="true"></i></div><h3 class="card__title">Eine feste Bezugsperson</h3><p class="card__text">Bei Auxilium haben Sie dauerhaft EINE feste Bezugsperson &ndash; f&uuml;r Kontinuit&auml;t und echtes Vertrauen in der Pflege.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-coins" aria-hidden="true"></i></div><h3 class="card__title">G&uuml;nstigere Preise</h3><p class="card__text">Auxilium arbeitet im kleinen Team &ndash; deshalb sind die Preise g&uuml;nstiger als klassische ambulante Dienste. Keine zus&auml;tzlichen Ausbildungs- und Investitionskosten je Einsatz.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-layer-group" aria-hidden="true"></i></div><h3 class="card__title">Flexibel kombinierbar</h3><p class="card__text">Auxilium kombiniert bei Bedarf unterschiedliche Arbeitsbereiche flexibel: pflegerisch, betreuerisch und hauswirtschaftlich &ndash; alles in EINEM Einsatz, stressfrei und individuell.</p></article>
       <article class="card"><div class="card__icon"><i class="fas fa-home" aria-hidden="true"></i></div><h3 class="card__title">Zuhause bleiben</h3><p class="card__text">&Uuml;ber 80 % der Pflegebed&uuml;rftigen wollen zu Hause versorgt werden. Auxilium macht das m&ouml;glich &ndash; mit echtem Heimgef&uuml;hl.</p></article>
-      <article class="card"><div class="card__icon"><i class="fas fa-users" aria-hidden="true"></i></div><h3 class="card__title">Entlastung der Familie</h3><p class="card__text">Auch pflegende Angeh&ouml;rige sind Kunden bei Auxilium. Ich schaffe FreiR&auml;ume und st&auml;rke dem gesamten Umfeld den R&uuml;cken.</p></article>
-      <article class="card"><div class="card__icon"><i class="fas fa-check-circle" aria-hidden="true"></i></div><h3 class="card__title">Transparenz</h3><p class="card__text">Klare Preise, kein Kleingedrucktes. Sie wissen immer genau, was Sie erwartet &ndash; ohne &Uuml;berraschungen oder versteckte Kosten.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-users" aria-hidden="true"></i></div><h3 class="card__title">Entlastung der Familie</h3><p class="card__text">Auch pflegende Angeh&ouml;rige sind Kunden bei Auxilium. Ich schaffe Freir&auml;ume und st&auml;rke dem gesamten Umfeld den R&uuml;cken.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-ban" aria-hidden="true"></i></div><h3 class="card__title">Keine Medizin</h3><p class="card__text">Auxilium &uuml;bernimmt KEINE medizinische Versorgung wie Verbandswechsel oder Spritzen &ndash; daf&uuml;r alles rund um Pflege, Betreuung und Hauswirtschaft.</p></article>
     </div>
   </div>
 </section>
@@ -405,10 +405,7 @@ app.get('/', async (c) => {
         <p class="stats-banner__label">ausschlie&szlig;lich durch Angeh&ouml;rige betreut</p>
         <span class="stats-banner__source"><a href="https://www.zqp.de/schwerpunkt/pflegende-angehoerige/" target="_blank" rel="noopener">Quelle: ZQP</a></span>
       </div>
-      <div class="text-center">
-        <span class="stats-banner__number" data-count="131" data-suffix=" &euro;">131 &euro;</span>
-        <p class="stats-banner__label">mtl. Entlastungsbetrag &ndash; direkt nutzbar</p>
-      </div>
+
     </div>
   </div>
 </div>
@@ -545,7 +542,7 @@ ${(S.show_testimonials !== '0') && dbTestimonials.length > 0 ? `
     <div class="text-center mb-12">
       <span class="section-label">H&auml;ufige Fragen</span>
       <h2 id="faq-heading">Antworten auf Ihre Fragen</h2>
-      <p style="max-width:520px;margin:14px auto 0;">Hier finden Sie die h&auml;ufigsten Fragen rund um Auxilium &ndash; schnell und &uuml;bersichtlich.</p>
+      <p style="max-width:520px;margin:14px auto 0;">Hier finden Sie die h&auml;ufigsten Fragen rund um Auxilium &ndash;<br>schnell und &uuml;bersichtlich.</p>
     </div>
     <div class="accordion-list" style="max-width:720px;margin:0 auto;">
       ${faqItems}
@@ -672,7 +669,7 @@ app.get('/ueber-auxilium', async (c) => {
       </div>
       <div style="display:flex;flex-direction:column;gap:14px;">
         <div class="contact-info-item"><div class="info-icon"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></div><div><div class="info-label">Einsatzgebiet</div><div class="info-value">Forst (Baden) und Umgebung</div></div></div>
-        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-clock" aria-hidden="true"></i></div><div><div class="info-label">Erreichbarkeit</div><div class="info-value">Montag&ndash;Freitag, 8:00&ndash;18:00 Uhr</div></div></div>
+        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-clock" aria-hidden="true"></i></div><div><div class="info-label">Erreichbarkeit</div><div class="info-value">Montag&ndash;Freitag, 9:00&ndash;16:00 Uhr</div></div></div>
         <div class="contact-info-item"><div class="info-icon"><i class="fas fa-comments" aria-hidden="true"></i></div><div><div class="info-label">Erstgespr&auml;ch</div><div class="info-value">Pers&ouml;nliche Erstberatung</div></div></div>
         <a href="/kontakt" class="btn btn-accent" style="align-self:flex-start;margin-top:4px;"><i class="fas fa-envelope" aria-hidden="true"></i>Kontakt aufnehmen</a>
       </div>
@@ -948,8 +945,8 @@ ${recaptchaScript}
         <p style="margin:14px 0 28px;">Egal ob Fragen zu Leistungen, Beratungswunsch oder allgemeine Informationen &ndash; schreiben Sie mir!</p>
         <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:36px;">
           <div class="contact-info-item"><div class="info-icon"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></div><div><div class="info-label">Einsatzgebiet</div><div class="info-value">${S.contact_location||'Forst (Baden) und Umgebung'}</div></div></div>
-          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-envelope" aria-hidden="true"></i></div><div><div class="info-label">E-Mail</div><div class="info-value"><a href="mailto:${S.contact_email||'info@auxilium-forst.com'}" style="color:var(--accent);">${S.contact_email||'info@auxilium-forst.com'}</a></div></div></div>
-          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-clock" aria-hidden="true"></i></div><div><div class="info-label">Erreichbarkeit</div><div class="info-value">${S.contact_hours||'Mo&ndash;Fr, 8:00 &ndash; 18:00 Uhr'}</div></div></div>
+          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-envelope" aria-hidden="true"></i></div><div><div class="info-label">E-Mail</div><div class="info-value"><a href="mailto:${S.contact_email||'info@auxilium-forst.de'}" style="color:var(--accent);">${S.contact_email||'info@auxilium-forst.de'}</a></div></div></div>
+          <div class="contact-info-item"><div class="info-icon"><i class="fas fa-clock" aria-hidden="true"></i></div><div><div class="info-label">Erreichbarkeit</div><div class="info-value">${S.contact_hours||'Mo&ndash;Fr, 9:00 &ndash; 16:00 Uhr'}</div></div></div>
           <div class="contact-info-item"><div class="info-icon"><i class="fas fa-comments" aria-hidden="true"></i></div><div><div class="info-label">Erstgespr&auml;ch</div><div class="info-value">Pers&ouml;nliche Erstberatung</div></div></div>
         </div>
         <p style="font-size:0.9rem;color:var(--text-light);line-height:1.7;">Haben Sie weitere Fragen? Auf der <a href="/" style="color:var(--accent);font-weight:600;">Startseite</a> finden Sie h&auml;ufige Fragen &ndash; oder schreiben Sie mir direkt &uuml;ber das Formular.</p>
@@ -1048,14 +1045,14 @@ app.post('/api/contact', async (c) => {
   }
 
   // E-Mail zusammenstellen
-  const recipientEmail = (S.form_recipient_email || 'info@auxilium-forst.com').trim()
+  const recipientEmail = (S.form_recipient_email || 'info@auxilium-forst.de').trim()
   const recipientName  = (S.form_recipient_name  || 'Auxilium – Kristina Bronner').trim()
   const subjectLine    = subject
     ? `Kontaktanfrage: ${subject}`
-    : 'Neue Kontaktanfrage über auxilium-forst.com'
+    : 'Neue Kontaktanfrage über auxilium-forst.de'
 
   const emailText = [
-    `Neue Kontaktanfrage von auxilium-forst.com`,
+    `Neue Kontaktanfrage von auxilium-forst.de`,
     ``,
     `Name:        ${firstName} ${lastName}`,
     city    ? `Wohnort:     ${city}`    : '',
@@ -1080,7 +1077,7 @@ app.post('/api/contact', async (c) => {
           to: [{ email: recipientEmail, name: recipientName }]
         }],
         from: {
-          email: 'noreply@auxilium-forst.com',
+          email: 'noreply@auxilium-forst.de',
           name: `${firstName} ${lastName} (via Kontaktformular)`
         },
         reply_to: { email, name: `${firstName} ${lastName}` },
@@ -1168,7 +1165,7 @@ app.get('/pflege/:slug', async (c) => {
     "@type": "LocalBusiness",
     "name": `Auxilium – Pflegeberatung ${ort.name}`,
     "description": `Individuelle Pflege und Pflegeberatung in ${ort.name} (${ort.plz}) – Kristina Bronner, Auxilium`,
-    "url": `https://auxilium-forst.com/pflege/${slug}`,
+    "url": `https://auxilium-forst.de/pflege/${slug}`,
     "areaServed": { "@type": "City", "name": ort.name, "postalCode": ort.plz }
   })
 
@@ -2298,7 +2295,7 @@ ${alert}
     </div>
     <div class="adm-section-card__body">
       ${field('contact_location', 'Standort / Einsatzgebiet', 'z. B. Forst (Baden) &amp; Umgebung')}
-      ${field('contact_email',    'E-Mail-Adresse (öffentlich sichtbar)', 'z. B. info@auxilium-forst.com')}
+      ${field('contact_email',    'E-Mail-Adresse (öffentlich sichtbar)', 'z. B. info@auxilium-forst.de')}
       ${field('contact_hours',    'Öffnungszeiten',           'z. B. Mo–Fr · 8:00 – 18:00 Uhr')}
     </div>
   </div>
@@ -2503,7 +2500,7 @@ app.get('/stellenangebote/:slug', async (c) => {
         </div>
         <div class="flyer-footer">
           <span>Auxilium &ndash; Kristina Bronner | Forst (Baden)</span>
-          <span>info@auxilium-forst.com | auxilium-forst.com</span>
+          <span>info@auxilium-forst.de | auxilium-forst.de</span>
         </div>
       </div>
       <div class="job-detail__content">
@@ -2613,7 +2610,7 @@ app.get('/admin/stellenangebote/:id/flyer', async (c) => {
   if (!job) return c.redirect('/admin/stellenangebote')
   const S = await loadSettings(c.env.DB)
   const loc = S.contact_location || 'Forst (Baden) & Umgebung'
-  const email = S.contact_email || 'info@auxilium-forst.com'
+  const email = S.contact_email || 'info@auxilium-forst.de'
   return c.html(`<!DOCTYPE html>
 <html lang="de">
 <head>
@@ -3871,7 +3868,7 @@ app.get('/barrierefreiheit', async (c) => {
         <p style="font-size:0.85rem;color:#7A6550;margin-bottom:32px;">Gemäß EU-Richtlinie 2016/2102, BITV 2.0 und BGG &middot; Stand: ${pruefDatum}</p>
 
         <h2 style="font-size:1.15rem;margin-top:32px;margin-bottom:10px;">1. Geltungsbereich</h2>
-        <p>Diese Erklärung zur Barrierefreiheit gilt für die Website <strong>auxilium-forst.com</strong> (Auxilium – Pflegeberatung Kristina Bronner, Forst (Baden)).</p>
+        <p>Diese Erklärung zur Barrierefreiheit gilt für die Website <strong>auxilium-forst.de</strong> (Auxilium – Pflegeberatung Kristina Bronner, Forst (Baden)).</p>
 
         <h2 style="font-size:1.15rem;margin-top:32px;margin-bottom:10px;">2. Stand der Vereinbarkeit mit den Anforderungen</h2>
         <p>Diese Website ist <strong>teilweise konform</strong> mit den Anforderungen der EU-Richtlinie 2016/2102 und der BITV 2.0 (Barrierefreie-Informationstechnik-Verordnung). Die bekannten Einschränkungen sind nachfolgend aufgeführt.</p>
@@ -3932,7 +3929,7 @@ app.get('/barrierefreiheit', async (c) => {
 
 // ─── Sitemap.xml ──────────────────────────────────────────────
 app.get('/sitemap.xml', async (c) => {
-  const base = 'https://auxilium-forst.com'
+  const base = 'https://auxilium-forst.de'
   const now  = new Date().toISOString().split('T')[0]
   const staticUrls = [
     { loc: '/',               changefreq: 'weekly',  priority: '1.0' },
@@ -3981,7 +3978,7 @@ app.get('/sitemap.xml', async (c) => {
 
 // ─── robots.txt ───────────────────────────────────────────────
 app.get('/robots.txt', (c) => {
-  const txt = `User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /api/\n\nSitemap: https://auxilium-forst.com/sitemap.xml\n`
+  const txt = `User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /api/\n\nSitemap: https://auxilium-forst.de/sitemap.xml\n`
   return new Response(txt, {
     headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=86400' }
   })
@@ -4449,8 +4446,8 @@ app.get('/ratgeber/:slug', async (c) => {
     "@context": "https://schema.org", "@type": "Article",
     "headline": article.title, "description": article.meta_desc,
     "author": { "@type": "Person", "name": "Kristina Bronner" },
-    "publisher": { "@type": "Organization", "name": "Auxilium – Pflegeberatung Forst Baden", "url": "https://auxilium-forst.com" },
-    "url": `https://auxilium-forst.com/ratgeber/${slug}`
+    "publisher": { "@type": "Organization", "name": "Auxilium – Pflegeberatung Forst Baden", "url": "https://auxilium-forst.de" },
+    "url": `https://auxilium-forst.de/ratgeber/${slug}`
   })
   const body = pageHero(article.category, article.title, article.intro || article.meta_desc, 'Ratgeber') + `
 <main id="main-content" tabindex="-1">
