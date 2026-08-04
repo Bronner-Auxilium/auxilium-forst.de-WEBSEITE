@@ -143,7 +143,8 @@ ${infoBannerHtml}<div id="siteHeader" class="site-header"><nav class="navbar" id
       <img src="/static/logo.png" alt="Auxilium Logo" class="navbar__logo-img">
       <div class="navbar__logo-text">
         <span class="navbar__logo-name">AUXILIUM</span>
-        <span class="navbar__logo-sub">Pflegeberatung &middot; Forst Baden</span>
+        <span class="navbar__logo-sub">Pflegeberatung</span>
+        <span class="navbar__logo-sub">Forst Baden &amp; Umgebung</span>
       </div>
     </a>
     <nav class="navbar__nav" aria-label="Seitennavigation">
@@ -153,7 +154,6 @@ ${infoBannerHtml}<div id="siteHeader" class="site-header"><nav class="navbar" id
       <a href="/beratung">Beratung</a>
       <a href="/ratgeber">Ratgeber</a>
       <a href="/stellenangebote">Stellenangebote</a>
-      <a href="/kontakt">Kontakt</a>
       <a href="/kontakt" class="navbar__nav-cta-mobile"><i class="fas fa-calendar-check" aria-hidden="true"></i>Jetzt anfragen</a>
     </nav>
     <a href="/kontakt" class="btn btn-accent navbar__cta">
@@ -344,7 +344,6 @@ app.get('/', async (c) => {
   </div>
   <div class="hero__inner">
     <div class="hero__content animate-fade-in">
-      <div class="hero__badge"><span class="badge-dot"></span>Individuelle Pflege in Forst (Baden) &amp; Umgebung</div>
       <h1 id="hero-heading" class="hero__title">Ihre pers&ouml;nliche<br><span class="highlight">St&uuml;tze</span> &ndash;<br><span class="highlight-amber">wenn Sie sie brauchen</span></h1>
       <p class="hero__text">Mit Auxilium biete ich Ihnen individuelle Betreuung, Beratung sowie Pflege im Raum Forst (Baden) und Umgebung an. Mit langjähriger Erfahrung in der Pflege begleite ich pflegebedürftige Menschen und ihre Angehörigen – persönlich, kompetent und mit Herz. Dabei steht für mich im Fokus, dass jeder Mensch individuelle Aufmerksamkeit verdient.</p>
       <div class="hero__actions">
@@ -807,12 +806,13 @@ app.get('/leistungen', async (c) => {
   <div class="container">
     <div class="text-center mb-12">
       <span class="section-label">Wer kann Auxilium nutzen?</span>
-      <h2 id="who-heading">Auxilium ist f&uuml;r Sie, wenn &hellip;</h2>
+      <h2 id="who-heading">Auxilium ist f&uuml;r Sie, wenn Sie&nbsp;&hellip;</h2>
     </div>
-    <div class="grid-3">
-      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-wallet" aria-hidden="true"></i></div><h3 class="card__title">Sie Pflegegeld beziehen</h3><p class="card__text">Pflegegeldempf&auml;nger k&ouml;nnen Auxilium-Leistungen flexibel und unkompliziert abrechnen.</p></article>
-      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-sync-alt" aria-hidden="true"></i></div><h3 class="card__title">Verhinderungspflege nutzen</h3><p class="card__text">Wer Verhinderungspflege oder den Entlastungsbetrag nutzt, kann Auxilium bis zu 3.539 &euro; im Jahr finanzieren.</p></article>
-      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-credit-card" aria-hidden="true"></i></div><h3 class="card__title">Privatzahler/-innen</h3><p class="card__text">Auch ohne Pflegekassen-Leistungen sind alle Auxilium-Angebote als Privatleistung buchbar.</p></article>
+    <div class="grid-4">
+      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-wallet" aria-hidden="true"></i></div><h3 class="card__title">Pflegegeld beziehen</h3><p class="card__text">Pflegegeldempf&auml;nger k&ouml;nnen Auxilium-Leistungen flexibel und unkompliziert &uuml;ber die Pflegekasse abrechnen.</p></article>
+      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-sync-alt" aria-hidden="true"></i></div><h3 class="card__title">Verhinderungspflege nutzen</h3><p class="card__text">Bis zu 3.539 &euro; j&auml;hrlich &uuml;ber Verhinderungspflege &ndash; direkt f&uuml;r Auxilium-Leistungen einsetzbar.</p></article>
+      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-hand-holding-usd" aria-hidden="true"></i></div><h3 class="card__title">Entlastungsbetrag nutzen</h3><p class="card__text">131 &euro; monatlich f&uuml;r anerkannte Entlastungsleistungen &ndash; Auxilium ist als anerkannter Entlastungsdienst abrechnungsf&auml;hig.</p></article>
+      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-credit-card" aria-hidden="true"></i></div><h3 class="card__title">Privatzahler/-in sind</h3><p class="card__text">Auch ohne Pflegekassen-Leistungen sind alle Auxilium-Angebote als Privatleistung buchbar.</p></article>
     </div>
     <div class="text-center mt-8">
       <a href="/kontakt" class="btn btn-accent"><i class="fas fa-calendar-check" aria-hidden="true"></i>Pers&ouml;nliches Erstgespr&auml;ch vereinbaren</a>
@@ -855,7 +855,7 @@ app.get('/beratung', async (c) => {
     </div>
     <div class="grid-2" style="gap:20px;">
       <article class="card"><div class="card__icon"><i class="fas fa-wallet" aria-hidden="true"></i></div><h3 class="card__title">Pflegerische Hilfen</h3><p class="card__text">Geld- oder Sachleistung &ndash; je nach Bedarf und Pflegegrad optimal einsetzen.</p></article>
-      <article class="card"><div class="card__icon"><i class="fas fa-sync-alt" aria-hidden="true"></i></div><h3 class="card__title">Entlastungsbetrag</h3><p class="card__text">Bis zu 125 &euro; monatlich (1.500 &euro; j&auml;hrlich) f&uuml;r anerkannte Entlastungsleistungen.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-sync-alt" aria-hidden="true"></i></div><h3 class="card__title">Entlastungsbetrag</h3><p class="card__text">131 &euro; monatlich (1.572 &euro; j&auml;hrlich) f&uuml;r anerkannte Entlastungsleistungen ab Pflegegrad 1.</p></article>
       <article class="card"><div class="card__icon"><i class="fas fa-procedures" aria-hidden="true"></i></div><h3 class="card__title">Kurzzeitpflege</h3><p class="card__text">&Uuml;berbr&uuml;ckung bei Krankenhausaufenthalten oder zur Entlastung der Angeh&ouml;rigen.</p></article>
       <article class="card"><div class="card__icon"><i class="fas fa-shield-alt" aria-hidden="true"></i></div><h3 class="card__title">Verhinderungspflege</h3><p class="card__text">Wenn die regul&auml;re Pflegeperson ausf&auml;llt &ndash; bis zu 3.539 &euro; im Jahr nutzbar.</p></article>
       <article class="card"><div class="card__icon"><i class="fas fa-moon" aria-hidden="true"></i></div><h3 class="card__title">Tages- und Nachtpflege</h3><p class="card__text">Erg&auml;nzende Betreuung in teilstation&auml;ren Einrichtungen tagss&uuml;ber oder nachts.</p></article>
@@ -3994,7 +3994,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     title: 'Verhinderungspflege richtig nutzen – bis zu 3.386 Euro Anspruch sichern',
     meta_desc: 'Verhinderungspflege 2025: Was ist erlaubt, wie beantragen, wie viel bekomme ich? Auxilium Forst Baden erklärt alle Möglichkeiten und hilft bei der Abrechnung über die Pflegekasse.',
     category: 'Pflegefinanzierung',
-    intro: 'Pflegende Angehörige haben Anspruch auf Verhinderungspflege – doch viele nutzen ihn nicht vollständig aus. Auxilium Forst zeigt Ihnen, wie Sie alle Ihnen zustehenden Leistungen beanspruchen.',
+    intro: 'Wie Sie bis zu 3.386 Euro jährlich für Ihre Entlastung nutzen – einfach erklärt von Auxilium Forst (Baden).',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
   <picture>
@@ -4074,7 +4074,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     title: 'Pflegegrade 1 bis 5 einfach erklärt – Voraussetzungen, Leistungen und MDK-Begutachtung',
     meta_desc: 'Pflegegrade 1 bis 5 einfach erklärt: Voraussetzungen, Begutachtung durch den MDK, Geldbeträge und Leistungen. Auxilium Forst Baden hilft beim Antrag und beim Widerspruch.',
     category: 'Pflegegrundlagen',
-    intro: 'Welcher Pflegegrad ist der richtige? Wie läuft die MDK-Begutachtung ab? Auxilium erklärt das Pflegegrad-System verständlich – und unterstützt Sie persönlich beim Antrag und bei Widersprüchen.',
+    intro: 'Pflegegrade 1 bis 5 verständlich erklärt – Voraussetzungen, MDK-Begutachtung und Leistungen auf einen Blick.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
   <picture>
@@ -4185,7 +4185,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     title: 'Pflege zu Hause statt Pflegeheim – Was es kostet, was es braucht und wie Auxilium hilft',
     meta_desc: 'Häusliche Pflege statt Pflegeheim: Vorteile, tatsächliche Kosten 2025, Finanzierung über Pflegekasse und wie Auxilium in Forst Baden die professionelle Betreuung zu Hause organisiert.',
     category: 'Häusliche Pflege',
-    intro: 'Über 80 % aller Pflegebedürftigen wünschen sich Pflege im eigenen Zuhause. Was Sie dafür brauchen, was es kostet und wie Auxilium in Forst (Baden) die häusliche Pflege professionell und pflegekassenfinanziert übernimmt.',
+    intro: 'Was häusliche Pflege wirklich kostet, wie sie finanziert wird und wie Auxilium in Forst (Baden) sie professionell organisiert.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
   <picture>
@@ -4249,7 +4249,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     title: 'Entlastungsbetrag 131 Euro monatlich: Wer bekommt ihn und wie nutze ich ihn optimal?',
     meta_desc: 'Der Entlastungsbetrag von 131 Euro monatlich steht allen Pflegebedürftigen ab Pflegegrad 1 zu – auch für Auxilium-Leistungen in Forst Baden. Wie er beantragt und übertragen werden kann.',
     category: 'Pflegefinanzierung',
-    intro: '131 Euro monatlich – diesen Betrag übersehen viele Familien komplett. Auxilium zeigt, wer ihn bekommt, wofür er genutzt werden darf, wie er übertragen werden kann und warum er in Kombination mit anderen Leistungen besonders wertvoll ist.',
+    intro: 'Den monatlichen Entlastungsbetrag von 131 Euro optimal einsetzen – wer ihn bekommt, wofür er gilt und wie Auxilium bei der Abrechnung hilft.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
   <picture>
@@ -4328,7 +4328,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     title: 'Pflegende Angehörige: Rechte, Auszeiten und Selbstschutz – So hilft Auxilium',
     meta_desc: 'Pflegende Angehörige in Forst Baden: Welche Rechte haben Sie? Wie finanzieren Sie Auszeiten? Auxilium erklärt Pflegeunterstützungsgeld, Verhinderungspflege und Rentenversicherung.',
     category: 'Angehörige',
-    intro: 'Wer einen Angehörigen pflegt, braucht selbst Unterstützung. Auxilium zeigt pflegenden Angehörigen in Forst (Baden) und Umgebung, welche Rechte, Leistungen und Entlastungsmöglichkeiten es gibt – und wie die eigene Gesundheit geschützt werden kann.',
+    intro: 'Rechte, Auszeiten und Entlastungsleistungen für pflegende Angehörige – Auxilium unterstützt Sie in Forst (Baden) und Umgebung.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
   <img src="https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?w=820&q=80&auto=format&fit=crop" alt="Pflegende Angehörige – Tochter begleitet Mutter, Entlastung durch Auxilium Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">

@@ -75,13 +75,13 @@ p  { color: var(--text-light); line-height: 1.75; }
 
 .section-label {
   display: inline-block;
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   font-weight: 700;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.10em;
   text-transform: uppercase;
   color: var(--accent);
   background: var(--accent-light);
-  padding: 4px 12px;
+  padding: 6px 16px;
   border-radius: 100px;
   margin-bottom: 1rem;
 }
@@ -267,29 +267,32 @@ p  { color: var(--text-light); line-height: 1.75; }
   display: flex;
   flex-direction: column;
   line-height: 1;
+  justify-content: center;
+  height: 88px; /* passt zur Logo-Bildhöhe */
 }
 .navbar__logo-name {
   font-family: var(--font-heading);
-  font-size: 1.35rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--accent);
   letter-spacing: 0.04em;
 }
 .navbar__logo-sub {
   font-family: var(--font-body);
-  font-size: 0.62rem;
+  font-size: 0.60rem;
   font-weight: 500;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--text-light);
-  margin-top: 3px;
+  margin-top: 4px;
 }
 .navbar__nav {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   flex: 1;
   justify-content: center;
+  padding: 0 24px;
 }
 .navbar__nav a {
   padding: 7px 12px;
@@ -948,9 +951,12 @@ p  { color: var(--text-light); line-height: 1.75; }
 }
 .stats-banner__grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   text-align: center;
+  justify-items: center;
+  max-width: 900px;
+  margin: 0 auto;
 }
 .stats-banner__number {
   font-family: var(--font-heading);
@@ -1322,11 +1328,14 @@ p  { color: var(--text-light); line-height: 1.75; }
 @media (max-width: 1100px) {
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .footer__grid { grid-template-columns: 1fr 1fr; gap: 32px; }
-  .stats-banner__grid { grid-template-columns: repeat(2, 1fr); }
+  .stats-banner__grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
   .navbar__nav a { padding: 6px 10px; font-size: 0.82rem; }
 }
 
 @media (max-width: 900px) {
+  /* Tablet: Stats-Banner 1 Spalte sinnvoll */
+  .stats-banner__grid { grid-template-columns: 1fr; gap: 20px; max-width: 420px; }
+
   /* Hero: Logo erscheint ÜBER dem Text auf Mobile */
   .hero__inner {
     grid-template-columns: 1fr;
@@ -1463,11 +1472,11 @@ p  { color: var(--text-light); line-height: 1.75; }
   .footer__bottom { flex-direction: column; gap: 10px; text-align: center; }
   .feature-strip__inner { gap: 18px; }
 
-  /* Stats-Banner kompakt */
+  /* Stats-Banner kompakt – Mobile: alle 3 untereinander */
   .stats-banner { padding: 28px 0; }
-  .stats-banner__grid { grid-template-columns: 1fr 1fr; gap: 12px 8px; }
-  .stats-banner__number { font-size: 1.5rem; }
-  .stats-banner__label { font-size: 0.72rem; margin-top: 3px; }
+  .stats-banner__grid { grid-template-columns: 1fr; gap: 20px; max-width: 360px; }
+  .stats-banner__number { font-size: 1.8rem; }
+  .stats-banner__label { font-size: 0.8rem; margin-top: 3px; }
 
   /* Footer kompakter auf Mobile */
   .footer { padding: 40px 0 20px; }
@@ -1500,11 +1509,11 @@ p  { color: var(--text-light); line-height: 1.75; }
   .hero__actions { flex-direction: column; }
   .hero__actions .btn { width: 100%; justify-content: center; }
   .hero__badge { font-size: 0.75rem; }
-  /* Stats auf ganz kleinen Bildschirmen: 2 Spalten aber noch kompakter */
-  .stats-banner { padding: 22px 0; }
-  .stats-banner__grid { grid-template-columns: 1fr 1fr; gap: 10px 6px; }
-  .stats-banner__number { font-size: 1.3rem; }
-  .stats-banner__label { font-size: 0.68rem; }
+  /* Stats auf ganz kleinen Bildschirmen: 1 Spalte untereinander */
+  .stats-banner { padding: 20px 0; }
+  .stats-banner__grid { grid-template-columns: 1fr; gap: 16px; max-width: 300px; }
+  .stats-banner__number { font-size: 1.6rem; }
+  .stats-banner__label { font-size: 0.75rem; }
   .page-hero { padding: 100px 0 52px; }
   .service-card { max-width: 100%; }
   .service-card__header { padding: 18px 16px 14px; }
