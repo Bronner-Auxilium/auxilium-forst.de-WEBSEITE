@@ -2211,6 +2211,19 @@ body.printing > .job-print-area {
 .upload-area p { color: #7A6550; font-size: 0.875rem; margin: 0; }
 .upload-area strong { color: #2C2018; }
 
+/* ─── Barrierefreiheit: Screen-Reader Only ───────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ─── Barrierefreiheit: Skip-Link ────────────────────────── */
 .skip-link {
   position: absolute;

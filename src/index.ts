@@ -144,10 +144,10 @@ ${infoBannerHtml}<div id="siteHeader" class="site-header"><nav class="navbar" id
       <div class="navbar__logo-text">
         <span class="navbar__logo-name">AUXILIUM</span>
         <span class="navbar__logo-sub">Pflegeberatung</span>
-        <span class="navbar__logo-sub">Forst Baden &amp; Umgebung</span>
+        <span class="navbar__logo-sub">Forst (Baden) &amp; Umgebung</span>
       </div>
     </a>
-    <nav class="navbar__nav" aria-label="Seitennavigation">
+    <nav class="navbar__nav" aria-label="Seitennavigation" id="mainNav">
       <a href="/">Start</a>
       <a href="/ueber-auxilium">&Uuml;ber Auxilium</a>
       <a href="/leistungen">Leistungen &amp; Kosten</a>
@@ -160,7 +160,7 @@ ${infoBannerHtml}<div id="siteHeader" class="site-header"><nav class="navbar" id
       <i class="fas fa-phone" aria-hidden="true"></i>
       Jetzt anfragen
     </a>
-    <button class="navbar__toggle" id="navToggle" aria-label="Men&uuml; &ouml;ffnen" aria-expanded="false">
+    <button class="navbar__toggle" id="navToggle" aria-label="Men&uuml; &ouml;ffnen" aria-expanded="false" aria-controls="mainNav">
       <span></span><span></span><span></span>
     </button>
   </div>
@@ -280,7 +280,7 @@ function pageHero(label: string, title: string, subtitle: string, breadcrumb: st
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <a href="/">Start</a>
       <span class="sep" aria-hidden="true">&rsaquo;</span>
-      <span class="current">${breadcrumb}</span>
+      <span class="current" aria-current="page">${breadcrumb}</span>
     </nav>
     <span class="section-label">${label}</span>
     <h1 id="page-heading">${title}</h1>
@@ -319,8 +319,8 @@ app.get('/', async (c) => {
 
   const faqItems = dbFaqs.map((f: any) => `
       <div class="accordion-item">
-        <button class="accordion-toggle" aria-expanded="false">${f.question}<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
-        <div class="accordion-body"><div class="accordion-body__inner">${f.answer}</div></div>
+        <button class="accordion-toggle" aria-expanded="false" aria-controls="faq-body-${f.id}">${f.question}<span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span></button>
+        <div class="accordion-body" id="faq-body-${f.id}"><div class="accordion-body__inner">${f.answer}</div></div>
       </div>`).join('\n')
 
   const homeKatCards = dbKategorien.map((k: any) => `
@@ -357,14 +357,14 @@ app.get('/', async (c) => {
   </div>
 </section>
 
-<div class="feature-strip" role="complementary">
+<div class="feature-strip" role="complementary" aria-label="Kernvorteile von Auxilium">
   <div class="container">
-    <div class="feature-strip__inner">
-      <div class="feature-strip__item"><i class="fas fa-tag" aria-hidden="true"></i>G&uuml;nstigere Preise als ambulante Dienste</div>
-      <div class="feature-strip__item"><i class="fas fa-user" aria-hidden="true"></i>Pers&ouml;nlicher Ansprechpartner</div>
-      <div class="feature-strip__item"><i class="fas fa-home" aria-hidden="true"></i>Pflege in Ihrem Zuhause</div>
-      <div class="feature-strip__item"><i class="fas fa-file-invoice" aria-hidden="true"></i>Abrechnung &uuml;ber die Pflegekasse</div>
-    </div>
+    <ul class="feature-strip__inner" style="list-style:none;padding:0;margin:0;">
+      <li class="feature-strip__item"><i class="fas fa-tag" aria-hidden="true"></i>G&uuml;nstigere Preise als ambulante Dienste</li>
+      <li class="feature-strip__item"><i class="fas fa-user" aria-hidden="true"></i>Pers&ouml;nlicher Ansprechpartner</li>
+      <li class="feature-strip__item"><i class="fas fa-home" aria-hidden="true"></i>Pflege in Ihrem Zuhause</li>
+      <li class="feature-strip__item"><i class="fas fa-file-invoice" aria-hidden="true"></i>Abrechnung &uuml;ber die Pflegekasse</li>
+    </ul>
   </div>
 </div>
 
@@ -386,26 +386,25 @@ app.get('/', async (c) => {
   </div>
 </section>
 
-<div class="stats-banner" role="complementary">
+<div class="stats-banner" role="region" aria-label="Pflegestatistiken Deutschland">
   <div class="container">
-    <div class="stats-banner__grid">
+    <dl class="stats-banner__grid">
       <div class="text-center">
-        <span class="stats-banner__number" data-count="5.7" data-prefix="ca. " data-suffix=" Mio.">ca. 5,7 Mio.</span>
-        <p class="stats-banner__label">Pflegebed&uuml;rftige in Deutschland</p>
-        <span class="stats-banner__source"><a href="https://www.destatis.de/DE/Presse/Pressemitteilungen/2024/12/PD24_478_224.html" target="_blank" rel="noopener">Quelle: Destatis 2024</a></span>
+        <dt class="stats-banner__label">Pflegebed&uuml;rftige in Deutschland</dt>
+        <dd><span class="stats-banner__number" data-count="5.7" data-prefix="ca. " data-suffix=" Mio." aria-label="ca. 5,7 Millionen">ca. 5,7 Mio.</span></dd>
+        <span class="stats-banner__source"><a href="https://www.destatis.de/DE/Presse/Pressemitteilungen/2024/12/PD24_478_224.html" target="_blank" rel="noopener noreferrer">Quelle: Destatis 2024 <span class="sr-only">(öffnet in neuem Tab)</span></a></span>
       </div>
       <div class="text-center">
-        <span class="stats-banner__number" data-count="86" data-suffix=" %">86 %</span>
-        <p class="stats-banner__label">werden zu Hause versorgt</p>
-        <span class="stats-banner__source"><a href="https://www.tagesschau.de/inland/gesellschaft/pflegebeduerftige-deutschland-statistik-100.html" target="_blank" rel="noopener">Quelle: Tagesschau</a></span>
+        <dt class="stats-banner__label">werden zu Hause versorgt</dt>
+        <dd><span class="stats-banner__number" data-count="86" data-suffix=" %" aria-label="86 Prozent">86 %</span></dd>
+        <span class="stats-banner__source"><a href="https://www.tagesschau.de/inland/gesellschaft/pflegebeduerftige-deutschland-statistik-100.html" target="_blank" rel="noopener noreferrer">Quelle: Tagesschau <span class="sr-only">(öffnet in neuem Tab)</span></a></span>
       </div>
       <div class="text-center">
-        <span class="stats-banner__number" data-count="3.1" data-suffix=" Mio.">3,1 Mio.</span>
-        <p class="stats-banner__label">ausschlie&szlig;lich durch Angeh&ouml;rige betreut</p>
-        <span class="stats-banner__source"><a href="https://www.zqp.de/schwerpunkt/pflegende-angehoerige/" target="_blank" rel="noopener">Quelle: ZQP</a></span>
+        <dt class="stats-banner__label">ausschlie&szlig;lich durch Angeh&ouml;rige betreut</dt>
+        <dd><span class="stats-banner__number" data-count="3.1" data-suffix=" Mio." aria-label="3,1 Millionen">3,1 Mio.</span></dd>
+        <span class="stats-banner__source"><a href="https://www.zqp.de/schwerpunkt/pflegende-angehoerige/" target="_blank" rel="noopener noreferrer">Quelle: ZQP <span class="sr-only">(öffnet in neuem Tab)</span></a></span>
       </div>
-
-    </div>
+    </dl>
   </div>
 </div>
 
@@ -839,7 +838,7 @@ app.get('/beratung', async (c) => {
       </div>
       <div style="display:flex;flex-direction:column;gap:14px;">
         <div class="contact-info-item"><div class="info-icon"><i class="fas fa-lightbulb" aria-hidden="true"></i></div><div><div class="info-label">Vorteil</div><div class="info-value">Individuelle Finanzierungsberatung inklusive</div></div></div>
-        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-phone" aria-hidden="true"></i></div><div><div class="info-label">Erstkontakt</div><div class="info-value">Pers&ouml;nliche Erstberatung</div></div>
+        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-phone" aria-hidden="true"></i></div><div><div class="info-label">Erstkontakt</div><div class="info-value">Pers&ouml;nliche Erstberatung</div></div></div>
         <div class="contact-info-item"><div class="info-icon"><i class="fas fa-home" aria-hidden="true"></i></div><div><div class="info-label">Ort</div><div class="info-value">Bei Ihnen zu Hause oder telefonisch</div></div></div>
       </div>
     </div>
@@ -3877,23 +3876,35 @@ app.get('/barrierefreiheit', async (c) => {
         <p>Folgende Inhalte oder Bereiche sind noch nicht vollständig barrierefrei:</p>
         <ul style="margin:10px 0 10px 20px;line-height:1.8;">
           <li>Ältere PDF-Dokumente können möglicherweise keine ausreichenden Alternativtexte enthalten.</li>
-          <li>Einzelne Bilder in redaktionellen Inhalten können unter Umständen unzureichende Alternativtexte aufweisen.</li>
-          <li>Komplexe Tabellen in Leistungsübersichten sind möglicherweise nicht vollständig mit Screenreadern nutzbar.</li>
+          <li>Dynamisch animierte Statistikzahlen (Counter-Effekt) sind für Screenreader als statischer Text hinterlegt – die Animation selbst ist für assistive Technologien nicht wahrnehmbar, der Inhalt bleibt jedoch zugänglich.</li>
+          <li>Komplexe Datentabellen in Ratgeber-Artikeln (z. B. Pflegegrad-Übersicht) sind mit <code>scope</code>-Attributen ausgezeichnet; eine vollständige Zugänglichkeit bei allen assistiven Technologien kann nicht in jedem Fall garantiert werden.</li>
         </ul>
 
         <h2 style="font-size:1.15rem;margin-top:32px;margin-bottom:10px;">4. Umgesetzte Barrierefreiheitsmaßnahmen</h2>
         <ul style="margin:10px 0 10px 20px;line-height:1.8;">
-          <li>Semantisches HTML5 mit korrekter Überschriftenhierarchie (H1–H6)</li>
-          <li>Skip-Link „Zum Hauptinhalt springen" am Seitenstart</li>
-          <li>ARIA-Landmarks und Rollen (main, nav, footer, dialog)</li>
+          <li>Semantisches HTML5 mit korrekter Überschriftenhierarchie (H1–H6) auf allen Seiten</li>
+          <li>Skip-Link „Zum Hauptinhalt springen" am Seitenstart (sichtbar bei Tastaturfokus)</li>
+          <li>ARIA-Landmarks und Rollen: <code>main</code>, <code>nav</code>, <code>footer</code>, <code>region</code>, <code>dialog</code>, <code>alertdialog</code></li>
+          <li><code>aria-label</code> für alle Navigations- und Regionsrollen</li>
+          <li><code>aria-expanded</code> und <code>aria-controls</code> auf dem mobilen Hamburger-Menü-Button</li>
+          <li><code>aria-current="page"</code> im Breadcrumb zur Kennzeichnung der aktuellen Seite</li>
+          <li>Akkordeon-FAQs mit <code>aria-expanded</code> und <code>aria-controls</code> für Panel-Verknüpfung</li>
+          <li>Statistik-Bereich als <code>dl</code>-Liste (Definitionsliste) mit semantisch verknüpften Begriff-Wert-Paaren</li>
+          <li>Feature-Leiste als semantisch korrekte <code>ul</code>/<code>li</code>-Liste statt generischer <code>div</code>-Elemente</li>
+          <li>Tabellen in Ratgeber-Artikeln mit <code>scope="col"</code> auf Spaltenüberschriften</li>
+          <li>Alle externen Links (<code>target="_blank"</code>) mit <code>rel="noopener noreferrer"</code> und Screen-Reader-Hinweis „öffnet in neuem Tab" (<code>.sr-only</code>)</li>
+          <li>Testimonials-Slideshow mit <code>aria-live="polite"</code> und <code>aria-label</code> auf Steuerungselementen</li>
           <li>Tastaturnavigation für alle interaktiven Elemente</li>
-          <li>Sichtbare Fokus-Indikatoren für Tastaturnutzer</li>
-          <li>Alternativtexte für alle inhaltlichen Bilder</li>
+          <li>Sichtbare Fokus-Indikatoren für Tastaturnutzer (<code>:focus-visible</code>)</li>
+          <li>Alle dekorativen Icons mit <code>aria-hidden="true"</code> markiert</li>
+          <li>Alternativtexte für alle inhaltlichen Bilder (Produktfotos, Porträts, Ratgeber-Bilder)</li>
+          <li>Sternebewertungen in Testimonials mit <code>aria-label</code> (z. B. „5 von 5 Sternen")</li>
           <li>Ausreichende Farbkontraste gemäß WCAG 2.1 Level AA</li>
-          <li>Responsive Design für verschiedene Endgeräte und Zoomstufen</li>
+          <li>Responsive Design für verschiedene Endgeräte und Zoomstufen bis 200 %</li>
           <li>Sprachattribut <code>lang="de"</code> im HTML-Element</li>
-          <li>Modale Dialoge (Cookie-Banner, Info-Banner) mit ARIA-Attributen und ESC-Taste schließbar</li>
-          <li>Schriftgrößen in relativen Einheiten (rem/em)</li>
+          <li>Modale Dialoge (Cookie-Banner, Info-Banner) mit ARIA-Attributen (<code>role="dialog"</code>, <code>aria-modal</code>, <code>aria-labelledby</code>) und ESC-Taste schließbar</li>
+          <li>Schriftgrößen ausschließlich in relativen Einheiten (rem/em) – Browserzooming funktioniert korrekt</li>
+          <li><code>.sr-only</code>-Hilfsklasse für visuell versteckten, für Screenreader zugänglichen Text</li>
         </ul>
 
         <h2 style="font-size:1.15rem;margin-top:32px;margin-bottom:10px;">5. Erstellung dieser Erklärung</h2>
@@ -3988,13 +3999,14 @@ app.get('/robots.txt', (c) => {
 // RATGEBER / BLOG – 5 statische SEO-Artikel
 // ═══════════════════════════════════════════════════════════════
 
-const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;category:string;intro:string;content:string}> = [
+const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;category:string;intro:string;lead?:string;content:string}> = [
   {
     slug: 'verhinderungspflege-richtig-nutzen',
     title: 'Verhinderungspflege richtig nutzen – bis zu 3.386 Euro Anspruch sichern',
     meta_desc: 'Verhinderungspflege 2025: Was ist erlaubt, wie beantragen, wie viel bekomme ich? Auxilium Forst Baden erklärt alle Möglichkeiten und hilft bei der Abrechnung über die Pflegekasse.',
     category: 'Pflegefinanzierung',
     intro: 'Wie Sie bis zu 3.386 Euro jährlich für Ihre Entlastung nutzen – einfach erklärt von Auxilium Forst (Baden).',
+    lead: 'Wenn die Hauptpflegeperson krank wird, Urlaub braucht oder einfach eine Pause verdient, greift die Verhinderungspflege – eine gesetzliche Leistung der Pflegekasse, die viele Familien kaum kennen. Ab Pflegegrad 2 und nach sechs Monaten Vorpflegezeit stehen Ihnen bis zu 1.612 Euro pro Jahr zur Verfügung, die sich durch Umwidmung des Kurzzeitpflegebudgets auf bis zu 3.386 Euro aufstocken lassen. Kristina Bronner von Auxilium erklärt Ihnen, welche Voraussetzungen gelten, wie Sie den Antrag stellen und wie Sie das Budget über das Jahr optimal einsetzen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
   <picture>
@@ -4075,6 +4087,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     meta_desc: 'Pflegegrade 1 bis 5 einfach erklärt: Voraussetzungen, Begutachtung durch den MDK, Geldbeträge und Leistungen. Auxilium Forst Baden hilft beim Antrag und beim Widerspruch.',
     category: 'Pflegegrundlagen',
     intro: 'Pflegegrade 1 bis 5 verständlich erklärt – Voraussetzungen, MDK-Begutachtung und Leistungen auf einen Blick.',
+    lead: 'Seit der Pflegereform 2017 entscheiden fünf Pflegegrade darüber, welche Leistungen die Pflegekasse übernimmt – von 332 Euro Pflegegeld monatlich bei Pflegegrad 2 bis zu 947 Euro bei Pflegegrad 5. Grundlage ist nicht mehr der körperliche Zeitaufwand, sondern die Selbstständigkeit in sechs Lebensbereichen, die ein Gutachter des Medizinischen Dienstes in einem Hausbesuch bewertet. Was viele nicht wissen: Mit der richtigen Vorbereitung auf den MD-Besuch lässt sich die Einstufung deutlich verbessern – und bei einer zu niedrigen Einstufung können Familien innerhalb von vier Wochen Widerspruch einlegen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
   <picture>
@@ -4099,11 +4112,11 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 <table style="width:100%;border-collapse:collapse;margin:24px 0;font-size:0.88rem;box-shadow:0 2px 12px rgba(0,0,0,0.07);border-radius:10px;overflow:hidden;">
   <thead>
     <tr style="background:var(--primary);color:white;">
-      <th style="padding:12px 14px;text-align:left;">Pflegegrad</th>
-      <th style="padding:12px 14px;text-align:left;">Punkte</th>
-      <th style="padding:12px 14px;text-align:left;">Pflegegeld</th>
-      <th style="padding:12px 14px;text-align:left;">Sachleistung</th>
-      <th style="padding:12px 14px;text-align:left;">Entlastungsbetrag</th>
+      <th scope="col" style="padding:12px 14px;text-align:left;">Pflegegrad</th>
+      <th scope="col" style="padding:12px 14px;text-align:left;">Punkte</th>
+      <th scope="col" style="padding:12px 14px;text-align:left;">Pflegegeld</th>
+      <th scope="col" style="padding:12px 14px;text-align:left;">Sachleistung</th>
+      <th scope="col" style="padding:12px 14px;text-align:left;">Entlastungsbetrag</th>
     </tr>
   </thead>
   <tbody>
@@ -4186,6 +4199,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     meta_desc: 'Häusliche Pflege statt Pflegeheim: Vorteile, tatsächliche Kosten 2025, Finanzierung über Pflegekasse und wie Auxilium in Forst Baden die professionelle Betreuung zu Hause organisiert.',
     category: 'Häusliche Pflege',
     intro: 'Was häusliche Pflege wirklich kostet, wie sie finanziert wird und wie Auxilium in Forst (Baden) sie professionell organisiert.',
+    lead: 'Die eigenen vier Wände zu verlassen ist für die meisten pflegebedürftigen Menschen keine Wahl, sondern ein Verlust. Dabei zeigen Studien: Wer in vertrauter Umgebung gepflegt wird, hat eine höhere Lebensqualität, leidet seltener an Depressionen und entwickelt kognitiv besser. Die häusliche Pflege ist zudem in vielen Fällen günstiger als ein Pflegeheim – denn während stationäre Eigenanteile 2025 oft über 2.400 Euro monatlich liegen, lässt sich die Betreuung durch Auxilium häufig vollständig oder überwiegend über Pflegegeld, Verhinderungspflege und den Entlastungsbetrag finanzieren.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
   <picture>
@@ -4250,6 +4264,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     meta_desc: 'Der Entlastungsbetrag von 131 Euro monatlich steht allen Pflegebedürftigen ab Pflegegrad 1 zu – auch für Auxilium-Leistungen in Forst Baden. Wie er beantragt und übertragen werden kann.',
     category: 'Pflegefinanzierung',
     intro: 'Den monatlichen Entlastungsbetrag von 131 Euro optimal einsetzen – wer ihn bekommt, wofür er gilt und wie Auxilium bei der Abrechnung hilft.',
+    lead: 'Bereits ab Pflegegrad 1 zahlt die gesetzliche Pflegekasse monatlich 131 Euro als sogenannten Entlastungsbetrag – das sind jährlich bis zu 1.572 Euro, die für anerkannte Betreuungs- und Entlastungsleistungen eingesetzt werden können. Auxilium ist als anerkannter Entlastungsdienstleister zugelassen, was bedeutet: Sie können diesen Betrag direkt für die Betreuung durch Kristina Bronner verwenden, ohne selbst in Vorleistung gehen zu müssen. Nicht genutzte Monatsbeiträge können noch bis zum 30. Juni des Folgejahres nachgefordert werden – ein häufig übersehener finanzieller Vorteil.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
   <picture>
@@ -4329,6 +4344,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     meta_desc: 'Pflegende Angehörige in Forst Baden: Welche Rechte haben Sie? Wie finanzieren Sie Auszeiten? Auxilium erklärt Pflegeunterstützungsgeld, Verhinderungspflege und Rentenversicherung.',
     category: 'Angehörige',
     intro: 'Rechte, Auszeiten und Entlastungsleistungen für pflegende Angehörige – Auxilium unterstützt Sie in Forst (Baden) und Umgebung.',
+    lead: 'Rund 4,1 Millionen Menschen werden in Deutschland zu Hause gepflegt – die meisten von Familienmitgliedern, die täglich mehrere Stunden ihrer eigenen Freizeit, Gesundheit und Berufstätigkeit opfern. Dabei haben pflegende Angehörige gesetzlich verbriefte Rechte: Pflegeunterstützungsgeld für bis zu zehn bezahlte Ausfalltage, Pflegezeit mit Kündigungsschutz für bis zu sechs Monate, und Rentenbeiträge der Pflegekasse ab Pflegegrad 2. Auxilium begleitet Sie in Forst (Baden) und der Region nicht nur bei der Organisation der Vertretungspflege, sondern auch dabei, alle Ihnen zustehenden Leistungen zu beantragen und zu nutzen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
   <img src="https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?w=820&q=80&auto=format&fit=crop" alt="Pflegende Angehörige – Tochter begleitet Mutter, Entlastung durch Auxilium Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
@@ -4465,7 +4481,7 @@ app.get('/ratgeber/:slug', async (c) => {
         <span class="ratgeber-article__read">ca. 8 Min. Lesezeit</span>
       </div>
       <h1 class="ratgeber-article__title">${article.title}</h1>
-      ${article.intro ? `<p class="ratgeber-article__intro">${article.intro}</p>` : ''}
+      ${(article.lead || article.intro) ? `<p class="ratgeber-article__intro">${article.lead || article.intro}</p>` : ''}
       <div class="ratgeber-article__content">${article.content}</div>
       <div class="ratgeber-article__cta">
         <div class="ratgeber-cta-box">
