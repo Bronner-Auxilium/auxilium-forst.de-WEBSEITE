@@ -688,6 +688,67 @@ p  { color: var(--text-light); line-height: 1.75; }
   line-height: 1.6;
   margin: 0;
 }
+
+/* Badge unterhalb des Fotos (kein Overlay mehr) */
+.person-photo-badge--below {
+  position: static;
+  margin-top: 14px;
+  background: white;
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 4px solid var(--accent);
+}
+.person-photo-badge--below i {
+  font-size: 1.4rem;
+  color: var(--primary);
+}
+.person-photo-badge--below strong {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--secondary);
+}
+.person-photo-badge--below span {
+  font-size: 0.75rem;
+  color: var(--text-light);
+}
+
+/* Symbol-Box: volle Breite, unterhalb des Zitats in der rechten Spalte */
+.person-symbol-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  background: var(--primary-light);
+  border: 1px solid var(--primary-mid);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin-top: 4px;
+}
+.person-symbol-img {
+  width: 96px;
+  height: 96px;
+  border-radius: 10px;
+  object-fit: contain;
+  background: white;
+  padding: 6px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.person-symbol-text .person-logo-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--secondary);
+  margin-bottom: 6px;
+}
+.person-symbol-text .person-logo-text {
+  font-size: 0.83rem;
+  line-height: 1.7;
+}
+
 .person-text-col { padding-top: 8px; }
 .person-quote {
   background: var(--bg-soft);
@@ -1466,7 +1527,8 @@ p  { color: var(--text-light); line-height: 1.75; }
     object-position: center top;
   }
   .person-logo-box { margin-top: 24px; }
-  .person-photo-badge { position: static; margin-top: 12px; }
+  .person-symbol-box { flex-direction: column; align-items: center; text-align: center; }
+  .person-symbol-img { width: 80px; height: 80px; }
 
   .footer__grid { grid-template-columns: 1fr; gap: 28px; }
   .footer__bottom { flex-direction: column; gap: 10px; text-align: center; }

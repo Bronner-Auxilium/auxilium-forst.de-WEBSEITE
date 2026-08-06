@@ -573,19 +573,12 @@ app.get('/ueber-auxilium', async (c) => {
       <div class="person-photo-col">
         <div class="person-photo-wrap">
           <img src="/static/kristina.jpg" alt="Kristina Bronner &ndash; Gr&uuml;nderin Auxilium" class="person-photo">
-          <div class="person-photo-badge">
-            <i class="fas fa-award" aria-hidden="true"></i>
-            <div>
-              <strong>Kristina Bronner</strong>
-              <span>Gr&uuml;nderin &amp; Inhaberin</span>
-            </div>
-          </div>
         </div>
-        <div class="person-logo-box">
-          <img src="/static/logo.png" alt="Auxilium Logo" class="person-logo-img">
+        <div class="person-photo-badge person-photo-badge--below">
+          <i class="fas fa-award" aria-hidden="true"></i>
           <div>
-            <p class="person-logo-title">Das Symbol von Auxilium</p>
-            <p class="person-logo-text">Ein Schmetterling mit einem fehlenden Fl&uuml;gel &ndash; f&uuml;r die Kraft der pers&ouml;nlichen Transformation und den Mut, Hilfe anzunehmen.</p>
+            <strong>Kristina Bronner</strong>
+            <span>Gr&uuml;nderin &amp; Inhaberin</span>
           </div>
         </div>
       </div>
@@ -600,6 +593,13 @@ app.get('/ueber-auxilium', async (c) => {
           <p>Akzeptiere, was ist, lass gehen, was war, und habe Vertrauen in das, was kommt.</p>
           <cite>&ndash; Ma Vie, Leitspruch von Auxilium</cite>
         </blockquote>
+        <div class="person-symbol-box">
+          <img src="/static/logo.png" alt="Auxilium Logo &ndash; Schmetterling mit fehlendem Fl&uuml;gel" class="person-symbol-img">
+          <div class="person-symbol-text">
+            <p class="person-logo-title">Wof&uuml;r steht das Symbol von Auxilium?</p>
+            <p class="person-logo-text">Man erkennt einen Schmetterling mit einem fehlenden Teil-Fl&uuml;gel. Dies steht f&uuml;r einen Mangel, etwas &bdquo;das fehlt&ldquo; und Hilfe bedarf. Hier wird der Fl&uuml;gel durch die helfende Hand von Auxilium gest&uuml;tzt, um wieder Halt zu erlangen.</p>
+          </div>
+        </div>
         <div class="person-values">
           <div class="person-value">
             <i class="fas fa-heart" aria-hidden="true"></i>
@@ -641,7 +641,7 @@ app.get('/ueber-auxilium', async (c) => {
     <div class="text-center mb-12">
       <span class="section-label">Leitbild</span>
       <h2 id="mission-heading">Wof&uuml;r Auxilium steht</h2>
-      <p style="max-width:540px;margin:14px auto 0;">Gute Pflege bedeutet mehr als k&ouml;rperliche Versorgung &ndash; sie bedeutet Menschlichkeit, Respekt und echte Pr&auml;senz.</p>
+      <p style="max-width:540px;margin:14px auto 0;">Gute Pflege bedeutet f&uuml;r Auxilium: Menschlichkeit, Respekt und echte Pr&auml;senz.</p>
     </div>
     <div class="grid-3">
       <article class="card"><div class="card__icon"><i class="fas fa-infinity" aria-hidden="true"></i></div><h3 class="card__title">Ganzheitlichkeit</h3><p class="card__text">Pflege bedeutet mehr als k&ouml;rperliche Versorgung. Auxilium denkt den ganzen Menschen &ndash; soziale Bed&uuml;rfnisse, Wohlbefinden und das der Familie.</p></article>
@@ -768,7 +768,7 @@ app.get('/leistungen', async (c) => {
     <div class="grid-2" style="gap:56px;">
       <div>
         <span class="section-label">Mein Ansatz</span>
-        <h2 id="intro-heading">Es gibt immer eine L&ouml;sung &ndash; und nicht nur eine</h2>
+        <h2 id="intro-heading">Wir finden eine L&ouml;sung, die zu ihrer individuellen Situation passt.</h2>
         <p style="margin:14px 0 18px;">Wir alle begegnen dem Leben auf unsere eigene Weise. Auxilium hilft Ihnen, Ihre pers&ouml;nliche L&ouml;sung zu finden.</p>
         <div style="background:var(--primary-light);border-radius:var(--radius);padding:18px;border-left:4px solid var(--primary);">
           <p style="font-size:0.875rem;font-weight:600;color:var(--secondary);margin-bottom:4px;"><i class="fas fa-info-circle" style="color:var(--primary);margin-right:6px;"></i>Alle Preise zzgl. Wegpauschale</p>
@@ -809,8 +809,8 @@ app.get('/leistungen', async (c) => {
     </div>
     <div class="grid-4">
       <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-wallet" aria-hidden="true"></i></div><h3 class="card__title">Pflegegeld beziehen</h3><p class="card__text">Pflegegeldempf&auml;nger k&ouml;nnen Auxilium-Leistungen flexibel und unkompliziert &uuml;ber die Pflegekasse abrechnen.</p></article>
-      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-sync-alt" aria-hidden="true"></i></div><h3 class="card__title">Verhinderungspflege nutzen</h3><p class="card__text">Bis zu 3.539 &euro; j&auml;hrlich &uuml;ber Verhinderungspflege &ndash; direkt f&uuml;r Auxilium-Leistungen einsetzbar.</p></article>
-      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-hand-holding-usd" aria-hidden="true"></i></div><h3 class="card__title">Entlastungsbetrag nutzen</h3><p class="card__text">131 &euro; monatlich f&uuml;r anerkannte Entlastungsleistungen &ndash; Auxilium ist als anerkannter Entlastungsdienst abrechnungsf&auml;hig.</p></article>
+      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-sync-alt" aria-hidden="true"></i></div><h3 class="card__title">Verhinderungspflege nutzen</h3><p class="card__text">Bis zu 3.539 &euro; Verhinderungspflege stehen Ihnen als Pflegegeld-Empf&auml;nger j&auml;hrlich zur Verf&uuml;gung &ndash; direkt f&uuml;r Auxilium-Leistungen einsetzbar.</p></article>
+      <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-hand-holding-usd" aria-hidden="true"></i></div><h3 class="card__title">den Entlastungsbetrag nutzen</h3><p class="card__text">131 &euro; monatlich f&uuml;r anerkannte Entlastungsleistungen &ndash; Auxilium ist als anerkannter Entlastungsdienst abrechnungsf&auml;hig.</p></article>
       <article class="card" style="text-align:center;"><div class="card__icon" style="margin:0 auto 18px;"><i class="fas fa-credit-card" aria-hidden="true"></i></div><h3 class="card__title">Privatzahler/-in sind</h3><p class="card__text">Auch ohne Pflegekassen-Leistungen sind alle Auxilium-Angebote als Privatleistung buchbar.</p></article>
     </div>
     <div class="text-center mt-8">
