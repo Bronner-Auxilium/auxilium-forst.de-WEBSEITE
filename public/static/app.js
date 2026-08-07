@@ -180,27 +180,69 @@
   if (contactForm) {
     contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const btn      = contactForm.querySelector('button[type="submit"]');
+      const btn       = contactForm.querySelector('button[type="submit"]');
       const successEl = document.getElementById('formSuccess');
       const errorEl   = document.getElementById('formError');
       const errorMsg  = document.getElementById('formErrorMsg');
+
+      // Hilfsfunktion: Fehler anzeigen
+      function showError(msg) {
+        if (errorMsg) errorMsg.textContent = msg;
+        if (errorEl) {
+          errorEl.style.display = 'flex';
+          errorEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+      function hideError() {
+        if (errorEl) errorEl.style.display = 'none';
+      }
+
+      hideError();
+
+      // Formulardaten sammeln
+      const firstName = (contactForm.querySelector('#firstName')?.value || '').trim();
+      const lastName  = (contactForm.querySelector('#lastName')?.value  || '').trim();
+      const city      = (contactForm.querySelector('#city')?.value      || '').trim();
+      const phone     = (contactForm.querySelector('#phone')?.value     || '').trim();
+      const email     = (contactForm.querySelector('#email')?.value     || '').trim();
+      const subject   = (contactForm.querySelector('#subject')?.value   || '').trim();
+      const message   = (contactForm.querySelector('#message')?.value   || '').trim();
+      const privacy   = contactForm.querySelector('#privacy')?.checked || false;
+
+      // ── Client-seitige Validierung ──────────────────────────
+      if (!firstName) {
+        showError('Ihre Nachricht konnte nicht abgesendet werden, da kein Vorname eingegeben wurde.');
+        return;
+      }
+      if (!lastName) {
+        showError('Ihre Nachricht konnte nicht abgesendet werden, da kein Nachname eingegeben wurde.');
+        return;
+      }
+      if (!email) {
+        showError('Ihre Nachricht konnte nicht abgesendet werden, da keine E-Mail-Adresse eingegeben wurde.');
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showError('Ihre Nachricht konnte nicht abgesendet werden, da die E-Mail-Adresse ungültig ist.');
+        return;
+      }
+      if (!message) {
+        showError('Ihre Nachricht konnte nicht abgesendet werden, da keine Nachricht eingegeben wurde.');
+        return;
+      }
+      if (!privacy) {
+        showError('Ihre Nachricht konnte nicht abgesendet werden, da Sie unsere Datenschutzbestimmungen nicht akzeptiert haben.');
+        return;
+      }
 
       // Button sperren
       const originalHTML = btn.innerHTML;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Wird gesendet…';
       btn.disabled = true;
-      if (errorEl) errorEl.style.display = 'none';
 
-      // Formulardaten sammeln
       const data = {
-        firstName:  contactForm.querySelector('#firstName')?.value  || '',
-        lastName:   contactForm.querySelector('#lastName')?.value   || '',
-        city:       contactForm.querySelector('#city')?.value       || '',
-        phone:      contactForm.querySelector('#phone')?.value      || '',
-        email:      contactForm.querySelector('#email')?.value      || '',
-        subject:    contactForm.querySelector('#subject')?.value    || '',
-        message:    contactForm.querySelector('#message')?.value    || '',
-        privacy:    String(contactForm.querySelector('#privacy')?.checked || false),
+        firstName, lastName, city, phone, email, subject, message,
+        privacy: String(privacy),
         recaptchaToken: ''
       };
 
@@ -230,24 +272,16 @@
 
         if (json.ok) {
           contactForm.style.display = 'none';
-          if (successEl) successEl.style.display = 'block';
+          if (successEl) successEl.style.display = 'flex';
         } else {
-          // Fehler anzeigen, Button wieder aktivieren
           btn.innerHTML = originalHTML;
           btn.disabled = false;
-          if (errorEl) {
-            if (errorMsg) errorMsg.textContent = json.error || 'Ein Fehler ist aufgetreten.';
-            errorEl.style.display = 'block';
-            errorEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          }
+          showError(json.error || 'Ein unbekannter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
         }
       } catch {
         btn.innerHTML = originalHTML;
         btn.disabled = false;
-        if (errorEl) {
-          if (errorMsg) errorMsg.textContent = 'Verbindungsfehler. Bitte prüfen Sie Ihre Internetverbindung.';
-          errorEl.style.display = 'block';
-        }
+        showError('Verbindungsfehler. Bitte prüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.');
       }
     });
   }

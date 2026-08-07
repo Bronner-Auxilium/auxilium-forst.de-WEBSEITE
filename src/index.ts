@@ -567,6 +567,8 @@ app.get('/ueber-auxilium', async (c) => {
   const S = await loadSettings(c.env.DB)
   const hero = pageHero('&Uuml;ber uns', 'Herzlich willkommen &ndash;<br>ich bin Kristina Bronner', 'Gr&uuml;nderin von Auxilium &ndash; Ihrer pers&ouml;nlichen St&uuml;tze in der Pflege.', '&Uuml;ber Auxilium')
   const body = hero + `
+
+<!-- ═══ ZUR PERSON ═══════════════════════════════════════════ -->
 <section class="section" aria-labelledby="person-heading">
   <div class="container">
     <div class="person-layout">
@@ -587,55 +589,18 @@ app.get('/ueber-auxilium', async (c) => {
         <h2 id="person-heading">Mein Weg zu Auxilium</h2>
         <p style="margin:18px 0 16px;font-size:1.05rem;line-height:1.8;">Ich war bereits bei einigen Arbeitgebern angestellt und bin letztendlich f&uuml;r mich zu dem Entschluss gekommen, dass ich vermutlich keinen Arbeitgeber finden werde, der qualitative Pflege und die Betreuung von pflegebed&uuml;rftigen Menschen mit meinen Augen sieht.</p>
         <p style="margin-bottom:16px;line-height:1.8;">Meine Energie zielt nun auf mein eigenes Herzensprojekt: <strong style="color:var(--accent);">Auxilium &ndash; Ihre &bdquo;St&uuml;tze&ldquo; rund um das Thema Pflege.</strong></p>
-        <p style="margin-bottom:24px;line-height:1.8;">Wesentlich ist f&uuml;r mich eine <strong>ganzheitliche Versorgung</strong> des Kunden &ndash; zum einen in Bezug auf seine k&ouml;rperlichen Beschwerden, zum anderen auch auf seine psychische Situation und seine emotionale Gem&uuml;tslage.</p>
+        <p style="margin-bottom:28px;line-height:1.8;">Wesentlich ist f&uuml;r mich eine <strong>ganzheitliche Versorgung</strong> des Kunden &ndash; zum einen in Bezug auf seine k&ouml;rperlichen Beschwerden, zum anderen auch auf seine psychische Situation und seine emotionale Gem&uuml;tslage.</p>
         <blockquote class="person-quote">
           <i class="fas fa-quote-left" aria-hidden="true"></i>
           <p>Akzeptiere, was ist, lass gehen, was war, und habe Vertrauen in das, was kommt.</p>
           <cite>&ndash; Ma Vie, Leitspruch von Auxilium</cite>
         </blockquote>
-        <div class="person-symbol-box">
-          <img src="/static/logo.png" alt="Auxilium Logo &ndash; Schmetterling mit fehlendem Fl&uuml;gel" class="person-symbol-img">
-          <div class="person-symbol-text">
-            <p class="person-logo-title">Wof&uuml;r steht das Symbol von Auxilium?</p>
-            <p class="person-logo-text">Man erkennt einen Schmetterling mit einem fehlenden Teil-Fl&uuml;gel. Dies steht f&uuml;r einen Mangel, etwas &bdquo;das fehlt&ldquo; und Hilfe bedarf. Hier wird der Fl&uuml;gel durch die helfende Hand von Auxilium gest&uuml;tzt, um wieder Halt zu erlangen.</p>
-          </div>
-        </div>
-        <div class="person-values">
-          <div class="person-value">
-            <i class="fas fa-heart" aria-hidden="true"></i>
-            <div>
-              <div class="person-value__title">Leidenschaft f&uuml;r Menschen</div>
-              <div class="person-value__text">Jeder Mensch ist einzigartig &ndash; diese &Uuml;berzeugung tr&auml;gt meine Arbeit t&auml;glich.</div>
-            </div>
-          </div>
-          <div class="person-value">
-            <i class="fas fa-graduation-cap" aria-hidden="true"></i>
-            <div>
-              <div class="person-value__title">Fachkenntnis &amp; Qualit&auml;t</div>
-              <div class="person-value__text">Professionelle Pflege auf h&ouml;chstem Niveau, verbunden mit menschlicher W&auml;rme.</div>
-            </div>
-          </div>
-          <div class="person-value">
-            <i class="fas fa-handshake" aria-hidden="true"></i>
-            <div>
-              <div class="person-value__title">Verl&auml;sslichkeit</div>
-              <div class="person-value__text">Sie k&ouml;nnen sich auf mich verlassen &ndash; p&uuml;nktlich, konstant und transparent.</div>
-            </div>
-          </div>
-          <div class="person-value">
-            <i class="fas fa-seedling" aria-hidden="true"></i>
-            <div>
-              <div class="person-value__title">Ganzheitlichkeit</div>
-              <div class="person-value__text">K&ouml;rper und Seele geh&ouml;ren zusammen &ndash; ich begleite den ganzen Menschen.</div>
-            </div>
-          </div>
-        </div>
-        <a href="/kontakt" class="btn btn-accent" style="margin-top:8px;"><i class="fas fa-envelope" aria-hidden="true"></i>Jetzt Kontakt aufnehmen</a>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ═══ LEITBILD ══════════════════════════════════════════════ -->
 <section class="section section--soft" aria-labelledby="mission-heading">
   <div class="container">
     <div class="text-center mb-12">
@@ -643,14 +608,53 @@ app.get('/ueber-auxilium', async (c) => {
       <h2 id="mission-heading">Wof&uuml;r Auxilium steht</h2>
       <p style="max-width:540px;margin:14px auto 0;">Gute Pflege bedeutet f&uuml;r Auxilium: Menschlichkeit, Respekt und echte Pr&auml;senz.</p>
     </div>
+
+    <!-- Symbol-Box: Logo + Schmetterling-Erkl&auml;rung -->
+    <div class="person-symbol-box" style="margin-bottom:48px;">
+      <img src="/static/logo.png" alt="Auxilium Logo &ndash; Schmetterling mit fehlendem Fl&uuml;gel" class="person-symbol-img">
+      <div class="person-symbol-text">
+        <p class="person-logo-title">Wof&uuml;r steht das Symbol von Auxilium?</p>
+        <p class="person-logo-text">Man erkennt einen Schmetterling mit einem fehlenden Teil-Fl&uuml;gel. Dies steht f&uuml;r einen Mangel, etwas &bdquo;das fehlt&ldquo; und Hilfe bedarf. Hier wird der Fl&uuml;gel durch die helfende Hand von Auxilium gest&uuml;tzt, um wieder Halt zu erlangen.</p>
+      </div>
+    </div>
+
+    <!-- 6 Werte-Karten -->
     <div class="grid-3">
-      <article class="card"><div class="card__icon"><i class="fas fa-infinity" aria-hidden="true"></i></div><h3 class="card__title">Ganzheitlichkeit</h3><p class="card__text">Pflege bedeutet mehr als k&ouml;rperliche Versorgung. Auxilium denkt den ganzen Menschen &ndash; soziale Bed&uuml;rfnisse, Wohlbefinden und das der Familie.</p></article>
-      <article class="card"><div class="card__icon"><i class="fas fa-door-open" aria-hidden="true"></i></div><h3 class="card__title">Freiräume schaffen</h3><p class="card__text">Pflegende Angeh&ouml;rige brauchen Auszeiten. Ich schaffe die Freiräume, die Sie ben&ouml;tigen &ndash; damit Sie wieder auftanken k&ouml;nnen.</p></article>
-      <article class="card"><div class="card__icon"><i class="fas fa-shield-alt" aria-hidden="true"></i></div><h3 class="card__title">Qualit&auml;t als Standard</h3><p class="card__text">Qualitativ hochwertige Pflege ist kein Luxus, sondern ein Recht. Auxilium liefert diesen Standard &ndash; zu fairen, transparenten Preisen.</p></article>
+      <article class="card">
+        <div class="card__icon"><i class="fas fa-heart" aria-hidden="true"></i></div>
+        <h3 class="card__title">Leidenschaft f&uuml;r Menschen</h3>
+        <p class="card__text">Jeder Mensch ist einzigartig &ndash; diese &Uuml;berzeugung tr&auml;gt meine Arbeit t&auml;glich.</p>
+      </article>
+      <article class="card">
+        <div class="card__icon"><i class="fas fa-graduation-cap" aria-hidden="true"></i></div>
+        <h3 class="card__title">Fachkenntnis &amp; Qualit&auml;t</h3>
+        <p class="card__text">Professionelle Pflege auf h&ouml;chstem Niveau, verbunden mit menschlicher W&auml;rme.</p>
+      </article>
+      <article class="card">
+        <div class="card__icon"><i class="fas fa-handshake" aria-hidden="true"></i></div>
+        <h3 class="card__title">Verl&auml;sslichkeit</h3>
+        <p class="card__text">Sie k&ouml;nnen sich auf mich verlassen &ndash; p&uuml;nktlich, konstant und transparent.</p>
+      </article>
+      <article class="card">
+        <div class="card__icon"><i class="fas fa-infinity" aria-hidden="true"></i></div>
+        <h3 class="card__title">Ganzheitlichkeit</h3>
+        <p class="card__text">Pflege bedeutet mehr als k&ouml;rperliche Versorgung. Auxilium denkt den ganzen Menschen &ndash; soziale Bed&uuml;rfnisse, Wohlbefinden und das der Familie.</p>
+      </article>
+      <article class="card">
+        <div class="card__icon"><i class="fas fa-door-open" aria-hidden="true"></i></div>
+        <h3 class="card__title">Freiräume schaffen</h3>
+        <p class="card__text">Pflegende Angeh&ouml;rige brauchen Auszeiten. Ich schaffe die Freiräume, die Sie ben&ouml;tigen &ndash; damit Sie wieder auftanken k&ouml;nnen.</p>
+      </article>
+      <article class="card">
+        <div class="card__icon"><i class="fas fa-shield-alt" aria-hidden="true"></i></div>
+        <h3 class="card__title">Qualit&auml;t als Standard</h3>
+        <p class="card__text">Qualitativ hochwertige Pflege ist kein Luxus, sondern ein Recht. Auxilium liefert diesen Standard &ndash; zu fairen, transparenten Preisen.</p>
+      </article>
     </div>
   </div>
 </section>
 
+<!-- ═══ MEIN ANSATZ ═══════════════════════════════════════════ -->
 <section class="section" aria-labelledby="process-heading">
   <div class="container">
     <div class="grid-2" style="gap:56px;">
@@ -977,19 +981,20 @@ ${recaptchaScript}
               <label for="privacy" style="font-size:0.8rem;color:var(--text-light);cursor:pointer;">Ich stimme der Verarbeitung meiner Daten gem&auml;&szlig; der <a href="/datenschutz" style="color:var(--accent);">Datenschutzerkl&auml;rung</a> zu. *</label>
             </div>
             ${recaptchaField}
+            <div id="formError" class="form-feedback form-feedback--error" style="display:none;" role="alert" aria-live="assertive">
+              <i class="fas fa-exclamation-circle form-feedback__icon" aria-hidden="true"></i>
+              <p id="formErrorMsg" class="form-feedback__text">Ein Fehler ist aufgetreten.</p>
+            </div>
             <button type="submit" class="btn btn-accent w-full" style="justify-content:center;font-size:0.95rem;">
               <i class="fas fa-paper-plane" aria-hidden="true"></i>Nachricht senden
             </button>
           </form>
-          <div id="formSuccess" class="form-success" style="display:none;">
-            <div style="font-size:2.2rem;margin-bottom:10px;" aria-hidden="true">&#x2705;</div>
-            <h4 style="color:#166534;margin-bottom:6px;">Vielen Dank!</h4>
-            <p style="font-size:0.875rem;">Ihre Nachricht wurde &uuml;bermittelt. Ich melde mich so bald wie m&ouml;glich!</p>
-          </div>
-          <div id="formError" class="form-success" style="display:none;background:#fef2f2;border-color:#fca5a5;">
-            <div style="font-size:2rem;margin-bottom:10px;" aria-hidden="true">&#x26A0;&#xFE0F;</div>
-            <h4 style="color:#991b1b;margin-bottom:6px;">Fehler beim Senden</h4>
-            <p id="formErrorMsg" style="font-size:0.875rem;color:#7f1d1d;">Bitte versuchen Sie es erneut oder schreiben Sie uns direkt per E-Mail.</p>
+          <div id="formSuccess" class="form-feedback form-feedback--success" style="display:none;" role="status">
+            <div class="form-feedback__check" aria-hidden="true"><i class="fas fa-check"></i></div>
+            <div>
+              <h4 class="form-feedback__title">Vielen Dank!</h4>
+              <p class="form-feedback__text">Ihre Nachricht wurde &uuml;bermittelt. Ich melde mich so bald wie m&ouml;glich!</p>
+            </div>
           </div>
         </div>
       </div>
@@ -1012,14 +1017,16 @@ app.post('/api/contact', async (c) => {
 
   const { firstName, lastName, city, phone, email, subject, message, privacy, recaptchaToken } = body
 
-  // Pflichtfelder prüfen
-  if (!firstName || !lastName || !email || !message || privacy !== 'true') {
-    return c.json({ ok: false, error: 'Bitte füllen Sie alle Pflichtfelder aus.' }, 400)
-  }
+  // Pflichtfelder prüfen (granulare Fehlermeldungen)
+  if (!firstName) return c.json({ ok: false, error: 'Ihre Nachricht konnte nicht abgesendet werden, da kein Vorname eingegeben wurde.' }, 400)
+  if (!lastName)  return c.json({ ok: false, error: 'Ihre Nachricht konnte nicht abgesendet werden, da kein Nachname eingegeben wurde.' }, 400)
+  if (!email)     return c.json({ ok: false, error: 'Ihre Nachricht konnte nicht abgesendet werden, da keine E-Mail-Adresse eingegeben wurde.' }, 400)
+  if (!message)   return c.json({ ok: false, error: 'Ihre Nachricht konnte nicht abgesendet werden, da keine Nachricht eingegeben wurde.' }, 400)
+  if (privacy !== 'true') return c.json({ ok: false, error: 'Ihre Nachricht konnte nicht abgesendet werden, da Sie unsere Datenschutzbestimmungen nicht akzeptiert haben.' }, 400)
 
   // E-Mail-Format prüfen
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return c.json({ ok: false, error: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.' }, 400)
+    return c.json({ ok: false, error: 'Ihre Nachricht konnte nicht abgesendet werden, da die E-Mail-Adresse ungültig ist.' }, 400)
   }
 
   // reCAPTCHA v3 verifizieren (nur wenn Secret Key konfiguriert)
@@ -1066,7 +1073,28 @@ app.post('/api/contact', async (c) => {
     `Datenschutz-Einwilligung erteilt: Ja`,
   ].filter(l => l !== undefined).join('\n')
 
-  // Versand via Cloudflare MailChannels (kostenlos für Pages/Workers)
+  // ── Schritt 1: Anfrage in D1 speichern (primärer Fallback) ──
+  let dbSaved = false
+  try {
+    await c.env.DB.prepare(`
+      INSERT INTO contact_submissions
+        (first_name, last_name, city, phone, email, subject, message, privacy, mail_sent)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 1, 0)
+    `).bind(
+      firstName, lastName,
+      city    || null,
+      phone   || null,
+      email,
+      subject || null,
+      message
+    ).run()
+    dbSaved = true
+  } catch (dbErr) {
+    console.error('D1-Speicher Fehler:', dbErr)
+  }
+
+  // ── Schritt 2: Versand via MailChannels (Best-Effort) ────────
+  let mailSent = false
   try {
     const mailRes = await fetch('https://api.mailchannels.net/tx/v1/send', {
       method: 'POST',
@@ -1084,20 +1112,34 @@ app.post('/api/contact', async (c) => {
         content: [{ type: 'text/plain', value: emailText }]
       })
     })
-
-    // MailChannels: 202 = Erfolg
     if (mailRes.status === 202 || mailRes.status === 200) {
-      return c.json({ ok: true })
+      mailSent = true
+      // Erfolg in D1 markieren
+      if (dbSaved) {
+        try {
+          await c.env.DB.prepare(
+            `UPDATE contact_submissions SET mail_sent=1
+             WHERE email=? AND id=(SELECT MAX(id) FROM contact_submissions WHERE email=?)`
+          ).bind(email, email).run()
+        } catch { /* nicht kritisch */ }
+      }
+    } else {
+      const errText = await mailRes.text().catch(() => '')
+      console.error('MailChannels Fehler:', mailRes.status, errText)
     }
-
-    // Fehler-Details loggen (nicht an Client senden)
-    const errText = await mailRes.text().catch(() => '')
-    console.error('MailChannels Fehler:', mailRes.status, errText)
-    return c.json({ ok: false, error: 'E-Mail konnte nicht gesendet werden. Bitte versuchen Sie es später erneut.' }, 500)
   } catch (err) {
     console.error('Fetch-Fehler beim E-Mail-Versand:', err)
-    return c.json({ ok: false, error: 'Netzwerkfehler beim Versand. Bitte versuchen Sie es später erneut.' }, 500)
   }
+
+  // ── Ergebnis: Erfolg wenn D1 gespeichert ODER Mail versendet ─
+  if (dbSaved || mailSent) {
+    return c.json({ ok: true })
+  }
+
+  return c.json({
+    ok: false,
+    error: 'Ihre Anfrage konnte leider nicht übermittelt werden. Bitte versuchen Sie es später erneut oder rufen Sie uns direkt an.'
+  }, 500)
 })
 
 // ─── Impressum (aus DB) ───────────────────────────────────────
@@ -4009,10 +4051,13 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     lead: 'Wenn die Hauptpflegeperson krank wird, Urlaub braucht oder einfach eine Pause verdient, greift die Verhinderungspflege – eine gesetzliche Leistung der Pflegekasse, die viele Familien kaum kennen. Ab Pflegegrad 2 und nach sechs Monaten Vorpflegezeit stehen Ihnen bis zu 1.612 Euro pro Jahr zur Verfügung, die sich durch Umwidmung des Kurzzeitpflegebudgets auf bis zu 3.386 Euro aufstocken lassen. Kristina Bronner von Auxilium erklärt Ihnen, welche Voraussetzungen gelten, wie Sie den Antrag stellen und wie Sie das Budget über das Jahr optimal einsetzen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
-  <picture>
-    <source srcset="/static/ratgeber-verhinderungspflege.webp" type="image/webp">
-    <img src="/static/ratgeber-verhinderungspflege.jpg" alt="Pflegekraft hält Seniorin einfühlsam die Hand – Verhinderungspflege durch Auxilium in Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
-  </picture>
+  <div class="ai-figure-wrap">
+    <picture>
+      <source srcset="/static/ratgeber-verhinderungspflege.webp" type="image/webp">
+      <img src="/static/ratgeber-verhinderungspflege.jpg" alt="Pflegekraft hält Seniorin einfühlsam die Hand – Verhinderungspflege durch Auxilium in Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
+    </picture>
+    <img src="/static/ai-generated-badge.png" alt="KI-generiertes Bild" class="ai-badge">
+  </div>
   <figcaption style="font-size:0.8rem;color:var(--text-light);padding:8px 12px;background:#FBF7F2;">Professionelle Verhinderungspflege: Auxilium übernimmt, wenn die Hauptpflegeperson eine Auszeit braucht.</figcaption>
 </figure>
 
@@ -4090,10 +4135,13 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     lead: 'Seit der Pflegereform 2017 entscheiden fünf Pflegegrade darüber, welche Leistungen die Pflegekasse übernimmt – von 332 Euro Pflegegeld monatlich bei Pflegegrad 2 bis zu 947 Euro bei Pflegegrad 5. Grundlage ist nicht mehr der körperliche Zeitaufwand, sondern die Selbstständigkeit in sechs Lebensbereichen, die ein Gutachter des Medizinischen Dienstes in einem Hausbesuch bewertet. Was viele nicht wissen: Mit der richtigen Vorbereitung auf den MD-Besuch lässt sich die Einstufung deutlich verbessern – und bei einer zu niedrigen Einstufung können Familien innerhalb von vier Wochen Widerspruch einlegen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
-  <picture>
-    <source srcset="/static/ratgeber-pflegegrade.webp" type="image/webp">
-    <img src="/static/ratgeber-pflegegrade.jpg" alt="Pflegeberaterin bespricht Pflegegrad-Unterlagen mit älterem Ehepaar – persönliche Erstberatung bei Auxilium Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
-  </picture>
+  <div class="ai-figure-wrap">
+    <picture>
+      <source srcset="/static/ratgeber-pflegegrade.webp" type="image/webp">
+      <img src="/static/ratgeber-pflegegrade.jpg" alt="Pflegeberaterin bespricht Pflegegrad-Unterlagen mit älterem Ehepaar – persönliche Erstberatung bei Auxilium Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
+    </picture>
+    <img src="/static/ai-generated-badge.png" alt="KI-generiertes Bild" class="ai-badge">
+  </div>
   <figcaption style="font-size:0.8rem;color:var(--text-light);padding:8px 12px;background:#FBF7F2;">Der richtige Pflegegrad entscheidet über Ihren Leistungsanspruch – Auxilium begleitet Sie durch den gesamten Begutachtungsprozess.</figcaption>
 </figure>
 
@@ -4202,10 +4250,13 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     lead: 'Die eigenen vier Wände zu verlassen ist für die meisten pflegebedürftigen Menschen keine Wahl, sondern ein Verlust. Dabei zeigen Studien: Wer in vertrauter Umgebung gepflegt wird, hat eine höhere Lebensqualität, leidet seltener an Depressionen und entwickelt kognitiv besser. Die häusliche Pflege ist zudem in vielen Fällen günstiger als ein Pflegeheim – denn während stationäre Eigenanteile 2025 oft über 2.400 Euro monatlich liegen, lässt sich die Betreuung durch Auxilium häufig vollständig oder überwiegend über Pflegegeld, Verhinderungspflege und den Entlastungsbetrag finanzieren.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
-  <picture>
-    <source srcset="/static/ratgeber-pflege-zuhause.webp" type="image/webp">
-    <img src="/static/ratgeber-pflege-zuhause.jpg" alt="Senior genießt Tee zu Hause mit Pflegekraft – häusliche Pflege statt Pflegeheim durch Auxilium Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
-  </picture>
+  <div class="ai-figure-wrap">
+    <picture>
+      <source srcset="/static/ratgeber-pflege-zuhause.webp" type="image/webp">
+      <img src="/static/ratgeber-pflege-zuhause.jpg" alt="Senior genießt Tee zu Hause mit Pflegekraft – häusliche Pflege statt Pflegeheim durch Auxilium Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
+    </picture>
+    <img src="/static/ai-generated-badge.png" alt="KI-generiertes Bild" class="ai-badge">
+  </div>
   <figcaption style="font-size:0.8rem;color:var(--text-light);padding:8px 12px;background:#FBF7F2;">Das eigene Zuhause als bester Ort zum Älterwerden – Auxilium macht häusliche Pflege professionell und finanzierbar.</figcaption>
 </figure>
 
@@ -4267,9 +4318,13 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     lead: 'Bereits ab Pflegegrad 1 zahlt die gesetzliche Pflegekasse monatlich 131 Euro als sogenannten Entlastungsbetrag – das sind jährlich bis zu 1.572 Euro, die für anerkannte Betreuungs- und Entlastungsleistungen eingesetzt werden können. Auxilium ist als anerkannter Entlastungsdienstleister zugelassen, was bedeutet: Sie können diesen Betrag direkt für die Betreuung durch Kristina Bronner verwenden, ohne selbst in Vorleistung gehen zu müssen. Nicht genutzte Monatsbeiträge können noch bis zum 30. Juni des Folgejahres nachgefordert werden – ein häufig übersehener finanzieller Vorteil.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
-  <picture>
-    <source srcset="/static/ratgeber-entlastungsbetrag.webp" type="image/webp">
-    <img src="/static/ratgeber-entlastungsbetrag.jpg" alt="Glückliche Seniorin mit Kaffeetasse im Garten – Entlastungsbetrag 131 Euro für häusliche Betreuung durch Auxilium" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
+  <div class="ai-figure-wrap">
+    <picture>
+      <source srcset="/static/ratgeber-entlastungsbetrag.webp" type="image/webp">
+      <img src="/static/ratgeber-entlastungsbetrag.jpg" alt="Glückliche Seniorin mit Kaffeetasse im Garten – Entlastungsbetrag 131 Euro für häusliche Betreuung durch Auxilium" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
+    </picture>
+    <img src="/static/ai-generated-badge.png" alt="KI-generiertes Bild" class="ai-badge">
+  </div>
   </picture>
   <figcaption style="font-size:0.8rem;color:var(--text-light);padding:8px 12px;background:#FBF7F2;">Der Entlastungsbetrag ermöglicht professionelle Betreuung zu Hause – Auxilium rechnet direkt mit der Pflegekasse ab.</figcaption>
 </figure>
@@ -4347,7 +4402,10 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     lead: 'Rund 4,1 Millionen Menschen werden in Deutschland zu Hause gepflegt – die meisten von Familienmitgliedern, die täglich mehrere Stunden ihrer eigenen Freizeit, Gesundheit und Berufstätigkeit opfern. Dabei haben pflegende Angehörige gesetzlich verbriefte Rechte: Pflegeunterstützungsgeld für bis zu zehn bezahlte Ausfalltage, Pflegezeit mit Kündigungsschutz für bis zu sechs Monate, und Rentenbeiträge der Pflegekasse ab Pflegegrad 2. Auxilium begleitet Sie in Forst (Baden) und der Region nicht nur bei der Organisation der Vertretungspflege, sondern auch dabei, alle Ihnen zustehenden Leistungen zu beantragen und zu nutzen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
-  <img src="https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?w=820&q=80&auto=format&fit=crop" alt="Pflegende Angehörige – Tochter begleitet Mutter, Entlastung durch Auxilium Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
+  <div class="ai-figure-wrap">
+    <img src="https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?w=820&q=80&auto=format&fit=crop" alt="Pflegende Angehörige – Tochter begleitet Mutter, Entlastung durch Auxilium Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
+    <img src="/static/ai-generated-badge.png" alt="KI-generiertes Bild" class="ai-badge">
+  </div>
   <figcaption style="font-size:0.8rem;color:var(--text-light);padding:8px 12px;background:#FBF7F2;">Pflegende Angehörige tragen enorme Last – Auxilium bietet Entlastung, damit Sie durchhalten können.</figcaption>
 </figure>
 

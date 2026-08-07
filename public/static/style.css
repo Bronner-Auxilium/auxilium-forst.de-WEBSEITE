@@ -1124,6 +1124,56 @@ p  { color: var(--text-light); line-height: 1.75; }
   box-shadow: 0 0 0 3px rgba(139,26,26,0.10);
 }
 .form-textarea { resize: vertical; min-height: 120px; }
+/* ─── Modernes Form-Feedback (Error + Success) ──────────── */
+.form-feedback {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.form-feedback--error {
+  background: #fff5f5;
+  border: 1px solid #fca5a5;
+  color: #7f1d1d;
+}
+.form-feedback--success {
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  color: #14532d;
+  padding: 20px 24px;
+  margin-bottom: 0;
+}
+.form-feedback__icon {
+  font-size: 1.1rem;
+  color: #ef4444;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.form-feedback__text { margin: 0; color: inherit; }
+.form-feedback__title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+  color: inherit;
+}
+.form-feedback__check {
+  width: 40px;
+  height: 40px;
+  background: #22c55e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* Legacy – wird durch .form-feedback--success ersetzt */
 .form-success {
   display: none;
   text-align: center; padding: 24px;
@@ -2460,6 +2510,26 @@ textarea:focus:not(:focus-visible) {
   gap: 28px;
   margin-top: 8px;
 }
+/* ─── KI-Kennzeichnung (EU AI Act Art. 50) ───────────────────── */
+.ai-figure-wrap {
+  position: relative;
+  display: block;
+}
+.ai-badge {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 120px;
+  height: auto;
+  opacity: 0.92;
+  pointer-events: none;
+  z-index: 2;
+  border-radius: 6px;
+}
+@media (max-width: 600px) {
+  .ai-badge { width: 90px; bottom: 8px; right: 8px; }
+}
+
 .ratgeber-card {
   background: white;
   border-radius: 14px;
