@@ -609,12 +609,12 @@ app.get('/ueber-auxilium', async (c) => {
       <p style="max-width:540px;margin:14px auto 0;">Gute Pflege bedeutet f&uuml;r Auxilium: Menschlichkeit, Respekt und echte Pr&auml;senz.</p>
     </div>
 
-    <!-- Symbol-Box: Logo + Schmetterling-Erkl&auml;rung -->
-    <div class="person-symbol-box" style="margin-bottom:48px;">
-      <img src="/static/logo.png" alt="Auxilium Logo &ndash; Schmetterling mit fehlendem Fl&uuml;gel" class="person-symbol-img">
-      <div class="person-symbol-text">
-        <p class="person-logo-title">Wof&uuml;r steht das Symbol von Auxilium?</p>
-        <p class="person-logo-text">Man erkennt einen Schmetterling mit einem fehlenden Teil-Fl&uuml;gel. Dies steht f&uuml;r einen Mangel, etwas &bdquo;das fehlt&ldquo; und Hilfe bedarf. Hier wird der Fl&uuml;gel durch die helfende Hand von Auxilium gest&uuml;tzt, um wieder Halt zu erlangen.</p>
+    <!-- Symbol-Box: Logo + Schmetterling-Erkl&auml;rung – im Karten-Style, volle Breite -->
+    <div style="background:white;border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:36px 40px;margin-bottom:48px;display:flex;align-items:center;gap:40px;">
+      <img src="/static/logo.png" alt="Auxilium Logo &ndash; Schmetterling mit fehlendem Fl&uuml;gel" style="width:280px;height:280px;object-fit:contain;flex-shrink:0;">
+      <div>
+        <h3 style="font-size:1.35rem;font-weight:700;color:var(--secondary);margin:0 0 14px;line-height:1.3;">Wof&uuml;r steht das Symbol von Auxilium?</h3>
+        <p style="font-size:1.05rem;line-height:1.8;color:var(--text);margin:0;">Man erkennt einen Schmetterling mit einem fehlenden Teil-Fl&uuml;gel. Dies steht f&uuml;r einen Mangel, etwas &bdquo;das fehlt&ldquo; und Hilfe bedarf. Hier wird der Fl&uuml;gel durch die helfende Hand von Auxilium gest&uuml;tzt, um wieder Halt zu erlangen.</p>
       </div>
     </div>
 
@@ -841,7 +841,6 @@ app.get('/beratung', async (c) => {
         <a href="/kontakt" class="btn btn-accent"><i class="fas fa-calendar" aria-hidden="true"></i>Beratungsgespr&auml;ch anfragen</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:14px;">
-        <div class="contact-info-item"><div class="info-icon"><i class="fas fa-lightbulb" aria-hidden="true"></i></div><div><div class="info-label">Vorteil</div><div class="info-value">Individuelle Finanzierungsberatung inklusive</div></div></div>
         <div class="contact-info-item"><div class="info-icon"><i class="fas fa-phone" aria-hidden="true"></i></div><div><div class="info-label">Erstkontakt</div><div class="info-value">Pers&ouml;nliche Erstberatung</div></div></div>
         <div class="contact-info-item"><div class="info-icon"><i class="fas fa-home" aria-hidden="true"></i></div><div><div class="info-label">Ort</div><div class="info-value">Bei Ihnen zu Hause oder telefonisch</div></div></div>
       </div>
@@ -856,13 +855,13 @@ app.get('/beratung', async (c) => {
       <h2 id="insurance-heading">Ihre Anspr&uuml;che im &Uuml;berblick</h2>
       <p style="max-width:520px;margin:14px auto 0;">Folgende Leistungen k&ouml;nnen f&uuml;r die Finanzierung von Auxilium genutzt werden.</p>
     </div>
-    <div class="grid-2" style="gap:20px;">
+    <div class="grid-3">
       <article class="card"><div class="card__icon"><i class="fas fa-wallet" aria-hidden="true"></i></div><h3 class="card__title">Pflegerische Hilfen</h3><p class="card__text">Geld- oder Sachleistung &ndash; je nach Bedarf und Pflegegrad optimal einsetzen.</p></article>
       <article class="card"><div class="card__icon"><i class="fas fa-sync-alt" aria-hidden="true"></i></div><h3 class="card__title">Entlastungsbetrag</h3><p class="card__text">131 &euro; monatlich (1.572 &euro; j&auml;hrlich) f&uuml;r anerkannte Entlastungsleistungen ab Pflegegrad 1.</p></article>
       <article class="card"><div class="card__icon"><i class="fas fa-procedures" aria-hidden="true"></i></div><h3 class="card__title">Kurzzeitpflege</h3><p class="card__text">&Uuml;berbr&uuml;ckung bei Krankenhausaufenthalten oder zur Entlastung der Angeh&ouml;rigen.</p></article>
       <article class="card"><div class="card__icon"><i class="fas fa-shield-alt" aria-hidden="true"></i></div><h3 class="card__title">Verhinderungspflege</h3><p class="card__text">Wenn die regul&auml;re Pflegeperson ausf&auml;llt &ndash; bis zu 3.539 &euro; im Jahr nutzbar.</p></article>
       <article class="card"><div class="card__icon"><i class="fas fa-moon" aria-hidden="true"></i></div><h3 class="card__title">Tages- und Nachtpflege</h3><p class="card__text">Erg&auml;nzende Betreuung in teilstation&auml;ren Einrichtungen tagss&uuml;ber oder nachts.</p></article>
-      <article class="card"><div class="card__icon"><i class="fas fa-walking" aria-hidden="true"></i></div><h3 class="card__title">Reha</h3><p class="card__text">Wissen Sie um Ihre Anspr&uuml;che auf eine Rehabilitation? Ich informiere Sie umfassend.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-walking" aria-hidden="true"></i></div><h3 class="card__title">Hilfsmittel</h3><p class="card__text">Wissen Sie um Ihre Anspr&uuml;che auf eine Rehabilitation? Ich informiere Sie umfassend.</p></article>
     </div>
   </div>
 </section>
@@ -874,9 +873,9 @@ app.get('/beratung', async (c) => {
       <h2 id="aids-heading">Mehr Selbstst&auml;ndigkeit durch die richtigen Mittel</h2>
     </div>
     <div class="grid-3">
-      <article class="card"><div class="card__icon"><i class="fas fa-medkit" aria-hidden="true"></i></div><h3 class="card__title">Pflegehilfsmittel</h3><p class="card__text">Monatlich bis zu 40 &euro; f&uuml;r zum Verbrauch bestimmte Pflegehilfsmittel.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-medkit" aria-hidden="true"></i></div><h3 class="card__title">Pflegehilfsmittel</h3><p class="card__text">Monatlich bis zu 42 &euro; f&uuml;r zum Verbrauch bestimmte Pflegehilfsmittel.</p></article>
       <article class="card"><div class="card__icon"><i class="fas fa-wheelchair" aria-hidden="true"></i></div><h3 class="card__title">Technische Hilfsmittel</h3><p class="card__text">Zusch&uuml;sse f&uuml;r Rollst&uuml;hle, Pflegebetten, Lifter und andere Hilfsmittel.</p></article>
-      <article class="card"><div class="card__icon"><i class="fas fa-home" aria-hidden="true"></i></div><h3 class="card__title">Wohnumfeldverbesserung</h3><p class="card__text">Bis zu 4.000 &euro; Zuschuss pro Ma&szlig;nahme f&uuml;r barrierefreie Umbauten.</p></article>
+      <article class="card"><div class="card__icon"><i class="fas fa-home" aria-hidden="true"></i></div><h3 class="card__title">Wohnumfeldverbesserung</h3><p class="card__text">Bis zu 4.180 Euro als Zuschuss f&uuml;r Anpassungsma&szlig;nahmen in der h&auml;uslichen Pflege.</p></article>
     </div>
   </div>
 </section>
@@ -4044,19 +4043,17 @@ app.get('/robots.txt', (c) => {
 const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;category:string;intro:string;lead?:string;content:string}> = [
   {
     slug: 'verhinderungspflege-richtig-nutzen',
-    title: 'Verhinderungspflege richtig nutzen – bis zu 3.386 Euro Anspruch sichern',
+    title: 'Verhinderungspflege richtig nutzen – bis zu 3.539 Euro Anspruch bei PG 2–5 sichern',
     meta_desc: 'Verhinderungspflege 2025: Was ist erlaubt, wie beantragen, wie viel bekomme ich? Auxilium Forst Baden erklärt alle Möglichkeiten und hilft bei der Abrechnung über die Pflegekasse.',
     category: 'Pflegefinanzierung',
-    intro: 'Wie Sie bis zu 3.386 Euro jährlich für Ihre Entlastung nutzen – einfach erklärt von Auxilium Forst (Baden).',
-    lead: 'Wenn die Hauptpflegeperson krank wird, Urlaub braucht oder einfach eine Pause verdient, greift die Verhinderungspflege – eine gesetzliche Leistung der Pflegekasse, die viele Familien kaum kennen. Ab Pflegegrad 2 und nach sechs Monaten Vorpflegezeit stehen Ihnen bis zu 1.612 Euro pro Jahr zur Verfügung, die sich durch Umwidmung des Kurzzeitpflegebudgets auf bis zu 3.386 Euro aufstocken lassen. Kristina Bronner von Auxilium erklärt Ihnen, welche Voraussetzungen gelten, wie Sie den Antrag stellen und wie Sie das Budget über das Jahr optimal einsetzen.',
+    intro: 'Wie Sie bis zu 3.539 Euro jährlich für die Entlastung der Pflegeperson nutzen – einfach erklärt von Auxilium Forst (Baden).',
+    lead: 'Wenn die Hauptpflegeperson krank wird, Urlaub braucht oder einfach eine Pause verdient, greift die Verhinderungspflege – eine gesetzliche Leistung der Pflegekasse, die viele Familien kaum kennen. Ab Pflegegrad 2 und nach sechs Monaten Vorpflegezeit stehen Ihnen bis zu 1.612 Euro pro Jahr zur Verfügung, die sich durch Umwidmung des Kurzzeitpflegebudgets auf bis zu 3.539 Euro aufstocken lassen. Kristina Bronner von Auxilium erklärt Ihnen, welche Voraussetzungen gelten, wie Sie den Antrag stellen und wie Sie das Budget über das Jahr optimal einsetzen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
-  <div class="ai-figure-wrap">
     <picture>
       <source srcset="/static/ratgeber-verhinderungspflege.webp" type="image/webp">
       <img src="/static/ratgeber-verhinderungspflege.jpg" alt="Pflegekraft hält Seniorin einfühlsam die Hand – Verhinderungspflege durch Auxilium in Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
     </picture>
-    <img src="/static/ai-generated-badge.png" alt="KI-generiertes Bild" class="ai-badge">
   </div>
   <figcaption style="font-size:0.8rem;color:var(--text-light);padding:8px 12px;background:#FBF7F2;">Professionelle Verhinderungspflege: Auxilium übernimmt, wenn die Hauptpflegeperson eine Auszeit braucht.</figcaption>
 </figure>
@@ -4128,19 +4125,17 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
   },
   {
     slug: 'pflegegrade-erklaert',
-    title: 'Pflegegrade 1 bis 5 einfach erklärt – Voraussetzungen, Leistungen und MDK-Begutachtung',
+    title: 'Pflegegrade 1 bis 5 einfach erklärt – Voraussetzungen, Leistungen und die Begutachtung vom Medizinischen Dienst (MD)',
     meta_desc: 'Pflegegrade 1 bis 5 einfach erklärt: Voraussetzungen, Begutachtung durch den MDK, Geldbeträge und Leistungen. Auxilium Forst Baden hilft beim Antrag und beim Widerspruch.',
     category: 'Pflegegrundlagen',
-    intro: 'Pflegegrade 1 bis 5 verständlich erklärt – Voraussetzungen, MDK-Begutachtung und Leistungen auf einen Blick.',
+    intro: 'Pflegegrade 1 bis 5 verständlich erklärt – Voraussetzungen, der Ablauf der Begutachtung vom Medizinischen Dienst (MD) und Leistungen auf einen Blick.',
     lead: 'Seit der Pflegereform 2017 entscheiden fünf Pflegegrade darüber, welche Leistungen die Pflegekasse übernimmt – von 332 Euro Pflegegeld monatlich bei Pflegegrad 2 bis zu 947 Euro bei Pflegegrad 5. Grundlage ist nicht mehr der körperliche Zeitaufwand, sondern die Selbstständigkeit in sechs Lebensbereichen, die ein Gutachter des Medizinischen Dienstes in einem Hausbesuch bewertet. Was viele nicht wissen: Mit der richtigen Vorbereitung auf den MD-Besuch lässt sich die Einstufung deutlich verbessern – und bei einer zu niedrigen Einstufung können Familien innerhalb von vier Wochen Widerspruch einlegen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
-  <div class="ai-figure-wrap">
     <picture>
       <source srcset="/static/ratgeber-pflegegrade.webp" type="image/webp">
       <img src="/static/ratgeber-pflegegrade.jpg" alt="Pflegeberaterin bespricht Pflegegrad-Unterlagen mit älterem Ehepaar – persönliche Erstberatung bei Auxilium Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
     </picture>
-    <img src="/static/ai-generated-badge.png" alt="KI-generiertes Bild" class="ai-badge">
   </div>
   <figcaption style="font-size:0.8rem;color:var(--text-light);padding:8px 12px;background:#FBF7F2;">Der richtige Pflegegrad entscheidet über Ihren Leistungsanspruch – Auxilium begleitet Sie durch den gesamten Begutachtungsprozess.</figcaption>
 </figure>
@@ -4250,12 +4245,10 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     lead: 'Die eigenen vier Wände zu verlassen ist für die meisten pflegebedürftigen Menschen keine Wahl, sondern ein Verlust. Dabei zeigen Studien: Wer in vertrauter Umgebung gepflegt wird, hat eine höhere Lebensqualität, leidet seltener an Depressionen und entwickelt kognitiv besser. Die häusliche Pflege ist zudem in vielen Fällen günstiger als ein Pflegeheim – denn während stationäre Eigenanteile 2025 oft über 2.400 Euro monatlich liegen, lässt sich die Betreuung durch Auxilium häufig vollständig oder überwiegend über Pflegegeld, Verhinderungspflege und den Entlastungsbetrag finanzieren.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
-  <div class="ai-figure-wrap">
     <picture>
       <source srcset="/static/ratgeber-pflege-zuhause.webp" type="image/webp">
       <img src="/static/ratgeber-pflege-zuhause.jpg" alt="Senior genießt Tee zu Hause mit Pflegekraft – häusliche Pflege statt Pflegeheim durch Auxilium Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
     </picture>
-    <img src="/static/ai-generated-badge.png" alt="KI-generiertes Bild" class="ai-badge">
   </div>
   <figcaption style="font-size:0.8rem;color:var(--text-light);padding:8px 12px;background:#FBF7F2;">Das eigene Zuhause als bester Ort zum Älterwerden – Auxilium macht häusliche Pflege professionell und finanzierbar.</figcaption>
 </figure>
@@ -4318,12 +4311,10 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     lead: 'Bereits ab Pflegegrad 1 zahlt die gesetzliche Pflegekasse monatlich 131 Euro als sogenannten Entlastungsbetrag – das sind jährlich bis zu 1.572 Euro, die für anerkannte Betreuungs- und Entlastungsleistungen eingesetzt werden können. Auxilium ist als anerkannter Entlastungsdienstleister zugelassen, was bedeutet: Sie können diesen Betrag direkt für die Betreuung durch Kristina Bronner verwenden, ohne selbst in Vorleistung gehen zu müssen. Nicht genutzte Monatsbeiträge können noch bis zum 30. Juni des Folgejahres nachgefordert werden – ein häufig übersehener finanzieller Vorteil.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
-  <div class="ai-figure-wrap">
     <picture>
       <source srcset="/static/ratgeber-entlastungsbetrag.webp" type="image/webp">
       <img src="/static/ratgeber-entlastungsbetrag.jpg" alt="Glückliche Seniorin mit Kaffeetasse im Garten – Entlastungsbetrag 131 Euro für häusliche Betreuung durch Auxilium" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
     </picture>
-    <img src="/static/ai-generated-badge.png" alt="KI-generiertes Bild" class="ai-badge">
   </div>
   </picture>
   <figcaption style="font-size:0.8rem;color:var(--text-light);padding:8px 12px;background:#FBF7F2;">Der Entlastungsbetrag ermöglicht professionelle Betreuung zu Hause – Auxilium rechnet direkt mit der Pflegekasse ab.</figcaption>
@@ -4402,9 +4393,10 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     lead: 'Rund 4,1 Millionen Menschen werden in Deutschland zu Hause gepflegt – die meisten von Familienmitgliedern, die täglich mehrere Stunden ihrer eigenen Freizeit, Gesundheit und Berufstätigkeit opfern. Dabei haben pflegende Angehörige gesetzlich verbriefte Rechte: Pflegeunterstützungsgeld für bis zu zehn bezahlte Ausfalltage, Pflegezeit mit Kündigungsschutz für bis zu sechs Monate, und Rentenbeiträge der Pflegekasse ab Pflegegrad 2. Auxilium begleitet Sie in Forst (Baden) und der Region nicht nur bei der Organisation der Vertretungspflege, sondern auch dabei, alle Ihnen zustehenden Leistungen zu beantragen und zu nutzen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
-  <div class="ai-figure-wrap">
-    <img src="https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?w=820&q=80&auto=format&fit=crop" alt="Pflegende Angehörige – Tochter begleitet Mutter, Entlastung durch Auxilium Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
-    <img src="/static/ai-generated-badge.png" alt="KI-generiertes Bild" class="ai-badge">
+  <picture>
+    <source srcset="/static/ratgeber-pflegende-angehoerige.webp" type="image/webp">
+    <img src="/static/ratgeber-pflegende-angehoerige.webp" alt="Pflegende Angehörige – Frauen lachen gemeinsam, Entlastung durch Auxilium Forst Baden" width="820" height="420" loading="lazy" style="width:100%;height:420px;object-fit:cover;display:block;">
+  </picture>
   </div>
   <figcaption style="font-size:0.8rem;color:var(--text-light);padding:8px 12px;background:#FBF7F2;">Pflegende Angehörige tragen enorme Last – Auxilium bietet Entlastung, damit Sie durchhalten können.</figcaption>
 </figure>
