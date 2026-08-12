@@ -235,6 +235,23 @@
         return;
       }
 
+      // Injection-Schutz: HTML-Tags und Script-Befehle erkennen
+      var htmlPattern = /<[^>]+>|javascript\s*:|on\w+\s*=|<script|<\/script|<iframe|<object|<embed/i;
+      var fieldsToCheck = [
+        { value: firstName, label: 'Vorname' },
+        { value: lastName,  label: 'Nachname' },
+        { value: city,      label: 'Wohnort' },
+        { value: phone,     label: 'Telefon' },
+        { value: email,     label: 'E-Mail-Adresse' },
+        { value: message,   label: 'Nachricht' }
+      ];
+      for (var i = 0; i < fieldsToCheck.length; i++) {
+        if (htmlPattern.test(fieldsToCheck[i].value)) {
+          showError('Im Feld „' + fieldsToCheck[i].label + '" befinden sich unerlaubte Inhalte (z. B. HTML-Code oder Script-Befehle). Bitte entfernen Sie diese und versuchen Sie es erneut.');
+          return;
+        }
+      }
+
       // Button sperren
       const originalHTML = btn.innerHTML;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Wird gesendet…';

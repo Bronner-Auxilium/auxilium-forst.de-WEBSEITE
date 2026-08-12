@@ -920,12 +920,8 @@ app.get('/kontakt', async (c) => {
     .split('\n')
     .map(s => s.trim())
     .filter(Boolean)
-    .map(s => {
-      const val = s.toLowerCase()
-        .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
-        .replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')
-      return `<option value="${val}">${s}</option>`
-    })
+    // value = Original-Text (keine Umwandlung), so kommt er im Postfach korrekt an
+    .map(s => `<option value="${s.replace(/"/g, '&quot;')}">${s}</option>`)
     .join('\n                ')
   // reCAPTCHA Site Key (leer = kein reCAPTCHA)
   const siteKey = (S.recaptcha_site_key || '').trim()
@@ -959,13 +955,13 @@ ${recaptchaScript}
           <p style="margin-bottom:24px;font-size:0.875rem;color:var(--text-light);">F&uuml;llen Sie das Formular aus &ndash; ich melde mich so schnell wie m&ouml;glich.</p>
           <form id="contactForm" novalidate data-site-key="${siteKey}">
             <div class="form-row">
-              <div class="form-group"><label class="form-label" for="firstName">Vorname *</label><input class="form-input" id="firstName" name="firstName" type="text" placeholder="Max" required></div>
-              <div class="form-group"><label class="form-label" for="lastName">Nachname *</label><input class="form-input" id="lastName" name="lastName" type="text" placeholder="Mustermann" required></div>
+              <div class="form-group"><label class="form-label" for="firstName">Vorname *</label><input class="form-input" id="firstName" name="firstName" type="text" placeholder="Max" required maxlength="100"></div>
+              <div class="form-group"><label class="form-label" for="lastName">Nachname *</label><input class="form-input" id="lastName" name="lastName" type="text" placeholder="Mustermann" required maxlength="100"></div>
             </div>
-            <div class="form-group"><label class="form-label" for="city">Wohnort</label><input class="form-input" id="city" name="city" type="text" placeholder="z. B. Forst (Baden)"></div>
+            <div class="form-group"><label class="form-label" for="city">Wohnort</label><input class="form-input" id="city" name="city" type="text" placeholder="z. B. Forst (Baden)" maxlength="100"></div>
             <div class="form-row">
-              <div class="form-group"><label class="form-label" for="phone">Telefon</label><input class="form-input" id="phone" name="phone" type="tel" placeholder="+49 ..."></div>
-              <div class="form-group"><label class="form-label" for="email">E-Mail *</label><input class="form-input" id="email" name="email" type="email" placeholder="max@beispiel.de" required></div>
+              <div class="form-group"><label class="form-label" for="phone">Telefon</label><input class="form-input" id="phone" name="phone" type="tel" placeholder="+49 ..." maxlength="20"></div>
+              <div class="form-group"><label class="form-label" for="email">E-Mail *</label><input class="form-input" id="email" name="email" type="email" placeholder="max@beispiel.de" required maxlength="100"></div>
             </div>
             <div class="form-group">
               <label class="form-label" for="subject">Betreff</label>
@@ -974,7 +970,7 @@ ${recaptchaScript}
                 ${subjectOptions}
               </select>
             </div>
-            <div class="form-group"><label class="form-label" for="message">Ihre Nachricht *</label><textarea class="form-textarea" id="message" name="message" placeholder="Wie kann Auxilium Ihnen helfen?" rows="5" required></textarea></div>
+            <div class="form-group"><label class="form-label" for="message">Ihre Nachricht *</label><textarea class="form-textarea" id="message" name="message" placeholder="Wie kann Auxilium Ihnen helfen?" rows="5" required maxlength="5000"></textarea></div>
             <div class="form-group" style="flex-direction:row;align-items:flex-start;gap:10px;margin-bottom:22px;">
               <input type="checkbox" id="privacy" name="privacy" required style="margin-top:3px;accent-color:var(--accent);width:16px;height:16px;flex-shrink:0;">
               <label for="privacy" style="font-size:0.8rem;color:var(--text-light);cursor:pointer;">Ich stimme der Verarbeitung meiner Daten gem&auml;&szlig; der <a href="/datenschutz" style="color:var(--accent);">Datenschutzerkl&auml;rung</a> zu. *</label>
@@ -987,6 +983,7 @@ ${recaptchaScript}
             <button type="submit" class="btn btn-accent w-full" style="justify-content:center;font-size:0.95rem;">
               <i class="fas fa-paper-plane" aria-hidden="true"></i>Nachricht senden
             </button>
+            <p style="font-size:0.78rem;color:var(--text-light);margin-top:10px;text-align:left;">* Pflichtfelder</p>
           </form>
           <div id="formSuccess" class="form-feedback form-feedback--success" style="display:none;" role="status">
             <div class="form-feedback__check" aria-hidden="true"><i class="fas fa-check"></i></div>
@@ -1028,6 +1025,27 @@ app.post('/api/contact', async (c) => {
     return c.json({ ok: false, error: 'Ihre Nachricht konnte nicht abgesendet werden, da die E-Mail-Adresse ungültig ist.' }, 400)
   }
 
+  // Zeichenlängen prüfen (server-side, analog maxlength im HTML)
+  if (firstName.length > 100) return c.json({ ok: false, error: 'Der Vorname darf maximal 100 Zeichen enthalten.' }, 400)
+  if (lastName.length  > 100) return c.json({ ok: false, error: 'Der Nachname darf maximal 100 Zeichen enthalten.' }, 400)
+  if (city   && city.length   > 100) return c.json({ ok: false, error: 'Der Wohnort darf maximal 100 Zeichen enthalten.' }, 400)
+  if (phone  && phone.length  >  20) return c.json({ ok: false, error: 'Die Telefonnummer darf maximal 20 Zeichen enthalten.' }, 400)
+  if (email.length > 100) return c.json({ ok: false, error: 'Die E-Mail-Adresse darf maximal 100 Zeichen enthalten.' }, 400)
+  if (message.length > 5000) return c.json({ ok: false, error: 'Die Nachricht darf maximal 5.000 Zeichen enthalten.' }, 400)
+
+  // Injection-Schutz: HTML-Tags und Script-Inhalte ablehnen
+  const htmlPattern = /<[^>]+>|javascript\s*:|on\w+\s*=|<script|<\/script|<iframe|<object|<embed/i
+  const fieldsToCheck: Array<[string, string]> = [
+    [firstName, 'Vorname'], [lastName, 'Nachname'],
+    [city || '', 'Wohnort'], [phone || '', 'Telefon'],
+    [email, 'E-Mail-Adresse'], [message, 'Nachricht']
+  ]
+  for (const [val, label] of fieldsToCheck) {
+    if (htmlPattern.test(val)) {
+      return c.json({ ok: false, error: `Im Feld „${label}" befinden sich unerlaubte Inhalte (z. B. HTML-Code oder Script-Befehle). Bitte entfernen Sie diese und versuchen Sie es erneut.` }, 400)
+    }
+  }
+
   // reCAPTCHA v3 verifizieren (nur wenn Secret Key konfiguriert)
   const secretKey = (S.recaptcha_secret_key || '').trim()
   if (secretKey) {
@@ -1052,9 +1070,11 @@ app.post('/api/contact', async (c) => {
   // E-Mail zusammenstellen
   const recipientEmail = (S.form_recipient_email || 'info@auxilium-forst.de').trim()
   const recipientName  = (S.form_recipient_name  || 'Auxilium – Kristina Bronner').trim()
+  const senderName     = `${firstName} ${lastName} (Kontaktformular)`
+  // Betreff: "Kontaktanfrage (Betreff) von Vorname Nachname"
   const subjectLine    = subject
-    ? `Kontaktanfrage: ${subject}`
-    : 'Neue Kontaktanfrage über auxilium-forst.de'
+    ? `Kontaktanfrage (${subject}) von ${firstName} ${lastName}`
+    : `Kontaktanfrage von ${firstName} ${lastName} über auxilium-forst.de`
 
   const emailText = [
     `Neue Kontaktanfrage von auxilium-forst.de`,
@@ -1113,6 +1133,7 @@ app.post('/api/contact', async (c) => {
           <hr style="border:none;border-top:1px solid #E8D9C5;margin:20px 0;">
           <p style="color:#aaa;font-size:0.78rem;">Datenschutz-Einwilligung erteilt: Ja</p>
         </div>`
+      // ── Mail 1: Benachrichtigung an Frau Bronner ─────────────
       const mailRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -1120,7 +1141,7 @@ app.post('/api/contact', async (c) => {
           'Authorization': `Bearer ${resendApiKey}`
         },
         body: JSON.stringify({
-          from: 'Kontaktformular Auxilium <onboarding@resend.dev>',
+          from: `${senderName} <onboarding@resend.dev>`,
           to: [recipientEmail],
           reply_to: email,
           subject: subjectLine,
@@ -1138,6 +1159,44 @@ app.post('/api/contact', async (c) => {
                WHERE email=? AND id=(SELECT MAX(id) FROM contact_submissions WHERE email=?)`
             ).bind(email, email).run()
           } catch { /* nicht kritisch */ }
+        }
+
+        // ── Mail 2: Bestätigungsmail an Absender ─────────────
+        try {
+          const confirmHtml = `
+            <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+              <h2 style="color:#C1782D;margin-bottom:4px;">Vielen Dank für Ihre Anfrage!</h2>
+              <p style="color:#333;line-height:1.7;">Wir haben Ihre Kontaktanfrage erhalten und werden uns schnellstmöglich bei Ihnen melden.</p>
+              <hr style="border:none;border-top:1px solid #E8D9C5;margin:20px 0;">
+              <p style="color:#888;font-size:0.85rem;margin:0 0 12px;">Ihre gesendete Nachricht:</p>
+              <table style="width:100%;border-collapse:collapse;margin-bottom:16px;">
+                <tr><td style="padding:6px 0;color:#666;width:120px;">Name</td><td style="padding:6px 0;font-weight:600;">${firstName} ${lastName}</td></tr>
+                ${city  ? `<tr><td style="padding:6px 0;color:#666;">Wohnort</td><td style="padding:6px 0;">${city}</td></tr>` : ''}
+                ${phone ? `<tr><td style="padding:6px 0;color:#666;">Telefon</td><td style="padding:6px 0;">${phone}</td></tr>` : ''}
+                <tr><td style="padding:6px 0;color:#666;">E-Mail</td><td style="padding:6px 0;">${email}</td></tr>
+                ${subject ? `<tr><td style="padding:6px 0;color:#666;">Betreff</td><td style="padding:6px 0;">${subject}</td></tr>` : ''}
+              </table>
+              <p style="color:#333;line-height:1.6;white-space:pre-wrap;background:#faf7f3;padding:16px;border-radius:8px;border-left:3px solid #C1782D;">${message.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>
+              <hr style="border:none;border-top:1px solid #E8D9C5;margin:20px 0;">
+              <p style="color:#888;font-size:0.82rem;">Diese Bestätigung wurde automatisch versandt. Bitte antworten Sie nicht auf diese E-Mail.<br>Auxilium – Kristina Bronner | Forst (Baden) | info@auxilium-forst.de</p>
+            </div>`
+          const confirmText = `Vielen Dank für Ihre Anfrage!\n\nWir haben Ihre Kontaktanfrage erhalten und werden uns schnellstmöglich bei Ihnen melden.\n\nIhre gesendete Nachricht:\n${emailText}`
+          await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${resendApiKey}`
+            },
+            body: JSON.stringify({
+              from: `${recipientName} <onboarding@resend.dev>`,
+              to: [email],
+              subject: `Ihre Kontaktanfrage bei Auxilium – ${firstName} ${lastName}`,
+              html: confirmHtml,
+              text: confirmText
+            })
+          })
+        } catch (confirmErr) {
+          console.error('Bestätigungsmail-Fehler (nicht kritisch):', confirmErr)
         }
       } else {
         const errText = await mailRes.text().catch(() => '')
@@ -4077,7 +4136,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     title: 'Verhinderungspflege richtig nutzen – bis zu 3.539 Euro Anspruch bei PG 2–5 sichern',
     meta_desc: 'Verhinderungspflege 2025: Was ist erlaubt, wie beantragen, wie viel bekomme ich? Auxilium Forst Baden erklärt alle Möglichkeiten und hilft bei der Abrechnung über die Pflegekasse.',
     category: 'Pflegefinanzierung',
-    intro: 'Wie Sie bis zu 3.539 Euro jährlich für die Entlastung der Pflegeperson nutzen – einfach erklärt von Auxilium Forst (Baden).',
+    intro: 'Wenn die Hauptpflegeperson krank wird oder Urlaub braucht, zahlt die Pflegekasse bis zu 1.774 Euro jährlich für eine Ersatzpflegekraft. Mit dem gemeinsamen Jahresbetrag lässt sich dieser Anspruch auf bis zu 3.539 Euro erhöhen.',
     lead: 'Wenn die Hauptpflegeperson krank wird, Urlaub braucht oder einfach eine Pause verdient, greift die Verhinderungspflege – eine gesetzliche Leistung der Pflegekasse, die viele Familien kaum kennen. Ab Pflegegrad 2 und nach sechs Monaten Vorpflegezeit zahlt die Pflegekasse die Pflegekosten bis zu 1.774 Euro pro Jahr. Durch den gemeinsamen Jahresbetrag lässt sich dieser Betrag auf bis zu 3.539 Euro erhöhen. Kristina Bronner von Auxilium erklärt Ihnen, welche Voraussetzungen gelten, wie Sie den Antrag stellen und wie Sie das Budget über das Jahr am besten einsetzen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
@@ -4131,7 +4190,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     title: 'Pflegegrade 1 bis 5 einfach erklärt – Voraussetzungen, Leistungen und die Begutachtung vom Medizinischen Dienst (MD)',
     meta_desc: 'Pflegegrade 1 bis 5 einfach erklärt: Voraussetzungen, Begutachtung durch den MDK, Geldbeträge und Leistungen. Auxilium Forst Baden hilft beim Antrag und beim Widerspruch.',
     category: 'Pflegegrundlagen',
-    intro: 'Pflegegrade 1 bis 5 verständlich erklärt – Voraussetzungen, der Ablauf der Begutachtung vom Medizinischen Dienst (MD) und Leistungen auf einen Blick.',
+    intro: 'Seit 2017 bestimmen fünf Pflegegrade, welche Leistungen die Pflegekasse zahlt. Wer gut vorbereitet zum MD-Besuch geht, kann seinen Anspruch deutlich verbessern.',
     lead: 'Seit der Pflegereform 2017 entscheiden fünf Pflegegrade darüber, welche Leistungen die Pflegekasse übernimmt – von 332 Euro Pflegegeld monatlich bei Pflegegrad 2 bis zu 947 Euro bei Pflegegrad 5. Grundlage ist nicht mehr der körperliche Zeitaufwand, sondern die Selbstständigkeit in sechs Lebensbereichen, die ein Gutachter des Medizinischen Dienstes in einem Hausbesuch bewertet. Was viele nicht wissen: Mit der richtigen Vorbereitung auf den MD-Besuch lässt sich die Einstufung deutlich verbessern – und bei einer zu niedrigen Einstufung können Familien innerhalb von vier Wochen Widerspruch einlegen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
@@ -4225,7 +4284,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     title: 'Pflege zu Hause statt Pflegeheim – Was es kostet, was es braucht und wie Auxilium hilft',
     meta_desc: 'Häusliche Pflege statt Pflegeheim: Vorteile, tatsächliche Kosten 2025, Finanzierung über Pflegekasse und wie Auxilium in Forst Baden die professionelle Betreuung zu Hause organisiert.',
     category: 'Häusliche Pflege',
-    intro: 'Was häusliche Pflege wirklich kostet, wie sie finanziert wird und wie Auxilium in Forst (Baden) sie professionell organisiert.',
+    intro: 'Häusliche Pflege ist für viele Menschen mehr als eine praktische Lösung – sie ist der Wunsch, im eigenen Zuhause zu bleiben. Wie sie finanziert werden kann und was Auxilium dabei konkret leistet, lesen Sie hier.',
     lead: 'Die eigenen vier Wände zu verlassen ist für die meisten pflegebedürftigen Menschen keine Wahl, sondern ein Verlust. Dabei zeigen Studien: Wer in vertrauter Umgebung gepflegt wird, hat eine höhere Lebensqualität, leidet seltener an Depressionen und entwickelt kognitiv besser. Die häusliche Pflege ist zudem in vielen Fällen günstiger als ein Pflegeheim – denn während stationäre Eigenanteile 2025 oft über 2.400 Euro monatlich liegen, lässt sich die Betreuung durch Auxilium häufig vollständig oder überwiegend über Pflegegeld, Verhinderungspflege und den Entlastungsbetrag finanzieren.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
@@ -4282,7 +4341,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     title: 'Entlastungsbetrag 131 Euro monatlich: Wer bekommt ihn und wie nutze ich ihn optimal?',
     meta_desc: 'Der Entlastungsbetrag von 131 Euro monatlich steht allen Pflegebedürftigen ab Pflegegrad 1 zu – auch für Auxilium-Leistungen in Forst Baden. Wie er beantragt und übertragen werden kann.',
     category: 'Pflegefinanzierung',
-    intro: 'Den monatlichen Entlastungsbetrag von 131 Euro optimal einsetzen – wer ihn bekommt, wofür er gilt und wie Auxilium bei der Abrechnung hilft.',
+    intro: 'Ab Pflegegrad 1 zahlt die Pflegekasse monatlich 131 Euro Entlastungsbetrag – jährlich bis zu 1.572 Euro, die viele Familien nicht oder nicht vollständig abrufen.',
     lead: 'Bereits ab Pflegegrad 1 zahlt die gesetzliche Pflegekasse monatlich 131 Euro als sogenannten Entlastungsbetrag – das sind jährlich bis zu 1.572 Euro, die für anerkannte Betreuungs- und Entlastungsleistungen eingesetzt werden können. Auxilium ist als anerkannter Entlastungsdienstleister zugelassen, was bedeutet: Sie können diesen Betrag direkt für die Betreuung durch Kristina Bronner verwenden, ohne selbst in Vorleistung gehen zu müssen. Nicht genutzte Monatsbeiträge können noch bis zum 30. Juni des Folgejahres nachgefordert werden – ein häufig übersehener finanzieller Vorteil.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
@@ -4344,7 +4403,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     title: 'Pflegende Angehörige: Rechte, Auszeiten und Selbstschutz – So hilft Auxilium',
     meta_desc: 'Pflegende Angehörige in Forst Baden: Welche Rechte haben Sie? Wie finanzieren Sie Auszeiten? Auxilium erklärt Pflegeunterstützungsgeld, Verhinderungspflege und Rentenversicherung.',
     category: 'Angehörige',
-    intro: 'Rechte, Auszeiten und Entlastungsleistungen für pflegende Angehörige – Auxilium unterstützt Sie in Forst (Baden) und Umgebung.',
+    intro: 'Wer einen Angehörigen pflegt, trägt täglich eine enorme Last – und hat dabei mehr Rechte, als die meisten wissen. Dieser Ratgeber zeigt, welche Leistungen Ihnen zustehen und wie Auxilium Sie dabei entlastet.',
     lead: 'Rund 4,1 Millionen Menschen werden in Deutschland zu Hause gepflegt – die meisten von Familienmitgliedern, die täglich mehrere Stunden ihrer eigenen Freizeit, Gesundheit und Berufstätigkeit opfern. Dabei haben pflegende Angehörige gesetzlich verbriefte Rechte: Pflegeunterstützungsgeld für bis zu zehn bezahlte Ausfalltage, Pflegezeit mit Kündigungsschutz für bis zu sechs Monate, und Rentenbeiträge der Pflegekasse ab Pflegegrad 2. Auxilium begleitet Sie in Forst (Baden) und der Region nicht nur bei der Organisation der Vertretungspflege, sondern auch dabei, alle Ihnen zustehenden Leistungen zu beantragen und zu nutzen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
