@@ -289,6 +289,26 @@ function pageHero(label: string, title: string, subtitle: string, breadcrumb: st
 </section>`
 }
 
+// ─── Ratgeber-Artikel Hero (kein H1 – H1 liegt im Artikel) ────
+// SEO-Begründung: Jede Seite darf nur einen H1 haben. Der H1 steht
+// semantisch korrekt direkt über dem Artikel-Content. Der Hero
+// dient hier als visueller Einstieg / Kontext-Orientierung.
+function ratgeberHero(category: string, subtitle: string): string {
+  return `<section class="page-hero" aria-labelledby="ratgeber-article-heading">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Start</a>
+      <span class="sep" aria-hidden="true">&rsaquo;</span>
+      <a href="/ratgeber">Ratgeber</a>
+      <span class="sep" aria-hidden="true">&rsaquo;</span>
+      <span class="current" aria-current="page">${category}</span>
+    </nav>
+    <span class="section-label">${category}</span>
+    <p style="max-width:580px;margin-top:14px;font-size:1.05rem;line-height:1.6;">${subtitle}</p>
+  </div>
+</section>`
+}
+
 // ─── HOME ─────────────────────────────────────────────────────
 // Hilfsfunktion: alle Settings als Objekt laden
 async function loadSettings(db: D1Database): Promise<Record<string,string>> {
@@ -4137,7 +4157,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     meta_desc: 'Verhinderungspflege 2025: Was ist erlaubt, wie beantragen, wie viel bekomme ich? Auxilium Forst Baden erklärt alle Möglichkeiten und hilft bei der Abrechnung über die Pflegekasse.',
     category: 'Pflegefinanzierung',
     intro: 'Wenn die Hauptpflegeperson krank wird oder Urlaub braucht, zahlt die Pflegekasse bis zu 1.774 Euro jährlich für eine Ersatzpflegekraft. Mit dem gemeinsamen Jahresbetrag lässt sich dieser Anspruch auf bis zu 3.539 Euro erhöhen.',
-    lead: 'Wenn die Hauptpflegeperson krank wird, Urlaub braucht oder einfach eine Pause verdient, greift die Verhinderungspflege – eine gesetzliche Leistung der Pflegekasse, die viele Familien kaum kennen. Ab Pflegegrad 2 und nach sechs Monaten Vorpflegezeit zahlt die Pflegekasse die Pflegekosten bis zu 1.774 Euro pro Jahr. Durch den gemeinsamen Jahresbetrag lässt sich dieser Betrag auf bis zu 3.539 Euro erhöhen. Kristina Bronner von Auxilium erklärt Ihnen, welche Voraussetzungen gelten, wie Sie den Antrag stellen und wie Sie das Budget über das Jahr am besten einsetzen.',
+    lead: 'Wenn die Hauptpflegeperson krank wird, Urlaub braucht oder einfach eine Pause verdient, greift die Verhinderungspflege – eine gesetzliche Leistung der Pflegekasse, die viele Familien kaum kennen. Ab Pflegegrad 2 und ohne vorherige Vorpflegezeit übernimmt die Pflegekasse bis zu 3.539 Euro (inkl. Kurzzeitpflege-Geld) pro Jahr. Dieser Betrag verfällt jedoch zum Jahresende. Schnell sein lohnt sich! Kristina Bronner von Auxilium erklärt Ihnen, wer den Betrag – und vor allem in welcher Höhe – nutzen kann, wie Sie den Antrag stellen und wie Sie das Budget über das Jahr am besten nach Ihren individuellen Bedürfnissen einsetzen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
   <picture>
@@ -4149,19 +4169,11 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 
 <h2>Was steckt hinter der Verhinderungspflege?</h2>
 <p>Der § 39 SGB XI regelt, was passiert, wenn die Hauptpflegeperson ausfällt – Urlaub, Krankheit, Kur oder ein anderer Grund. In diesem Fall zahlt die Pflegekasse die Kosten einer Ersatzpflegeperson. Das klingt simpel, wird aber in der Praxis erstaunlich selten genutzt, weil viele Familien schlicht nicht wissen, dass dieser Anspruch besteht.</p>
-<p>Voraussetzung: anerkannter <strong>Pflegegrad ab 2</strong> und eine Vorpflegezeit von mindestens <strong>6 Monaten</strong>. Danach steht das Budget jedes Jahr neu zur Verfügung – auch wenn Sie es im Vorjahr nicht genutzt haben.</p>
+<p>Voraussetzung sind dabei lediglich der <strong>Pflegegrad 2–5</strong> sowie eine eingetragene Pflegeperson. Dieses Budget steht Ihnen dann jedes Jahr neu zur Verfügung.</p>
 
 <h2>Wie viel zahlt die Pflegekasse 2026?</h2>
-<p>Die Pflegekasse übernimmt die reinen Pflegekosten bis zu <strong>1.774 Euro pro Kalenderjahr</strong>. Wer das Kurzzeitpflegebudget nicht voll ausschöpft, kann über den gemeinsamen Jahresbetrag auf bis zu 3.539 Euro kommen:</p>
-<div style="background:#FBF7F2;border-radius:12px;padding:24px 28px;margin:24px 0;">
-  <h3 style="font-size:1.05rem;margin:0 0 16px;color:var(--primary);">Verhinderungspflege-Budget 2026</h3>
-  <ul style="list-style:none;padding:0;margin:0;display:grid;gap:10px;">
-    <li style="display:flex;align-items:center;gap:10px;"><span style="background:var(--accent);color:white;border-radius:6px;padding:3px 10px;font-weight:700;min-width:130px;text-align:center;">1.774 €/Jahr</span><span>Grundbudget Verhinderungspflege (§ 39 SGB XI)</span></li>
-    <li style="display:flex;align-items:center;gap:10px;"><span style="background:var(--primary);color:white;border-radius:6px;padding:3px 10px;font-weight:700;min-width:130px;text-align:center;">+ 1.765 €</span><span>Erhöhung über gemeinsamen Jahresbetrag möglich (§ 42 SGB XI)</span></li>
-    <li style="display:flex;align-items:center;gap:10px;border-top:2px solid var(--accent);padding-top:12px;"><span style="background:#2C6E49;color:white;border-radius:6px;padding:3px 10px;font-weight:700;min-width:130px;text-align:center;">= 3.539 €</span><span><strong>Gesamtpotenzial pro Jahr</strong></span></li>
-  </ul>
-</div>
-<p>Beim ersten Gespräch klärt Kristina Bronner von Auxilium konkret, welche Beträge in Ihrer Situation realistisch sind – und wie das Budget über das Jahr am sinnvollsten eingeplant wird.</p>
+<p>Die Pflegekasse übernimmt bis zu <strong>3.539 Euro pro Kalenderjahr</strong>. Dabei wird jedoch auch das Kurzzeitpflegebudget voll ausgeschöpft und steht dann nicht mehr zur Verfügung. Wer auch die Kurzzeitpflege nutzen möchte, kann den Betrag beliebig für sich aufteilen – ganz nach seinen Bedürfnissen.</p>
+<p>Beim ersten Gespräch klärt Kristina Bronner von Auxilium konkret, welche Beträge in Ihrer Situation realistisch sind – und wie das Budget über das Jahr am sinnvollsten eingeplant wird, ob Sie die Leistungen stunden- oder tageweise nutzen sollten sowie inwieweit der Verwandtschaftsgrad eine Rolle spielt.</p>
 
 <h2>Wer kann die Vertretung übernehmen?</h2>
 <p>Als Ersatzpflegeperson kommen ambulante Pflegedienste, nahestehende Personen (Freunde, Bekannte, entfernte Verwandte) oder selbstständige Pflegepersonen wie Auxilium in Frage. Wichtig dabei: Auxilium ist als <strong>anerkannte Verhinderungspflegeperson</strong> registriert. Die Abrechnung mit der Pflegekasse läuft direkt über Auxilium – Sie müssen sich nicht darum kümmern.</p>
@@ -4169,12 +4181,12 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 <p>Was Kristina Bronner während der Vertretung übernimmt, richtet sich nach dem individuellen Bedarf: Körperpflege (Waschen, Ankleiden, Mundpflege), Mobilisation und Transfers, Betreuung und Gespräche, Haushaltsunterstützung oder auch Begleitung zu Arzt- und Behördenterminen. Nachtbetreuung ist nach Absprache möglich.</p>
 
 <h2>Wie läuft der Antrag ab?</h2>
-<p>Sie fordern das Formular „Antrag auf Verhinderungspflege" bei Ihrer Pflegekasse an. Dann geben Sie Zeitraum und Art der Verhinderung an und legen den entsprechenden Nachweis bei – bei Urlaub eine Buchungsbestätigung, bei Krankheit eine Krankschreibung. Nach dem Einsatz reichen Sie die Rechnung von Auxilium ein, die Erstattung geht dann direkt an Auxilium oder an Sie.</p>
-<p>Auxilium stellt alle notwendigen Unterlagen zusammen und begleitet den Prozess – so dass Sie sich auf Ihre Auszeit konzentrieren können, nicht auf Formulare.</p>
+<p>Sie fordern das Formular „Antrag auf Verhinderungspflege" bei Ihrer Pflegekasse an und benennen Ihre Ersatzpflegeperson, bspw. Auxilium. Sobald Auxilium für Sie während der Verhinderung der Pflegeperson tätig war, erhalten Sie eine Rechnung, die Sie bei der Pflegekasse einreichen und anschließend den gezahlten Betrag vollständig wieder erstattet bekommen. Alternativ kann Auxilium als zusätzliche Serviceleistung die Rechnung selbst bei der Pflegekasse einreichen, um Sie auch bei bürokratischen Angelegenheiten zu entlasten.</p>
+<p>Auxilium stellt auch alle notwendigen Unterlagen zusammen und begleitet den Prozess – so dass Sie sich auf Ihre Auszeit konzentrieren können, nicht auf Formulare.</p>
 
 <h2>Drei Fragen, die regelmäßig gestellt werden</h2>
-<p><strong>Kann ich Verhinderungspflege täglich für ein paar Stunden nutzen?</strong> Ja, stundenweise genauso wie tageweise oder für mehrere Wochen am Stück – Hauptsache, das Budget reicht.</p>
-<p><strong>Darf ich während der Verhinderungspflege selbst zu Hause sein?</strong> Nein. Die Hauptpflegeperson muss tatsächlich verhindert sein. Bei Urlaub oder Krankheit ist das klar; gleichzeitige Anwesenheit gefährdet den Anspruch.</p>
+<p><strong>Kann ich die Verhinderungspflege täglich nur für ein paar Stunden nutzen?</strong> Ja, stundenweise genauso wie tageweise oder für mehrere Wochen am Stück – solange das Budget reicht.</p>
+<p><strong>Darf ich während der Verhinderungspflege selbst zu Hause sein?</strong> Sie dürfen zwar selbst zu Hause sein, aber eben nicht selbst an der Pflege oder Betreuung der pflegebedürftigen Person beteiligt sein. Denn diese Zeit dient Ihnen als Erholung – Zeit für sich, um abzuschalten.</p>
 <p><strong>Was passiert mit nicht genutztem Budget?</strong> Es verfällt zum Jahresende. Beim <a href="/ratgeber/entlastungsbetrag-131-euro-nutzen" style="color:var(--accent);">Entlastungsbetrag (131 €/Monat)</a> ist das anders – der ist bis 30. Juni des Folgejahres übertragbar.</p>
 
 <blockquote style="border-left:4px solid var(--primary);padding:16px 24px;background:#FBF7F2;border-radius:0 10px 10px 0;margin:32px 0;">
@@ -4191,7 +4203,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     meta_desc: 'Pflegegrade 1 bis 5 einfach erklärt: Voraussetzungen, Begutachtung durch den MDK, Geldbeträge und Leistungen. Auxilium Forst Baden hilft beim Antrag und beim Widerspruch.',
     category: 'Pflegegrundlagen',
     intro: 'Seit 2017 bestimmen fünf Pflegegrade, welche Leistungen die Pflegekasse zahlt. Wer gut vorbereitet zum MD-Besuch geht, kann seinen Anspruch deutlich verbessern.',
-    lead: 'Seit der Pflegereform 2017 entscheiden fünf Pflegegrade darüber, welche Leistungen die Pflegekasse übernimmt – von 332 Euro Pflegegeld monatlich bei Pflegegrad 2 bis zu 947 Euro bei Pflegegrad 5. Grundlage ist nicht mehr der körperliche Zeitaufwand, sondern die Selbstständigkeit in sechs Lebensbereichen, die ein Gutachter des Medizinischen Dienstes in einem Hausbesuch bewertet. Was viele nicht wissen: Mit der richtigen Vorbereitung auf den MD-Besuch lässt sich die Einstufung deutlich verbessern – und bei einer zu niedrigen Einstufung können Familien innerhalb von vier Wochen Widerspruch einlegen.',
+    lead: 'Seit der Pflegereform 2017 entscheiden fünf Pflegegrade darüber, welche Leistungen die Pflegekasse übernimmt – von 349 Euro Pflegegeld monatlich bei Pflegegrad 2 bis zu 990 Euro bei Pflegegrad 5. Grundlage ist nicht mehr der körperliche Zeitaufwand, sondern die Selbstständigkeit, aufgeteilt in sechs Lebensbereiche, die ein Gutachter des Medizinischen Dienstes in einem Hausbesuch bewertet. Was viele nicht wissen: Mit der richtigen Vorbereitung auf den MD-Besuch lässt sich die Einstufung deutlich verbessern – und bei einer zu niedrigen Einstufung können Familien innerhalb von vier Wochen Widerspruch einlegen. Kristina Bronner unterstützt Sie bei der Vorbereitung oder auch beim Widerspruch – bürokratisch und als professionelle Begleitung bei den jeweiligen Gesprächen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
   <picture>
@@ -4207,14 +4219,13 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:20px 0;">
   ${['Mobilität (z.B. Treppensteigen, Fortbewegen)', 'Kognition &amp; Kommunikation (Orientierung, Entscheidungen)', 'Verhaltensweisen &amp; psychische Problemlagen', 'Selbstversorgung (Körperpflege, Essen, Anziehen)', 'Umgang mit krankheitsbedingten Anforderungen', 'Alltagsleben &amp; soziale Kontakte'].map((m,i)=>`<div style="background:#FBF7F2;border-radius:10px;padding:14px 16px;display:flex;gap:10px;align-items:flex-start;"><span style="background:var(--primary);color:white;border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;flex-shrink:0;">${i+1}</span><span style="font-size:0.9rem;">${m}</span></div>`).join('')}
 </div>
-<p>Selbstversorgung fließt mit 36 % am stärksten ein, Verhaltensweisen mit 15 %. Der Gesamtpunktwert bestimmt den Pflegegrad.</p>
+<p>Selbstversorgung fließt mit 40 % am stärksten ein, Verhaltensweisen &amp; Kognition mit 15 %. Der Gesamtpunktwert bestimmt den Pflegegrad. Die Mobilität hat mit 10 %-iger Gewichtung am wenigsten Einfluss.</p>
 
-<h2>Pflegegrade und Leistungen 2025 im Überblick</h2>
+<h2>Pflegegrade und Leistungen 2026 im Überblick</h2>
 <table style="width:100%;border-collapse:collapse;margin:24px 0;font-size:0.88rem;box-shadow:0 2px 12px rgba(0,0,0,0.07);border-radius:10px;overflow:hidden;">
   <thead>
     <tr style="background:var(--primary);color:white;">
       <th scope="col" style="padding:12px 14px;text-align:left;">Pflegegrad</th>
-      <th scope="col" style="padding:12px 14px;text-align:left;">Punkte</th>
       <th scope="col" style="padding:12px 14px;text-align:left;">Pflegegeld</th>
       <th scope="col" style="padding:12px 14px;text-align:left;">Sachleistung</th>
       <th scope="col" style="padding:12px 14px;text-align:left;">Entlastungsbetrag</th>
@@ -4223,53 +4234,48 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
   <tbody>
     <tr style="border-bottom:1px solid #E8D9C5;">
       <td style="padding:11px 14px;"><strong>PG 1</strong> – Geringe Beeinträcht.</td>
-      <td style="padding:11px 14px;">12,5–26,9</td>
       <td style="padding:11px 14px;">–</td>
       <td style="padding:11px 14px;">–</td>
       <td style="padding:11px 14px;color:#2C6E49;font-weight:600;">131 €/Mon.</td>
     </tr>
     <tr style="border-bottom:1px solid #E8D9C5;background:#FBF7F2;">
       <td style="padding:11px 14px;"><strong>PG 2</strong> – Erhebliche Beeintr.</td>
-      <td style="padding:11px 14px;">27–47,4</td>
-      <td style="padding:11px 14px;font-weight:600;">332 €/Mon.</td>
-      <td style="padding:11px 14px;font-weight:600;">761 €/Mon.</td>
+      <td style="padding:11px 14px;font-weight:600;">349 €/Mon.</td>
+      <td style="padding:11px 14px;font-weight:600;">796 €/Mon.</td>
       <td style="padding:11px 14px;color:#2C6E49;font-weight:600;">131 €/Mon.</td>
     </tr>
     <tr style="border-bottom:1px solid #E8D9C5;">
       <td style="padding:11px 14px;"><strong>PG 3</strong> – Schwere Beeinträcht.</td>
-      <td style="padding:11px 14px;">47,5–69,9</td>
-      <td style="padding:11px 14px;font-weight:600;">573 €/Mon.</td>
-      <td style="padding:11px 14px;font-weight:600;">1.432 €/Mon.</td>
+      <td style="padding:11px 14px;font-weight:600;">599 €/Mon.</td>
+      <td style="padding:11px 14px;font-weight:600;">1.497 €/Mon.</td>
       <td style="padding:11px 14px;color:#2C6E49;font-weight:600;">131 €/Mon.</td>
     </tr>
     <tr style="border-bottom:1px solid #E8D9C5;background:#FBF7F2;">
       <td style="padding:11px 14px;"><strong>PG 4</strong> – Schwerste Beeintr.</td>
-      <td style="padding:11px 14px;">70–89,9</td>
-      <td style="padding:11px 14px;font-weight:600;">765 €/Mon.</td>
-      <td style="padding:11px 14px;font-weight:600;">1.778 €/Mon.</td>
+      <td style="padding:11px 14px;font-weight:600;">800 €/Mon.</td>
+      <td style="padding:11px 14px;font-weight:600;">1.859 €/Mon.</td>
       <td style="padding:11px 14px;color:#2C6E49;font-weight:600;">131 €/Mon.</td>
     </tr>
     <tr>
       <td style="padding:11px 14px;"><strong>PG 5</strong> – Schwerste + bes. Anforderungen</td>
-      <td style="padding:11px 14px;">90–100</td>
-      <td style="padding:11px 14px;font-weight:600;">947 €/Mon.</td>
-      <td style="padding:11px 14px;font-weight:600;">2.200 €/Mon.</td>
+      <td style="padding:11px 14px;font-weight:600;">990 €/Mon.</td>
+      <td style="padding:11px 14px;font-weight:600;">2.299 €/Mon.</td>
       <td style="padding:11px 14px;color:#2C6E49;font-weight:600;">131 €/Mon.</td>
     </tr>
   </tbody>
 </table>
-<p style="font-size:0.82rem;color:var(--text-light);">* Beträge gelten ab 2025. Zusätzlich stehen Verhinderungspflege, Kurzzeitpflege und weitere Leistungen zur Verfügung.</p>
+<p style="font-size:0.82rem;color:var(--text-light);">* Beträge gelten ab 2026. Zusätzlich stehen Verhinderungspflege, Kurzzeitpflege und weitere Leistungen zur Verfügung.</p>
 
 <h2>Wie läuft die Begutachtung ab?</h2>
-<p>Der Gutachter kommt in der Regel nach Hause, der Besuch dauert 45 bis 90 Minuten. Er beobachtet, befragt die pflegebedürftige Person und spricht mit Angehörigen. Dabei gilt: Es geht nicht darum, was jemand noch kann, sondern was <strong>nicht mehr sicher und selbstständig</strong> möglich ist.</p>
+<p>Der Gutachter kommt in der Regel zu Ihnen nach Hause. Ein MD-Besuch dauert in der Regel 30 bis 90 Minuten. Er beobachtet und befragt die pflegebedürftige Person sowie die Angehörigen. Dabei gilt: Es geht nicht darum, was jemand noch kann, sondern was <strong>nicht mehr sicher und selbstständig</strong> möglich ist.</p>
 <p>Gut vorbereitet ins Gespräch zu gehen, macht einen spürbaren Unterschied. Was hilft: Ein Pflegetagebuch mit täglichen Hilfen und Zeitaufwand, alle Diagnosen und Medikamente zur Hand, Hilfsmittel sichtbar lassen, wenn möglich an einem schwierigen Tag begutachten lassen und Angehörige dabeihaben.</p>
-<p>Kristina Bronner bereitet Sie konkret auf dieses Gespräch vor – was zu erwähnen ist, was oft vergessen wird, und wie der tatsächliche Hilfebedarf klar geschildert werden kann.</p>
+<p>Kristina Bronner bereitet Sie konkret auf dieses Gespräch vor – was zu erwähnen ist, was oft vergessen wird und wie der tatsächliche Hilfebedarf klar geschildert werden kann.</p>
 
 <h2>Wenn die Einstufung nicht stimmt</h2>
-<p>Der erste Bescheid ist nicht selten zu niedrig. Ein erheblicher Teil wird nach Widerspruch angehoben. Sie haben <strong>4 Wochen nach Bescheiddatum</strong>, um Widerspruch einzulegen. Auxilium hilft dabei: Wir schauen uns den Gutachtenbericht an, suchen Einschränkungen, die nicht erfasst wurden, und schreiben den Widerspruch gemeinsam mit Ihnen.</p>
+<p>Der erste Bescheid ist nicht selten zu niedrig eingestuft. Ein erheblicher Teil der Begutachtungen wird nach einem Widerspruch revidiert und folglich angehoben. Sie haben <strong>4 Wochen nach Bescheiddatum</strong> Zeit, um einen Widerspruch einzulegen. Auxilium hilft dabei: Wir schauen uns den Gutachterbericht an, suchen Einschränkungen, die nicht erfasst wurden, und schreiben den Widerspruch gemeinsam mit Ihnen.</p>
 
-<h2>Wie läuft der Antrag?</h2>
-<p>Der Antrag bei der Pflegekasse kann formlos per Telefon, Brief oder online gestellt werden. Danach beauftragt die Kasse den MD mit der Begutachtung, der Termin muss innerhalb von 25 Arbeitstagen stattfinden. Nach dem Besuch erstellt der Gutachter seinen Bericht, die Kasse schickt den Bescheid. Bei Bedarf: Widerspruch innerhalb von 4 Wochen.</p>
+<h2>Wie läuft der Antrag ab?</h2>
+<p>Der Antrag kann bei der Pflegekasse formlos per Telefon, Brief oder online gestellt werden. Anschließend schickt Ihnen die Pflegekasse einen Fragenkatalog zu, der bereits einer ersten Einschätzung Ihres pflegerischen Zustands dienen soll. Danach beauftragt die Kasse den MD mit der Begutachtung. Bei einer Erstbegutachtung muss der gesamte Prozess (Antragstellung, Hausbesuch sowie Einstufung) innerhalb von 20 Arbeitstagen erfolgt sein.</p>
 
 <blockquote style="border-left:4px solid var(--primary);padding:16px 24px;background:#FBF7F2;border-radius:0 10px 10px 0;margin:32px 0;">
   <p style="margin:0 0 8px;font-style:italic;font-size:1.05rem;">„Der Pflegegrad entscheidet über tausende Euro an Leistungen jährlich. Mit der richtigen Vorbereitung ist eine faire Einstufung erreichbar – dabei begleite ich Sie gerne."</p>
@@ -4285,7 +4291,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     meta_desc: 'Häusliche Pflege statt Pflegeheim: Vorteile, tatsächliche Kosten 2025, Finanzierung über Pflegekasse und wie Auxilium in Forst Baden die professionelle Betreuung zu Hause organisiert.',
     category: 'Häusliche Pflege',
     intro: 'Häusliche Pflege ist für viele Menschen mehr als eine praktische Lösung – sie ist der Wunsch, im eigenen Zuhause zu bleiben. Wie sie finanziert werden kann und was Auxilium dabei konkret leistet, lesen Sie hier.',
-    lead: 'Die eigenen vier Wände zu verlassen ist für die meisten pflegebedürftigen Menschen keine Wahl, sondern ein Verlust. Dabei zeigen Studien: Wer in vertrauter Umgebung gepflegt wird, hat eine höhere Lebensqualität, leidet seltener an Depressionen und entwickelt kognitiv besser. Die häusliche Pflege ist zudem in vielen Fällen günstiger als ein Pflegeheim – denn während stationäre Eigenanteile 2025 oft über 2.400 Euro monatlich liegen, lässt sich die Betreuung durch Auxilium häufig vollständig oder überwiegend über Pflegegeld, Verhinderungspflege und den Entlastungsbetrag finanzieren.',
+    lead: 'Die eigenen vier Wände zu verlassen stellt für die meisten pflegebedürftigen Menschen einen Verlust dar. Dabei zeigen Studien: Wer in vertrauter Umgebung gepflegt wird, hat eine höhere Lebensqualität, leidet seltener an Depressionen und entwickelt sich kognitiv besser. Die häusliche Pflege ist zudem in vielen Fällen günstiger als ein Pflegeheim – denn während stationäre Eigenanteile im Jahr 2026 oft über 3.100 Euro monatlich liegen, lässt sich die Betreuung durch Auxilium häufig nahezu vollständig oder überwiegend über Pflegegeld, Verhinderungspflege und den Entlastungsbetrag finanzieren.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
   <picture>
@@ -4297,7 +4303,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 
 <h2>Zuhause bleiben – warum das so vielen am Herzen liegt</h2>
 <p>Für die meisten pflegebedürftigen Menschen ist der Gedanke, in ein Heim zu ziehen, keine neutrale Option – es ist der Verlust des vertrauten Lebens. Studien zeigen seit Jahren: Wer in der gewohnten Umgebung gepflegt wird, leidet seltener an Depressionen, behält kognitive Fähigkeiten länger und ist insgesamt zufriedener. Bei Menschen mit Demenz ist der Unterschied besonders deutlich.</p>
-<p>Allerdings funktioniert häusliche Pflege nur, wenn Organisation, Fachkenntnisse und Finanzierung stimmen. Das ist der Punkt, an dem Auxilium einsetzt: Kristina Bronner übernimmt die Betreuung zu Hause – direkt über die Pflegekasse finanzierbar.</p>
+<p>Allerdings funktioniert häusliche Pflege nur, wenn Organisation, Fachkenntnisse und Finanzierung stimmen. Das ist der Punkt, an dem Auxilium einsetzt: Kristina Bronner berät Sie über Ihre individuellen Lösungsmöglichkeiten und erstellt für Sie einen Finanzierungsplan. Sie übernimmt weiterhin die Betreuung zu Hause – und das Beste ist: Sie ist bei all den angebotenen Dienstleistungen direkt über die Pflegekasse finanzierbar.</p>
 
 <h2>Was ein Pflegeheim 2025 tatsächlich kostet</h2>
 <p>Der Pflegekassen-Anteil klingt erst mal beruhigend. Was Familien oft überrascht, ist der Eigenanteil – der ist in den letzten Jahren erheblich gestiegen:</p>
@@ -4322,9 +4328,11 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 </div>
 
 <h2>Wie die Pflegekasse zahlt – und was sich kombinieren lässt</h2>
-<p>Für häusliche Pflege gibt es mehrere Leistungsbausteine:</p>
-<p><strong>Pflegegeld (§ 37 SGB XI)</strong> zahlt die Pflegekasse monatlich direkt an die Hauptpflegeperson: 332 Euro bei Pflegegrad 2, bis 947 Euro bei Pflegegrad 5. <strong>Pflegesachleistungen (§ 36 SGB XI)</strong> decken ambulante Dienste, zwischen 761 und 2.200 Euro je nach Pflegegrad. Über <strong>Verhinderungspflege</strong> kommen bis zu 1.774 Euro jährlich dazu, über den <strong>Entlastungsbetrag</strong> zusätzliche 131 Euro monatlich. Für barrierefreie Umbauten gibt es bis zu 4.000 Euro pro Maßnahme (§ 40 SGB XI).</p>
-<p>Auxilium rechnet direkt über Verhinderungspflege, Pflegesachleistungen und den Entlastungsbetrag ab. In der persönlichen Erstberatung klärt Kristina Bronner, welche Kombination in Ihrer Situation Sinn ergibt.</p>
+<p>Für die häusliche Pflege gibt es mehrere Leistungsbausteine:</p>
+<p><strong>Pflegegeld (§ 37 SGB XI)</strong> zahlt die Pflegekasse monatlich direkt an die pflegebedürftige Person, die dann davon ihre Pflegeperson für die Unterstützung entschädigen soll. Dies sind 349 Euro bei Pflegegrad 2 bis 990 Euro bei Pflegegrad 5.</p>
+<p><strong>Pflegesachleistungen (§ 36 SGB XI)</strong> decken den Einsatz von ambulanten Pflegediensten, zwischen 796 und 2.299 Euro je nach Pflegegrad, ab.</p>
+<p>Über die kombinierte <strong>Verhinderungs- und Kurzzeitpflege</strong> kommen bis zu 3.539 Euro jährlich dazu. Über den <strong>Entlastungsbetrag</strong> zusätzlich 131 Euro monatlich. Für barrierefreie Umbauten gibt es bis zu 4.180 Euro pro Maßnahme (§ 40 SGB XI).</p>
+<p>Auxilium rechnet direkt über das Pflegegeld, die Verhinderungspflege, die Pflegesachleistungen (Umwandlungsanspruch) und den Entlastungsbetrag ab. In der persönlichen Erstberatung erklärt Kristina Bronner Ihnen, welche Kombination in Ihrer Situation Sinn ergibt.</p>
 
 <h2>Wie der Einstieg konkret aussieht</h2>
 <p>Am Anfang steht ein Gespräch – Kristina Bronner kommt zu Ihnen nach Hause oder telefoniert mit Ihnen. Aus dieser Bedarfsanalyse entsteht ein Betreuungsplan, der Leistungen, Zeiten und Abrechnung festlegt. Regelmäßige Rückmeldegespräche mit Angehörigen halten die Pflege im Gleichgewicht.</p>
@@ -4515,22 +4523,17 @@ app.get('/ratgeber/:slug', async (c) => {
     "publisher": { "@type": "Organization", "name": "Auxilium – Pflegeberatung Forst Baden", "url": "https://auxilium-forst.de" },
     "url": `https://auxilium-forst.de/ratgeber/${slug}`
   })
-  const body = pageHero(article.category, article.title, article.intro || article.meta_desc, 'Ratgeber') + `
+  const body = ratgeberHero(article.category, article.intro || article.meta_desc) + `
 <main id="main-content" tabindex="-1">
 <section class="section">
   <div class="container" style="max-width:820px;">
-    <nav class="breadcrumb" aria-label="Breadcrumb" style="margin-bottom:24px;">
-      <a href="/">Start</a><span class="sep" aria-hidden="true">&rsaquo;</span>
-      <a href="/ratgeber">Ratgeber</a><span class="sep" aria-hidden="true">&rsaquo;</span>
-      <span class="current">${article.category}</span>
-    </nav>
     <article class="ratgeber-article">
       <div class="ratgeber-article__meta">
         <span class="ratgeber-article__category">${article.category}</span>
         <span class="ratgeber-article__divider">&middot;</span>
         <span class="ratgeber-article__read">ca. 8 Min. Lesezeit</span>
       </div>
-      <h1 class="ratgeber-article__title">${article.title}</h1>
+      <h1 id="ratgeber-article-heading" class="ratgeber-article__title">${article.title}</h1>
       ${(article.lead || article.intro) ? `<p class="ratgeber-article__intro">${article.lead || article.intro}</p>` : ''}
       <div class="ratgeber-article__content">${article.content}</div>
       <div class="ratgeber-article__cta">
