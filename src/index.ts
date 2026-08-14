@@ -289,11 +289,12 @@ function pageHero(label: string, title: string, subtitle: string, breadcrumb: st
 </section>`
 }
 
-// ─── Ratgeber-Artikel Hero (kein H1 – H1 liegt im Artikel) ────
-// SEO-Begründung: Jede Seite darf nur einen H1 haben. Der H1 steht
-// semantisch korrekt direkt über dem Artikel-Content. Der Hero
-// dient hier als visueller Einstieg / Kontext-Orientierung.
-function ratgeberHero(category: string, subtitle: string): string {
+// ─── Ratgeber-Artikel Hero ─────────────────────────────────────
+// heroTitle (optional): Wenn gesetzt, erscheint ein H1 im Hero-Bereich.
+//   Der Artikel-Titel wird dann als <h2> gerendert (visuell gleich).
+//   SEO: Eindeutiger H1 im sichtbaren Hero, Artikel-Titel als H2.
+// Ohne heroTitle: Kein H1 im Hero, H1 liegt im Artikel selbst.
+function ratgeberHero(category: string, subtitle: string, heroTitle?: string): string {
   return `<section class="page-hero" aria-labelledby="ratgeber-article-heading">
   <div class="container">
     <nav class="breadcrumb" aria-label="Breadcrumb">
@@ -304,7 +305,8 @@ function ratgeberHero(category: string, subtitle: string): string {
       <span class="current" aria-current="page">${category}</span>
     </nav>
     <span class="section-label">${category}</span>
-    <p style="max-width:580px;margin-top:14px;font-size:1.05rem;line-height:1.6;">${subtitle}</p>
+    ${heroTitle ? `<h1 id="ratgeber-article-heading" style="font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;margin:12px 0 10px;line-height:1.25;max-width:600px;">${heroTitle}</h1>` : ''}
+    <p style="max-width:580px;${heroTitle ? '' : 'margin-top:14px;'}font-size:1.05rem;line-height:1.6;">${subtitle}</p>
   </div>
 </section>`
 }
@@ -4070,7 +4072,7 @@ app.get('/barrierefreiheit', async (c) => {
           02977 Hoyerswerda<br>
           <br>
           <strong>Telefon:</strong> <a href="tel:+4915751559177" style="color:var(--primary);">01575 – 1559177</a><br>
-          <strong>E-Mail:</strong> <a href="mailto:auxilium-bronner@web.de" style="color:var(--primary);">auxilium-bronner@web.de</a>
+          <strong>E-Mail:</strong> <a href="mailto:info@auxilium-forst.de" style="color:var(--primary);">info@auxilium-forst.de</a>
         </address>
         <p>Wir bemühen uns, auf Rückmeldungen innerhalb von 10 Werktagen zu reagieren.</p>
 
@@ -4150,13 +4152,14 @@ app.get('/robots.txt', (c) => {
 // RATGEBER / BLOG – 5 statische SEO-Artikel
 // ═══════════════════════════════════════════════════════════════
 
-const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;category:string;intro:string;lead?:string;content:string}> = [
+const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;category:string;intro:string;heroTitle?:string;lead?:string;content:string}> = [
   {
     slug: 'verhinderungspflege-richtig-nutzen',
     title: 'Verhinderungspflege richtig nutzen – bis zu 3.539 Euro Anspruch bei PG 2–5 sichern',
     meta_desc: 'Verhinderungspflege 2025: Was ist erlaubt, wie beantragen, wie viel bekomme ich? Auxilium Forst Baden erklärt alle Möglichkeiten und hilft bei der Abrechnung über die Pflegekasse.',
     category: 'Pflegefinanzierung',
-    intro: 'Wenn die Hauptpflegeperson krank wird oder Urlaub braucht, zahlt die Pflegekasse bis zu 1.774 Euro jährlich für eine Ersatzpflegekraft. Mit dem gemeinsamen Jahresbetrag lässt sich dieser Anspruch auf bis zu 3.539 Euro erhöhen.',
+    heroTitle: 'Verhinderungspflege verständlich erklärt!',
+    intro: 'Was tun wenn die Hauptpflegeperson ausfällt? Welche Ansprüche stehen Ihnen zu?',
     lead: 'Wenn die Hauptpflegeperson krank wird, Urlaub braucht oder einfach eine Pause verdient, greift die Verhinderungspflege – eine gesetzliche Leistung der Pflegekasse, die viele Familien kaum kennen. Ab Pflegegrad 2 und ohne vorherige Vorpflegezeit übernimmt die Pflegekasse bis zu 3.539 Euro (inkl. Kurzzeitpflege-Geld) pro Jahr. Dieser Betrag verfällt jedoch zum Jahresende. Schnell sein lohnt sich! Kristina Bronner von Auxilium erklärt Ihnen, wer den Betrag – und vor allem in welcher Höhe – nutzen kann, wie Sie den Antrag stellen und wie Sie das Budget über das Jahr am besten nach Ihren individuellen Bedürfnissen einsetzen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
@@ -4202,7 +4205,8 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     title: 'Pflegegrade 1 bis 5 einfach erklärt – Voraussetzungen, Leistungen und die Begutachtung vom Medizinischen Dienst (MD)',
     meta_desc: 'Pflegegrade 1 bis 5 einfach erklärt: Voraussetzungen, Begutachtung durch den MDK, Geldbeträge und Leistungen. Auxilium Forst Baden hilft beim Antrag und beim Widerspruch.',
     category: 'Pflegegrundlagen',
-    intro: 'Seit 2017 bestimmen fünf Pflegegrade, welche Leistungen die Pflegekasse zahlt. Wer gut vorbereitet zum MD-Besuch geht, kann seinen Anspruch deutlich verbessern.',
+    heroTitle: 'Die 5 Pflegegrade',
+    intro: 'Was bedeuten die Pflegegrade? Wie ist der Ablauf und was steht mir zu?',
     lead: 'Seit der Pflegereform 2017 entscheiden fünf Pflegegrade darüber, welche Leistungen die Pflegekasse übernimmt – von 349 Euro Pflegegeld monatlich bei Pflegegrad 2 bis zu 990 Euro bei Pflegegrad 5. Grundlage ist nicht mehr der körperliche Zeitaufwand, sondern die Selbstständigkeit, aufgeteilt in sechs Lebensbereiche, die ein Gutachter des Medizinischen Dienstes in einem Hausbesuch bewertet. Was viele nicht wissen: Mit der richtigen Vorbereitung auf den MD-Besuch lässt sich die Einstufung deutlich verbessern – und bei einer zu niedrigen Einstufung können Familien innerhalb von vier Wochen Widerspruch einlegen. Kristina Bronner unterstützt Sie bei der Vorbereitung oder auch beim Widerspruch – bürokratisch und als professionelle Begleitung bei den jeweiligen Gesprächen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
@@ -4266,14 +4270,6 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 </table>
 <p style="font-size:0.82rem;color:var(--text-light);">* Beträge gelten ab 2026. Zusätzlich stehen Verhinderungspflege, Kurzzeitpflege und weitere Leistungen zur Verfügung.</p>
 
-<h2>Wie läuft die Begutachtung ab?</h2>
-<p>Der Gutachter kommt in der Regel zu Ihnen nach Hause. Ein MD-Besuch dauert in der Regel 30 bis 90 Minuten. Er beobachtet und befragt die pflegebedürftige Person sowie die Angehörigen. Dabei gilt: Es geht nicht darum, was jemand noch kann, sondern was <strong>nicht mehr sicher und selbstständig</strong> möglich ist.</p>
-<p>Gut vorbereitet ins Gespräch zu gehen, macht einen spürbaren Unterschied. Was hilft: Ein Pflegetagebuch mit täglichen Hilfen und Zeitaufwand, alle Diagnosen und Medikamente zur Hand, Hilfsmittel sichtbar lassen, wenn möglich an einem schwierigen Tag begutachten lassen und Angehörige dabeihaben.</p>
-<p>Kristina Bronner bereitet Sie konkret auf dieses Gespräch vor – was zu erwähnen ist, was oft vergessen wird und wie der tatsächliche Hilfebedarf klar geschildert werden kann.</p>
-
-<h2>Wenn die Einstufung nicht stimmt</h2>
-<p>Der erste Bescheid ist nicht selten zu niedrig eingestuft. Ein erheblicher Teil der Begutachtungen wird nach einem Widerspruch revidiert und folglich angehoben. Sie haben <strong>4 Wochen nach Bescheiddatum</strong> Zeit, um einen Widerspruch einzulegen. Auxilium hilft dabei: Wir schauen uns den Gutachterbericht an, suchen Einschränkungen, die nicht erfasst wurden, und schreiben den Widerspruch gemeinsam mit Ihnen.</p>
-
 <h2>Wie läuft der Antrag ab?</h2>
 <p>Der Antrag kann bei der Pflegekasse formlos per Telefon, Brief oder online gestellt werden. Anschließend schickt Ihnen die Pflegekasse einen Fragenkatalog zu, der bereits einer ersten Einschätzung Ihres pflegerischen Zustands dienen soll. Danach beauftragt die Kasse den MD mit der Begutachtung. Bei einer Erstbegutachtung muss der gesamte Prozess (Antragstellung, Hausbesuch sowie Einstufung) innerhalb von 20 Arbeitstagen erfolgt sein.</p>
 
@@ -4283,14 +4279,23 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 </blockquote>
 
 <p>Kristina Bronner kennt die lokalen Pflegekassen in der Region Forst (Baden), Bruchsal und Karlsruhe – ihre Begutachtungspraxis und deren Anforderungen. Die <strong>persönliche Erstberatung</strong> gibt Ihnen Klarheit über die nächsten konkreten Schritte.</p>
-<p style="margin-top:24px;"><a href="/kontakt" style="color:var(--accent);font-weight:700;font-size:1.05rem;">Persönliche Erstberatung zum Pflegegrad anfragen →</a></p>`
+<p style="margin-top:24px;"><a href="/kontakt" style="color:var(--accent);font-weight:700;font-size:1.05rem;">Persönliche Erstberatung zum Pflegegrad anfragen →</a></p>
+
+<h2>Wie läuft die Begutachtung ab?</h2>
+<p>Der Gutachter kommt in der Regel zu Ihnen nach Hause. Ein MD-Besuch dauert in der Regel 30 bis 90 Minuten. Er beobachtet und befragt die pflegebedürftige Person sowie die Angehörigen. Dabei gilt: Es geht nicht darum, was jemand noch kann, sondern was <strong>nicht mehr sicher und selbstständig</strong> möglich ist.</p>
+<p>Gut vorbereitet ins Gespräch zu gehen, macht einen spürbaren Unterschied. Was hilft: Ein Pflegetagebuch mit täglichen Hilfen und Zeitaufwand, alle Diagnosen und Medikamente zur Hand, Hilfsmittel sichtbar lassen, wenn möglich an einem schwierigen Tag begutachten lassen und Angehörige dabeihaben.</p>
+<p>Kristina Bronner bereitet Sie konkret auf dieses Gespräch vor – was zu erwähnen ist, was oft vergessen wird und wie der tatsächliche Hilfebedarf klar geschildert werden kann.</p>
+
+<h2>Wenn die Einstufung nicht stimmt</h2>
+<p>Der erste Bescheid ist nicht selten zu niedrig eingestuft. Ein erheblicher Teil der Begutachtungen wird nach einem Widerspruch revidiert und folglich angehoben. Sie haben <strong>4 Wochen nach Bescheiddatum</strong> Zeit, um einen Widerspruch einzulegen. Auxilium hilft dabei: Wir schauen uns den Gutachterbericht an, suchen Einschränkungen, die nicht erfasst wurden, und schreiben den Widerspruch gemeinsam mit Ihnen.</p>`
   },
   {
     slug: 'pflege-zuhause-statt-pflegeheim',
     title: 'Pflege zu Hause statt Pflegeheim – Was es kostet, was es braucht und wie Auxilium hilft',
     meta_desc: 'Häusliche Pflege statt Pflegeheim: Vorteile, tatsächliche Kosten 2025, Finanzierung über Pflegekasse und wie Auxilium in Forst Baden die professionelle Betreuung zu Hause organisiert.',
     category: 'Häusliche Pflege',
-    intro: 'Häusliche Pflege ist für viele Menschen mehr als eine praktische Lösung – sie ist der Wunsch, im eigenen Zuhause zu bleiben. Wie sie finanziert werden kann und was Auxilium dabei konkret leistet, lesen Sie hier.',
+    heroTitle: 'Die Alternative zum Pflegeheim',
+    intro: 'Häusliche Pflege ist für viele Menschen mehr als eine praktische Lösung – sie ist der Wunsch, im eigenen Zuhause zu bleiben. Wie sie finanziert werden kann und was Auxilium dabei für Sie konkret leistet, lesen Sie hier.',
     lead: 'Die eigenen vier Wände zu verlassen stellt für die meisten pflegebedürftigen Menschen einen Verlust dar. Dabei zeigen Studien: Wer in vertrauter Umgebung gepflegt wird, hat eine höhere Lebensqualität, leidet seltener an Depressionen und entwickelt sich kognitiv besser. Die häusliche Pflege ist zudem in vielen Fällen günstiger als ein Pflegeheim – denn während stationäre Eigenanteile im Jahr 2026 oft über 3.100 Euro monatlich liegen, lässt sich die Betreuung durch Auxilium häufig nahezu vollständig oder überwiegend über Pflegegeld, Verhinderungspflege und den Entlastungsbetrag finanzieren.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
@@ -4348,9 +4353,10 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     slug: 'entlastungsbetrag-131-euro-nutzen',
     title: 'Entlastungsbetrag 131 Euro monatlich: Wer bekommt ihn und wie nutze ich ihn optimal?',
     meta_desc: 'Der Entlastungsbetrag von 131 Euro monatlich steht allen Pflegebedürftigen ab Pflegegrad 1 zu – auch für Auxilium-Leistungen in Forst Baden. Wie er beantragt und übertragen werden kann.',
+    heroTitle: '131 Euro im Monat für Betreuung und Entlastungsleistungen',
     category: 'Pflegefinanzierung',
     intro: 'Ab Pflegegrad 1 zahlt die Pflegekasse monatlich 131 Euro Entlastungsbetrag – jährlich bis zu 1.572 Euro, die viele Familien nicht oder nicht vollständig abrufen.',
-    lead: 'Bereits ab Pflegegrad 1 zahlt die gesetzliche Pflegekasse monatlich 131 Euro als sogenannten Entlastungsbetrag – das sind jährlich bis zu 1.572 Euro, die für anerkannte Betreuungs- und Entlastungsleistungen eingesetzt werden können. Auxilium ist als anerkannter Entlastungsdienstleister zugelassen, was bedeutet: Sie können diesen Betrag direkt für die Betreuung durch Kristina Bronner verwenden, ohne selbst in Vorleistung gehen zu müssen. Nicht genutzte Monatsbeiträge können noch bis zum 30. Juni des Folgejahres nachgefordert werden – ein häufig übersehener finanzieller Vorteil.',
+    lead: 'Bereits ab Pflegegrad 1 zahlt die Pflegekasse monatlich 131 Euro als sogenannten Entlastungsbetrag – das sind jährlich bis zu 1.572 Euro, die für anerkannte Betreuungs- und Entlastungsleistungen eingesetzt werden können. Auxilium ist als anerkannter Entlastungsdienstleister zugelassen, was bedeutet: Sie können diesen Betrag direkt für die Betreuung durch Kristina Bronner verwenden, ohne selbst in Vorleistung gehen zu müssen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
   <picture>
@@ -4371,13 +4377,13 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
   <table style="width:100%;font-size:0.9rem;">
     <thead><tr style="background:var(--primary);color:white;"><th style="padding:9px 12px;text-align:left;">Pflegegrad</th><th style="padding:9px 12px;">Entlastungsbetrag/Monat</th><th style="padding:9px 12px;">Max. übertragbar/Jahr</th></tr></thead>
     <tbody>
-      ${['1','2','3','4','5'].map(g=>`<tr style="border-bottom:1px solid #E8D9C5;"><td style="padding:9px 12px;">Pflegegrad ${g}</td><td style="padding:9px 12px;text-align:center;font-weight:600;">131 €</td><td style="padding:9px 12px;text-align:center;color:#2C6E49;font-weight:600;">3.144 €</td></tr>`).join('')}
+      ${['1','2','3','4','5'].map(g=>`<tr style="border-bottom:1px solid #E8D9C5;"><td style="padding:9px 12px;">Pflegegrad ${g}</td><td style="padding:9px 12px;text-align:center;font-weight:600;">131 €</td><td style="padding:9px 12px;text-align:center;color:#2C6E49;font-weight:600;">1.572 €</td></tr>`).join('')}
     </tbody>
   </table>
 </div>
 
 <h2>Wofür kann das Geld verwendet werden?</h2>
-<p>Der Entlastungsbetrag ist an einen Zweck geknüpft, die Möglichkeiten sind aber breiter als viele denken: häusliche Betreuung durch anerkannte Dienstleister wie Auxilium, Tages- oder Nachtpflege, Kurzzeitpflege, Haushaltshilfen von anerkannten Anbietern, Begleitdienste zu Arzt oder Einkauf, Betreuungsgruppen. Direkte Barauszahlung ist nicht möglich. Was genau über den Entlastungsbetrag abgerechnet werden kann, klärt Auxilium in der Erstberatung.</p>
+<p>Der Entlastungsbetrag ist an einen Zweck geknüpft, allerdings sind die Möglichkeiten des Einsatzes breiter als viele denken: häusliche Betreuung durch anerkannte Dienstleister wie Auxilium, Haushaltshilfen von anerkannten Anbietern, Begleitdienste zum Arzt oder Einkauf. Als Zuschuss kann dieser Betrag auch zur Tages- oder Nachtpflege oder Kurzzeitpflege verwendet werden. Eine direkte Barauszahlung ist nicht möglich. Was genau im Einzelnen über den Entlastungsbetrag abgerechnet werden kann, erklärt Kristina Bronner Ihnen in der Erstberatung.</p>
 
 <h2>Der Übertragungstrick: Bis zu 3.144 Euro ansparen</h2>
 <p>Nicht genutzter Entlastungsbetrag <strong>verfällt nicht sofort</strong>: Er kann bis zum <strong>30. Juni des Folgejahres</strong> übertragen und genutzt werden. Das bedeutet: Wenn Sie in einem Jahr den Betrag nicht oder nicht vollständig nutzen, können Sie in den ersten sechs Monaten des Folgejahres das angesammelte Budget für Auxilium-Leistungen verwenden.</p>
@@ -4396,7 +4402,8 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 <p>Der Entlastungsbetrag ergänzt alle anderen Pflegeversicherungsleistungen. Wer Pflegegeld bezieht, bekommt die 131 Euro monatlich obendrauf. Wer Verhinderungspflege nutzt, kann den Entlastungsbetrag parallel einsetzen. Bis zu 40 Prozent des ungenutzten Pflegesachleistungsbudgets lassen sich außerdem in Entlastungsleistungen umwandeln. Wer das alles geschickt kombiniert, kommt auf beachtliche Beträge jährlich.</p>
 
 <h2>Wie wird der Antrag gestellt?</h2>
-<p>Der Entlastungsbetrag wird nicht automatisch ausgezahlt – Sie müssen ihn beantragen. Ein formloser Antrag bei der Pflegekasse reicht. Die Kasse schickt dann eine Liste anerkannter Anbieter in Ihrer Region. Auxilium ist als <strong>anerkannter Entlastungsdienstleister im Landkreis Karlsruhe</strong> registriert und stellt die Leistungen direkt mit der Pflegekasse ab.</p>
+<p>Zur Inanspruchnahme der Entlastungsleistung benötigen Sie keinen zusätzlichen Antrag. Ab Pflegegrad 1 steht Ihnen dieser automatisch zu. Allerdings wird er Ihnen nicht automatisch ausgezahlt. Sobald Sie einen anerkannten Hilfeleister gefunden haben und dieser Ihnen eine Rechnung stellt, müssen Sie die Rechnung bei Ihrer Pflegekasse einreichen und bekommen dann den Betrag erstattet. Der Vorteil: Auf Wunsch geht Auxilium für Sie in Vorkasse und kümmert sich selbst um die Begleichung der Rechnung.</p>
+<p>Wenn Sie noch unentschlossen sind, welchen Dienstleister Sie einsetzen möchten, bekommen Sie entweder von der Pflegekasse oder vom Pflegestützpunkt eine Liste anerkannter Anbieter in Ihrer Region. Auxilium ist als <strong>anerkannter Entlastungsdienstleister im Landkreis Karlsruhe</strong> registriert.</p>
 
 <blockquote style="border-left:4px solid var(--primary);padding:16px 24px;background:#FBF7F2;border-radius:0 10px 10px 0;margin:32px 0;">
   <p style="margin:0 0 8px;font-style:italic;font-size:1.05rem;">„131 Euro klingen wenig – aber über zwei Jahre angespart und mit anderen Leistungen kombiniert, sprechen wir von einem echten Unterschied für die Pflegequalität zuhause."</p>
@@ -4411,8 +4418,9 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
     title: 'Pflegende Angehörige: Rechte, Auszeiten und Selbstschutz – So hilft Auxilium',
     meta_desc: 'Pflegende Angehörige in Forst Baden: Welche Rechte haben Sie? Wie finanzieren Sie Auszeiten? Auxilium erklärt Pflegeunterstützungsgeld, Verhinderungspflege und Rentenversicherung.',
     category: 'Angehörige',
+    heroTitle: 'Wie pflegende Angehörige entlastet werden können',
     intro: 'Wer einen Angehörigen pflegt, trägt täglich eine enorme Last – und hat dabei mehr Rechte, als die meisten wissen. Dieser Ratgeber zeigt, welche Leistungen Ihnen zustehen und wie Auxilium Sie dabei entlastet.',
-    lead: 'Rund 4,1 Millionen Menschen werden in Deutschland zu Hause gepflegt – die meisten von Familienmitgliedern, die täglich mehrere Stunden ihrer eigenen Freizeit, Gesundheit und Berufstätigkeit opfern. Dabei haben pflegende Angehörige gesetzlich verbriefte Rechte: Pflegeunterstützungsgeld für bis zu zehn bezahlte Ausfalltage, Pflegezeit mit Kündigungsschutz für bis zu sechs Monate, und Rentenbeiträge der Pflegekasse ab Pflegegrad 2. Auxilium begleitet Sie in Forst (Baden) und der Region nicht nur bei der Organisation der Vertretungspflege, sondern auch dabei, alle Ihnen zustehenden Leistungen zu beantragen und zu nutzen.',
+    lead: 'Rund 4,1 Millionen Menschen werden in Deutschland zu Hause gepflegt – die meisten von Familienmitgliedern, die täglich mehrere Stunden ihrer eigenen Freizeit, Gesundheit und Berufstätigkeit opfern. Dabei haben pflegende Angehörige gesetzlich verbriefte Rechte: Pflegeunterstützungsgeld für maximal zehn Ausfalltage, Pflegezeit mit Kündigungsschutz, Rentenbeiträge sowie Unfallversicherung von der Pflegekasse ab Pflegegrad 2. Auxilium begleitet Sie in Forst (Baden) und der Region nicht nur bei der Organisation der Vertretungspflege, sondern auch dabei, alle Ihnen zustehenden Leistungen zu beantragen und zu nutzen.',
     content: `
 <figure style="margin:0 0 32px;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(0,0,0,0.10);">
   <picture>
@@ -4440,7 +4448,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 <p>Wer einen Angehörigen ab <strong>Pflegegrad 2</strong> pflegt und dabei nicht mehr als 30 Stunden wöchentlich erwerbstätig ist, erhält von der Pflegekasse <strong>Rentenbeiträge</strong> gezahlt (§ 44 SGB XI). Die Beiträge richten sich nach dem Pflegegrad und können über die Jahre eine relevante Summe ausmachen – bis zu mehrere tausend Euro an anerkannten Rentenanwartschaften.</p>
 
 <h3>5. Verhinderungspflege – finanzierte Vertretung für Ihre Auszeit</h3>
-<p>Die wichtigste Entlastungsleistung für pflegende Angehörige: Die <strong>Verhinderungspflege (§ 39 SGB XI)</strong> stellt bis zu <strong>1.774 Euro jährlich</strong> zur Verfügung, damit Sie Urlaub machen, krank sein oder einfach eine Auszeit nehmen können. Auxilium springt in dieser Zeit als professionelle Vertretungspflegeperson ein – nahtlos und zuverlässig.</p>
+<p>Die wichtigste Entlastungsleistung für pflegende Angehörige ist die <strong>Verhinderungspflege (§ 39 SGB XI)</strong>. Sie stellt kombiniert mit dem Kurzzeitpflegegeld bis zu <strong>3.539 Euro jährlich</strong> zur Verfügung, damit Sie Urlaub machen, falls Sie krank sein sollten oder einfach eine Auszeit nehmen können. Auxilium springt in dieser Zeit als professionelle Vertretungspflegeperson ein – nahtlos und zuverlässig.</p>
 <p>→ Ausführliche Informationen: <a href="/ratgeber/verhinderungspflege-richtig-nutzen" style="color:var(--accent);">Verhinderungspflege richtig nutzen – bis zu 3.539 Euro sichern</a></p>
 
 <h2>Wann die Erschöpfung gefährlich wird</h2>
@@ -4523,7 +4531,7 @@ app.get('/ratgeber/:slug', async (c) => {
     "publisher": { "@type": "Organization", "name": "Auxilium – Pflegeberatung Forst Baden", "url": "https://auxilium-forst.de" },
     "url": `https://auxilium-forst.de/ratgeber/${slug}`
   })
-  const body = ratgeberHero(article.category, article.intro || article.meta_desc) + `
+  const body = ratgeberHero(article.category, article.intro || article.meta_desc, article.heroTitle) + `
 <main id="main-content" tabindex="-1">
 <section class="section">
   <div class="container" style="max-width:820px;">
@@ -4533,7 +4541,9 @@ app.get('/ratgeber/:slug', async (c) => {
         <span class="ratgeber-article__divider">&middot;</span>
         <span class="ratgeber-article__read">ca. 8 Min. Lesezeit</span>
       </div>
-      <h1 id="ratgeber-article-heading" class="ratgeber-article__title">${article.title}</h1>
+      ${article.heroTitle
+        ? `<h2 class="ratgeber-article__title">${article.title}</h2>`
+        : `<h1 id="ratgeber-article-heading" class="ratgeber-article__title">${article.title}</h1>`}
       ${(article.lead || article.intro) ? `<p class="ratgeber-article__intro">${article.lead || article.intro}</p>` : ''}
       <div class="ratgeber-article__content">${article.content}</div>
       <div class="ratgeber-article__cta">
