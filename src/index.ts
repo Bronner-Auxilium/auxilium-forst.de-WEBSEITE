@@ -153,7 +153,7 @@ ${infoBannerHtml}<div id="siteHeader" class="site-header"><nav class="navbar" id
       <a href="/leistungen">Leistungen &amp; Kosten</a>
       <a href="/beratung">Beratung</a>
       <a href="/ratgeber">Ratgeber</a>
-      <a href="/stellenangebote">Stellenangebote</a>
+      ${S._hasJobs === '1' ? '<a href="/stellenangebote">Stellenangebote</a>' : ''}
       <a href="/kontakt" class="navbar__nav-cta-mobile"><i class="fas fa-calendar-check" aria-hidden="true"></i>Jetzt anfragen</a>
     </nav>
     <a href="/kontakt" class="btn btn-accent navbar__cta">
@@ -187,7 +187,7 @@ ${body}
           <li><a href="/leistungen">Leistungen &amp; Kosten</a></li>
           <li><a href="/beratung">Pflegeberatung</a></li>
           <li><a href="/ratgeber">Ratgeber &amp; Tipps</a></li>
-          <li><a href="/stellenangebote">Stellenangebote</a></li>
+          ${S._hasJobs === '1' ? '<li><a href="/stellenangebote">Stellenangebote</a></li>' : ''}
           <li><a href="/kontakt">Kontakt</a></li>
         </ul>
       </div>
@@ -317,6 +317,13 @@ async function loadSettings(db: D1Database): Promise<Record<string,string>> {
   const { results } = await db.prepare('SELECT key, value FROM settings').all<any>()
   const map: Record<string,string> = {}
   for (const r of results) map[r.key] = r.value
+  // Job-Count: Stellenangebote-Link nur anzeigen wenn aktive Jobs vorhanden
+  try {
+    const jobRow = await db.prepare('SELECT COUNT(*) as n FROM stellenangebote WHERE active=1').first<any>()
+    map._hasJobs = (jobRow?.n ?? 0) > 0 ? '1' : '0'
+  } catch (_) {
+    map._hasJobs = '0'
+  }
   return map
 }
 
