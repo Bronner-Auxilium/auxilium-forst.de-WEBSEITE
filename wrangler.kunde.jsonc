@@ -7,6 +7,7 @@
   // KEIN KV – existiert noch nicht im Kunden-Account
   // -------------------------------------------------------
   "name": "auxilium-forst-de-webseite",
+  "account_id": "01a55be0f87bb4bc753c62cd8d7a8d82",
   "compatibility_date": "2026-04-13",
   "pages_build_output_dir": "./dist",
   "compatibility_flags": ["nodejs_compat"],
