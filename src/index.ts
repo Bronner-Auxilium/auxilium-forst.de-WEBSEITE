@@ -638,12 +638,12 @@ app.get('/ueber-auxilium', async (c) => {
       <p style="max-width:540px;margin:14px auto 0;">Gute Pflege bedeutet f&uuml;r Auxilium: Menschlichkeit, Respekt und echte Pr&auml;senz.</p>
     </div>
 
-    <!-- Symbol-Box: Logo + Schmetterling-Erkl&auml;rung – responsiv -->
-    <div class="symbol-box">
+    <!-- Symbol-Box: Logo + Schmetterling-Erkl&auml;rung – im Card-Stil -->
+    <div class="card symbol-box">
       <img src="/static/logo.png" alt="Auxilium Logo &ndash; Schmetterling mit fehlendem Fl&uuml;gel" class="symbol-box__img">
       <div class="symbol-box__text">
-        <h3 style="font-size:1.35rem;font-weight:700;color:var(--secondary);margin:0 0 14px;line-height:1.3;">Wof&uuml;r steht das Symbol von Auxilium?</h3>
-        <p style="font-size:1.05rem;line-height:1.8;color:var(--text);margin:0;">Man erkennt einen Schmetterling mit einem fehlenden Teil-Fl&uuml;gel. Dies steht f&uuml;r einen Mangel, etwas &bdquo;das fehlt&ldquo; und Hilfe bedarf. Hier wird der Fl&uuml;gel durch die helfende Hand von Auxilium gest&uuml;tzt, um wieder Halt zu erlangen.</p>
+        <h3 class="card__title" style="font-size:1.2rem;font-weight:700;color:var(--secondary);margin:0 0 12px;line-height:1.3;">Wof&uuml;r steht das Symbol von Auxilium?</h3>
+        <p class="card__text" style="font-size:0.95rem;margin:0;">Man erkennt einen Schmetterling mit einem fehlenden Teil-Fl&uuml;gel. Dies steht f&uuml;r einen Mangel, etwas &bdquo;das fehlt&ldquo; und Hilfe bedarf. Hier wird der Fl&uuml;gel durch die helfende Hand von Auxilium gest&uuml;tzt, um wieder Halt zu erlangen.</p>
       </div>
     </div>
 
