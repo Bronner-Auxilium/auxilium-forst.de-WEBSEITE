@@ -8,8 +8,8 @@
 
     "---------- DEPLOY ----------": "echo ---",
 
-    "deploy:preview":    "npm run build && wrangler pages deploy dist --project-name auxilium-forst",
-    "deploy:production": "npm run build && CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN_KUNDE CLOUDFLARE_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID_KUNDE wrangler pages deploy dist --project-name auxilium-forst --config wrangler.production.jsonc",
+    "deploy:preview": "npm run build && wrangler pages deploy dist --project-name auxilium-forst",
+    "deploy:production": "npm run build && cp -r dist /tmp/kunde-deploy-$$ && cp wrangler.kunde.jsonc /tmp/kunde-deploy-$$/wrangler.jsonc && CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN_KUNDE CLOUDFLARE_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID_KUNDE wrangler pages deploy /tmp/kunde-deploy-$$/dist --project-name auxilium-forst-de-webseite && rm -rf /tmp/kunde-deploy-$$",
 
     "---------- DATENBANK: MEIN ACCOUNT (preview) ----------": "echo ---",
 

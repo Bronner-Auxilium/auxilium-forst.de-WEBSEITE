@@ -1,0 +1,18 @@
+{
+  // -------------------------------------------------------
+  // KUNDEN-DEPLOY CONFIG
+  // Wird von deploy:production verwendet (temporärer Ordner)
+  // Pages-Projekt: auxilium-forst-de-webseite
+  // D1: df13dc06 (Kunden-DB im Kunden-Account)
+  // KEIN KV – existiert noch nicht im Kunden-Account
+  // -------------------------------------------------------
+  "name": "auxilium-forst-de-webseite",
+  "compatibility_date": "2026-04-13",
+  "pages_build_output_dir": "./dist",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "auxilium-production",
+    "database_id": "df13dc06-7ed8-4334-bb9a-d683a35dad50"
+  }]
+}

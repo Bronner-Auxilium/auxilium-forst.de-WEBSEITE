@@ -2624,3 +2624,39 @@ textarea:focus:not(:focus-visible) {
   .ratgeber-related__grid { grid-template-columns: 1fr; }
 }
 
+/* Symbol-Box: Schmetterling + Text (Über Uns) */
+.symbol-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 36px 40px;
+  margin-bottom: 48px;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.symbol-box__img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.symbol-box__text {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .symbol-box {
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 24px;
+    gap: 20px;
+    text-align: center;
+  }
+  .symbol-box__img {
+    width: 140px;
+    height: 140px;
+  }
+}
+

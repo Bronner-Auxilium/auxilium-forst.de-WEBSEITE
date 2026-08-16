@@ -8,8 +8,12 @@
   ],
 
   // -------------------------------------------------------
-  // Standard-Binding (lokal / --local Entwicklung)
-  // Zeigt auf DEINE Test-DB in deinem Cloudflare-Account
+  // MEIN Account (skrenkovic@web.de) – Test/Preview
+  // D1: auxilium-production (bcab4d11) in meinem Account
+  // Deploy: npm run deploy:preview
+  //
+  // Kunden-Account → wrangler.production.jsonc verwenden!
+  // Deploy: npm run deploy:production
   // -------------------------------------------------------
   "d1_databases": [
     {
@@ -24,54 +28,5 @@
       "id": "d32f2bb02ccf41fe89d2614521df34f3",
       "preview_id": "28678708480b4fe299fd54bed00947d6"
     }
-  ],
-
-  // -------------------------------------------------------
-  // ENV: preview → DEIN Cloudflare-Account (skrenkovic@web.de)
-  // Deploy: npm run deploy:preview
-  // DB-Zugriff: npm run db:preview -- --command="SELECT ..."
-  // -------------------------------------------------------
-  "env": {
-    "preview": {
-      "name": "auxilium-forst",
-      "d1_databases": [
-        {
-          "binding": "DB",
-          "database_name": "auxilium-production",
-          "database_id": "bcab4d11-9f48-4a86-92d1-946581c71e97"
-        }
-      ],
-      "kv_namespaces": [
-        {
-          "binding": "MEDIA",
-          "id": "d32f2bb02ccf41fe89d2614521df34f3",
-          "preview_id": "28678708480b4fe299fd54bed00947d6"
-        }
-      ]
-    },
-
-    // -------------------------------------------------------
-    // ENV: production → KUNDEN-Cloudflare-Account (info@auxilium-forst.de)
-    // Account-ID: 01a55be0f87bb4bc753c62cd8d7a8d82
-    // Deploy: npm run deploy:production   (braucht CLOUDFLARE_API_TOKEN des Kunden)
-    // DB-Zugriff: npm run db:production -- --command="SELECT ..."
-    // -------------------------------------------------------
-    "production": {
-      "name": "auxilium-forst",
-      "d1_databases": [
-        {
-          "binding": "DB",
-          "database_name": "auxilium-production",
-          "database_id": "df13dc06-7ed8-4334-bb9a-d683a35dad50"
-        }
-      ],
-      "kv_namespaces": [
-        {
-          "binding": "MEDIA",
-          "id": "d32f2bb02ccf41fe89d2614521df34f3",
-          "preview_id": "28678708480b4fe299fd54bed00947d6"
-        }
-      ]
-    }
-  }
+  ]
 }

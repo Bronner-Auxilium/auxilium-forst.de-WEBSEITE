@@ -2,10 +2,11 @@
   // -------------------------------------------------------
   // KUNDEN-ACCOUNT: info@auxilium-forst.de
   // Account-ID: 01a55be0f87bb4bc753c62cd8d7a8d82
-  // Verwendung: CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN_KUNDE wrangler ... --config=wrangler.production.jsonc
+  // Pages-Projekt: auxilium-forst-de-webseite
   // -------------------------------------------------------
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "auxilium-forst",
+  "name": "auxilium-forst-de-webseite",
+  "account_id": "01a55be0f87bb4bc753c62cd8d7a8d82",
   "compatibility_date": "2026-04-13",
   "pages_build_output_dir": "./dist",
   "compatibility_flags": [
