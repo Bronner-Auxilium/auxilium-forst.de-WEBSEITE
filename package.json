@@ -4,9 +4,27 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "wrangler pages dev",
-    "deploy": "npm run build && wrangler pages deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+
+    "---------- DEPLOY ----------": "echo",
+
+    "deploy:preview":    "npm run build && wrangler pages deploy dist --project-name auxilium-forst --env preview",
+    "deploy:production": "npm run build && CLOUDFLARE_ACCOUNT_ID=01a55be0f87bb4bc753c62cd8d7a8d82 wrangler pages deploy dist --project-name auxilium-forst --env production",
+
+    "---------- DATENBANK: MEIN ACCOUNT (preview) ----------": "echo",
+
+    "db:preview":                "wrangler d1 execute auxilium-production --env preview --remote",
+    "db:preview:migrations":     "wrangler d1 migrations apply auxilium-production --env preview --remote",
+
+    "---------- DATENBANK: KUNDEN-ACCOUNT (production) ----------": "echo",
+
+    "db:production":             "CLOUDFLARE_ACCOUNT_ID=01a55be0f87bb4bc753c62cd8d7a8d82 wrangler d1 execute auxilium-production --env production --remote",
+    "db:production:migrations":  "CLOUDFLARE_ACCOUNT_ID=01a55be0f87bb4bc753c62cd8d7a8d82 wrangler d1 migrations apply auxilium-production --env production --remote",
+    "db:production:sync":        "CLOUDFLARE_ACCOUNT_ID=01a55be0f87bb4bc753c62cd8d7a8d82 wrangler d1 execute auxilium-production --env production --remote --file=database/sync_production.sql",
+
+    "---------- LOKAL ----------": "echo",
+
+    "dev:sandbox": "wrangler pages dev dist --ip 0.0.0.0 --port 3000"
   },
   "dependencies": {
     "hono": "^4.12.12"
