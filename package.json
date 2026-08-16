@@ -6,23 +6,23 @@
     "build": "vite build",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings",
 
-    "---------- DEPLOY ----------": "echo",
+    "---------- DEPLOY ----------": "echo ---",
 
-    "deploy:preview":    "npm run build && wrangler pages deploy dist --project-name auxilium-forst --env preview",
-    "deploy:production": "npm run build && CLOUDFLARE_ACCOUNT_ID=01a55be0f87bb4bc753c62cd8d7a8d82 wrangler pages deploy dist --project-name auxilium-forst --env production",
+    "deploy:preview":    "npm run build && wrangler pages deploy dist --project-name auxilium-forst",
+    "deploy:production": "npm run build && CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN_KUNDE CLOUDFLARE_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID_KUNDE wrangler pages deploy dist --project-name auxilium-forst --config wrangler.production.jsonc",
 
-    "---------- DATENBANK: MEIN ACCOUNT (preview) ----------": "echo",
+    "---------- DATENBANK: MEIN ACCOUNT (preview) ----------": "echo ---",
 
-    "db:preview":                "wrangler d1 execute auxilium-production --env preview --remote",
-    "db:preview:migrations":     "wrangler d1 migrations apply auxilium-production --env preview --remote",
+    "db:preview":            "wrangler d1 execute auxilium-production --remote",
+    "db:preview:migrations": "wrangler d1 migrations apply auxilium-production --remote",
 
-    "---------- DATENBANK: KUNDEN-ACCOUNT (production) ----------": "echo",
+    "---------- DATENBANK: KUNDEN-ACCOUNT (production) ----------": "echo ---",
 
-    "db:production":             "CLOUDFLARE_ACCOUNT_ID=01a55be0f87bb4bc753c62cd8d7a8d82 wrangler d1 execute auxilium-production --env production --remote",
-    "db:production:migrations":  "CLOUDFLARE_ACCOUNT_ID=01a55be0f87bb4bc753c62cd8d7a8d82 wrangler d1 migrations apply auxilium-production --env production --remote",
-    "db:production:sync":        "CLOUDFLARE_ACCOUNT_ID=01a55be0f87bb4bc753c62cd8d7a8d82 wrangler d1 execute auxilium-production --env production --remote --file=database/sync_production.sql",
+    "db:production":            "CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN_KUNDE CLOUDFLARE_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID_KUNDE wrangler d1 execute auxilium-production --remote --config wrangler.production.jsonc",
+    "db:production:migrations": "CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN_KUNDE CLOUDFLARE_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID_KUNDE wrangler d1 migrations apply auxilium-production --remote --config wrangler.production.jsonc",
+    "db:production:sync":       "CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN_KUNDE CLOUDFLARE_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID_KUNDE wrangler d1 execute auxilium-production --remote --config wrangler.production.jsonc --file=database/sync_production.sql",
 
-    "---------- LOKAL ----------": "echo",
+    "---------- LOKAL ----------": "echo ---",
 
     "dev:sandbox": "wrangler pages dev dist --ip 0.0.0.0 --port 3000"
   },
