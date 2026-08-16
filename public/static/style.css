@@ -2647,6 +2647,7 @@ textarea:focus:not(:focus-visible) {
     align-items: center;
     gap: 16px;
     text-align: center;
+    margin-bottom: 28px;
   }
   .symbol-box__img {
     width: 120px;
