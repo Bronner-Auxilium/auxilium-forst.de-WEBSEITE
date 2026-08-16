@@ -1,0 +1,10 @@
+# Git Remote Konventionen für dieses Projekt
+# ─────────────────────────────────────────────
+# origin  → skrenkovic/auxilium-forst.de         (Entwickler-Account)
+# bronner → Bronner-Auxilium/auxilium-forst.de-WEBSEITE  (Kunden-Account)
+#
+# Befehle:
+#   "Pushe bei mir"      → git push origin main
+#   "Pushe beim Kunden"  → git push bronner main
+#
+# Hinweis: Token wird zur Laufzeit injiziert, nicht hier gespeichert.

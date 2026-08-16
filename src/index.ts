@@ -175,8 +175,8 @@ ${body}
           <span class="footer__logo-name">AUXILIUM</span>
         </div>
         <p class="footer__desc">Individuelle Pflege, Betreuung &amp; Pflegeberatung in Forst (Baden) und Umgebung &ndash; Kristina Bronner begleitet pflegebed&uuml;rftige Menschen und ihre Angeh&ouml;rigen mit Fachkenntnis, Herz und Leidenschaft.</p>
-        <a href="mailto:${email}" style="display:inline-flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--primary);">
-          <i class="fas fa-envelope" aria-hidden="true"></i> ${email}
+        <a href="/kontakt" style="display:inline-flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--primary);">
+          <i class="fas fa-envelope" aria-hidden="true"></i> info@auxilium-forst.de
         </a>
       </div>
       <div>
