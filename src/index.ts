@@ -4428,7 +4428,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 <p>Kristina Bronner begleitet seit Jahren Familien in dieser Situation. Was sie dabei immer wieder erlebt: Die meisten wissen nicht, welche Rechte und finanzierten Entlastungen ihnen zustehen.</p>
 
 <h2>Was Ihnen als pflegende Person zusteht</h2>
-<h3>1. Pflegeunterstützungsgeld – 10 Tage bezahlte Auszeit</h3>
+<h3>1. Pflegeunterstützungsgeld – 10 Tage bezahlte Zeit für die Organisation</h3>
 <p>Wenn ein naher Angehöriger plötzlich pflegebedürftig wird, können Beschäftigte bis zu <strong>10 Arbeitstage der Arbeit fernbleiben</strong> (§ 2 PflegeZG), um die Pflege zu organisieren. In dieser Zeit zahlt die Pflegekasse das <strong>Pflegeunterstützungsgeld</strong> als Lohnersatz – ähnlich dem Kinderkrankengeld. Der Anspruch besteht pro Pflegefall.</p>
 
 <h3>2. Pflegezeit – bis zu 6 Monate Freistellung</h3>
@@ -4453,7 +4453,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 
 <h2>Wie Auxilium Ihre Auszeit organisiert</h2>
 <p>Während Sie Urlaub machen, krank sind oder einfach durchatmen müssen, übernimmt Auxilium die Betreuung. Die Abrechnung läuft über Verhinderungspflege, Entlastungsbetrag oder Sachleistungen – vollständig oder überwiegend von der Pflegekasse gedeckt. In der Erstberatung klärt Kristina Bronner, was Ihnen konkret zusteht, wie der Übergang reibungslos klappt und was Auxilium bei Ihrem Angehörigen übernimmt.</p>
-<p>Auxilium ist in <strong>Forst (Baden), Bruchsal, Bretten, Kraichtal, Karlsruhe</strong> und der gesamten Region aktiv.</p>
+<p>Auxilium ist in <strong>Forst (Baden), Bruchsal</strong> und der gesamten Region aktiv.</p>
 
 <h2>Was für sich selbst zu sorgen konkret heißt</h2>
 <p>Auszeiten einplanen – auch kurze tägliche Pausen helfen. Hilfe annehmen, wenn Familie, Freunde oder Auxilium sie anbieten. Eigene Arzttermine nicht verschieben. Kontakt mit anderen pflegenden Angehörigen suchen. Und: Alle Ansprüche bei der Pflegekasse aktiv beantragen – das Geld steht Ihnen zu.</p>
