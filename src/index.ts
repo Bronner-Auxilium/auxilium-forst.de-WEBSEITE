@@ -2,11 +2,11 @@ import { Hono } from 'hono'
 import { serveStatic } from 'hono/cloudflare-workers'
 import { getCookie, setCookie, deleteCookie } from 'hono/cookie'
 
-type Bindings = { DB: D1Database; MEDIA: KVNamespace }
+type Bindings = { DB: D1Database; MEDIA: KVNamespace; ADMIN_PASSWORD: string }
 const app = new Hono<{ Bindings: Bindings }>()
 
-// Admin-Passwort (hier einfach hartcodiert – für Prod als Secret setzen)
-const ADMIN_PASSWORD = 'auxilium2024'
+// Admin-Passwort wird als Cloudflare Secret gesetzt (wrangler secret put ADMIN_PASSWORD)
+// Fallback 'auxilium2024' nur für lokale Entwicklung
 const SESSION_COOKIE = 'adm_sess'
 
 // Auth-Middleware für /admin/* (außer Login)
@@ -21,6 +21,23 @@ async function requireAdmin(c: any, next: any) {
   return next()
 }
 app.use('/admin/*', requireAdmin)
+
+// 301-Redirect: non-www und .com → www.auxilium-forst.de
+app.use('*', async (c, next) => {
+  const host = c.req.header('host') || ''
+  const canonicalHost = 'www.auxilium-forst.de'
+  // Lokal (localhost, *.pages.dev, *.sandbox.*) → kein Redirect
+  if (host.includes('localhost') || host.includes('.pages.dev') || host.includes('.sandbox.') || host.includes('novita.ai') || host.includes('gensparksite.com')) {
+    return next()
+  }
+  if (host !== canonicalHost) {
+    const url = new URL(c.req.url)
+    url.host = canonicalHost
+    url.protocol = 'https:'
+    return c.redirect(url.toString(), 301)
+  }
+  return next()
+})
 
 app.use('/static/*', serveStatic({ root: './' }))
 
@@ -119,7 +136,7 @@ function layout(title: string, description: string, body: string, S: Record<stri
 <meta property="og:image" content="/static/logo.png">
 <meta property="og:locale" content="de_DE">
 <meta property="og:site_name" content="Auxilium – Pflegeberatung Forst Baden">
-<link rel="canonical" href="https://auxilium-forst.de${S._canonical||''}">
+<link rel="canonical" href="https://www.auxilium-forst.de${S._canonical||''}">
 <title>${title}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -133,7 +150,7 @@ ${S.ga_id ? `<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=${S.ga_id}"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${S.ga_id}',{anonymize_ip:true});</script>` : ''}
 <!-- Strukturierte Daten: LocalBusiness -->
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Auxilium – Pflegeberatung Forst Baden","description":"Individuelle Pflege und Pflegeberatung in Forst Baden und Umgebung","url":"https://auxilium-forst.de","telephone":"","email":"info@auxilium-forst.de","address":{"@type":"PostalAddress","streetAddress":"","addressLocality":"Forst","postalCode":"76694","addressCountry":"DE"},"areaServed":[{"@type":"City","name":"Forst","postalCode":"76694"},{"@type":"City","name":"Bruchsal","postalCode":"76646"},{"@type":"City","name":"Karlsdorf-Neuthard","postalCode":"76689"}],"priceRange":"€€","openingHours":"Mo-Fr 09:00-16:00"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"Auxilium – Pflegeberatung Forst Baden","description":"Individuelle Pflege und Pflegeberatung in Forst Baden und Umgebung","url":"https://www.auxilium-forst.de","telephone":"","email":"info@auxilium-forst.de","address":{"@type":"PostalAddress","streetAddress":"","addressLocality":"Forst","postalCode":"76694","addressCountry":"DE"},"areaServed":[{"@type":"City","name":"Forst","postalCode":"76694"},{"@type":"City","name":"Bruchsal","postalCode":"76646"},{"@type":"City","name":"Karlsdorf-Neuthard","postalCode":"76689"}],"priceRange":"€€","openingHours":"Mo-Fr 09:00-16:00"}</script>
 </head>
 <body>
 <a href="#main-content" class="skip-link">Zum Hauptinhalt springen</a>
@@ -1299,7 +1316,7 @@ app.get('/pflege/:slug', async (c) => {
     "@type": "LocalBusiness",
     "name": `Auxilium – Pflegeberatung ${ort.name}`,
     "description": `Individuelle Pflege und Pflegeberatung in ${ort.name} (${ort.plz}) – Kristina Bronner, Auxilium`,
-    "url": `https://auxilium-forst.de/pflege/${slug}`,
+    "url": `https://www.auxilium-forst.de/pflege/${slug}`,
     "areaServed": { "@type": "City", "name": ort.name, "postalCode": ort.plz }
   })
 
@@ -1545,7 +1562,8 @@ button:hover{background:#B5701A;}</style>
 
 app.post('/admin/login', async (c) => {
   const body = await c.req.parseBody()
-  if (body.password !== ADMIN_PASSWORD) return c.redirect('/admin/login?error=1')
+  const adminPw = c.env.ADMIN_PASSWORD || 'auxilium2024'
+  if (body.password !== adminPw) return c.redirect('/admin/login?error=1')
   const token = crypto.randomUUID()
   await c.env.DB.prepare('INSERT INTO admin_sessions (token) VALUES (?)').bind(token).run()
   setCookie(c, SESSION_COOKIE, token, { path: '/', httpOnly: true, maxAge: 86400 * 7 })
@@ -4086,7 +4104,7 @@ app.get('/barrierefreiheit', async (c) => {
 
 // ─── Sitemap.xml ──────────────────────────────────────────────
 app.get('/sitemap.xml', async (c) => {
-  const base = 'https://auxilium-forst.de'
+  const base = 'https://www.auxilium-forst.de'
   const now  = new Date().toISOString().split('T')[0]
   const staticUrls = [
     { loc: '/',               changefreq: 'weekly',  priority: '1.0' },
@@ -4135,7 +4153,7 @@ app.get('/sitemap.xml', async (c) => {
 
 // ─── robots.txt ───────────────────────────────────────────────
 app.get('/robots.txt', (c) => {
-  const txt = `User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /api/\n\nSitemap: https://auxilium-forst.de/sitemap.xml\n`
+  const txt = `User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /api/\n\nSitemap: https://www.auxilium-forst.de/sitemap.xml\n`
   return new Response(txt, {
     headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'public, max-age=86400' }
   })
@@ -4507,8 +4525,8 @@ app.get('/ratgeber/:slug', async (c) => {
     "@context": "https://schema.org", "@type": "Article",
     "headline": article.title, "description": article.meta_desc,
     "author": { "@type": "Person", "name": "Kristina Bronner" },
-    "publisher": { "@type": "Organization", "name": "Auxilium – Pflegeberatung Forst Baden", "url": "https://auxilium-forst.de" },
-    "url": `https://auxilium-forst.de/ratgeber/${slug}`
+    "publisher": { "@type": "Organization", "name": "Auxilium – Pflegeberatung Forst Baden", "url": "https://www.auxilium-forst.de" },
+    "url": `https://www.auxilium-forst.de/ratgeber/${slug}`
   })
   const body = ratgeberHero(article.category, article.intro || article.meta_desc, article.heroTitle) + `
 <main id="main-content" tabindex="-1">
