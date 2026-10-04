@@ -2,82 +2,72 @@
 
 ## Zwei Cloudflare-Accounts, zwei Datenbanken
 
-| | Preview (du) | Production (Kunde) |
+| | Mein Account (nur DB-Zugriff) | Production (Kunde) |
 |---|---|---|
 | **Account** | skrenkovic@web.de | info@auxilium-forst.de |
 | **Account-ID** | e729413088eda8a33175369d605f848e | 01a55be0f87bb4bc753c62cd8d7a8d82 |
 | **D1-DB-ID** | bcab4d11-9f48-4a86-92d1-946581c71e97 | df13dc06-7ed8-4334-bb9a-d683a35dad50 |
-| **Pages-Projekt** | auxilium-forst | auxilium-forst (im Kunden-Account) |
-| **API-Token** | CLOUDFLARE_API_TOKEN (gesetzt) | Kunden-Token nötig (s.u.) |
+| **Pages-Projekt** | ~~auxilium-forst~~ (nicht mehr genutzt) | auxilium-forst-de-webseite |
+| **API-Token** | CLOUDFLARE_API_TOKEN (gesetzt) | CF_TOKEN_KUNDE (in .env.local gesetzt) |
+
+> ⚠️ **Ab sofort wird NUR noch auf den Kunden-Account deployed!**
 
 ---
 
-## Wie du deployest
+## Deploy
 
-### → Auf DEINEN Account (testen)
 ```bash
-npm run deploy:preview
+npm run deploy
 ```
-Schreibt in **deine** D1 (`bcab4d11...`). Erreichbar unter `auxilium.skrenkovic.de`.
 
-### → Auf KUNDEN-Account (beim Kunden live schalten)
-```bash
-CLOUDFLARE_API_TOKEN=<KUNDEN-TOKEN> npm run deploy:production
-```
-Schreibt in die **Kunden-D1** (`df13dc06...`). Erreichbar unter `auxilium-forst.de`.
+Das ist der **einzige Deploy-Befehl**. Er deployt immer direkt auf den Kunden-Account (`auxilium-forst-de-webseite`).
 
-> **Kunden-API-Token holen:**
-> Kunde öffnet → https://dash.cloudflare.com/profile/api-tokens
-> → „Create Token" → Template „Edit Cloudflare Workers" → Token kopieren
+- Kunden-Token ist im Script hartcodiert ✅
+- Kunden-Account-ID ist im Script hartcodiert ✅
+- Kein separater „Preview-Deploy" auf meinen Account mehr
 
 ---
 
 ## Datenbank-Befehle
 
-### Deine Test-DB direkt abfragen
+### Kunden-DB abfragen
 ```bash
-npm run db:preview -- --command="SELECT * FROM settings"
-```
-
-### Kunden-DB direkt abfragen
-```bash
-CLOUDFLARE_API_TOKEN=<KUNDEN-TOKEN> npm run db:production -- --command="SELECT * FROM settings"
+npm run db:production -- --command="SELECT * FROM settings"
 ```
 
 ### Migrationen auf Kunden-DB anwenden
 ```bash
-CLOUDFLARE_API_TOKEN=<KUNDEN-TOKEN> npm run db:production:migrations
+npm run db:production:migrations
 ```
 
 ### Sync-Script auf Kunden-DB anwenden
 ```bash
-CLOUDFLARE_API_TOKEN=<KUNDEN-TOKEN> npm run db:production:sync
+npm run db:production:sync
 ```
 
----
-
-## Warum Backend-Änderungen in die falsche DB gehen
-
-Das Backend (Admin-Panel) schreibt immer in die D1-Datenbank, die zum
-**deployten Worker** gehört. Das heißt:
-
-- Du öffnest `auxilium.skrenkovic.de/admin` → schreibt in **deine** DB ✅
-- Kunde öffnet `auxilium-forst.de/admin` → schreibt in **Kunden-DB** ✅
-
-Solange du auf **deiner** Preview-URL testest, sind beide sauber getrennt.
+### Meine Test-DB abfragen (nur für lokale Dev-Zwecke)
+```bash
+npm run db:preview -- --command="SELECT * FROM settings"
+```
 
 ---
 
 ## Workflow für Änderungen
 
 ```
-1. Lokal entwickeln / testen
-        ↓
-2. npm run deploy:preview         ← deine Test-URL, deine DB
-        ↓
-3. Testen auf auxilium.skrenkovic.de
-        ↓
-4. CLOUDFLARE_API_TOKEN=<KUNDEN-TOKEN> npm run deploy:production
-        ↓
-5. git push bronner main          ← Code beim Kunden-GitHub sichern
+1. Code ändern
+       ↓
+2. npm run deploy   ← baut + deployed direkt auf auxilium-forst.de
+       ↓
+3. git push origin main
+       ↓
+4. git push bronner main
 ```
+
+---
+
+## Warum kein Preview-Account mehr?
+
+Deploys auf den eigenen Account (`auxilium-forst`) wurden eingestellt,
+da alle Änderungen direkt beim Kunden live getestet werden.
+Die wrangler.jsonc (mein Account) bleibt für lokale D1-Abfragen erhalten.
