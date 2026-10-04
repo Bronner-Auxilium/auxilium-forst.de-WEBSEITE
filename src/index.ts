@@ -453,7 +453,7 @@ app.get('/', async (c) => {
   </div>
 </section>
 
-<section class="section" aria-labelledby="quote-heading">
+<section class="section section--compact" aria-labelledby="quote-heading">
   <div class="container">
     <div class="text-center" style="max-width:720px;margin:0 auto;">
       <span class="section-label">Meine Philosophie</span>

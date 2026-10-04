@@ -8,7 +8,7 @@
 
     "---------- DEPLOY ----------": "echo ---",
 
-    "deploy": "npm run build && rm -rf /tmp/kd-deploy && mkdir -p /tmp/kd-deploy && cp -r dist /tmp/kd-deploy/ && cd /tmp/kd-deploy && set -a && [ -f /home/user/webapp/.env.local ] && . /home/user/webapp/.env.local; CLOUDFLARE_API_TOKEN=$CF_TOKEN_KUNDE CLOUDFLARE_ACCOUNT_ID=01a55be0f87bb4bc753c62cd8d7a8d82 npx wrangler pages deploy dist --project-name auxilium-forst-de-webseite --commit-dirty=true && rm -rf /tmp/kd-deploy",
+    "deploy": "npm run build && rm -rf /tmp/kd-deploy && mkdir -p /tmp/kd-deploy && cp -r dist /tmp/kd-deploy/ && cp wrangler.kunde.jsonc /tmp/kd-deploy/wrangler.jsonc && cd /tmp/kd-deploy && set -a && [ -f /home/user/webapp/.env.local ] && . /home/user/webapp/.env.local; CLOUDFLARE_API_TOKEN=$CF_TOKEN_KUNDE CLOUDFLARE_ACCOUNT_ID=01a55be0f87bb4bc753c62cd8d7a8d82 npx wrangler pages deploy dist --project-name auxilium-forst-de-webseite --commit-dirty=true && rm -rf /tmp/kd-deploy",
 
     "---------- DATENBANK: MEIN ACCOUNT (preview) ----------": "echo ---",
 

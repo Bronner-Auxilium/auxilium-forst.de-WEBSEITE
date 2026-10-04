@@ -93,11 +93,12 @@ p  { color: var(--text-light); line-height: 1.75; }
   padding: 0 24px;
 }
 .section        { padding: 96px 0; }
-.section--soft  { background: var(--bg-soft); }
-.section--muted { background: var(--bg-muted); }
-.section--dark  { background: var(--secondary); color: white; }
+.section--soft       { background: var(--bg-soft); }
+.section--muted      { background: var(--bg-muted); }
+.section--dark       { background: var(--secondary); color: white; }
 .section--dark h2, .section--dark h3, .section--dark h4 { color: white; }
-.section--dark p { color: rgba(255,255,255,0.7); }
+.section--dark p     { color: rgba(255,255,255,0.7); }
+.section--compact    { padding: 56px 0; }
 
 /* ─── Responsive Grid ────────────────────────────────────── */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
