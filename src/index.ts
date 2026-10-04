@@ -4334,7 +4334,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 
 <h2>Wie der Einstieg konkret aussieht</h2>
 <p>Am Anfang steht ein Gespräch – Kristina Bronner kommt zu Ihnen nach Hause oder telefoniert mit Ihnen. Aus dieser Bedarfsanalyse entsteht ein Betreuungsplan, der Leistungen, Zeiten und Abrechnung festlegt. Regelmäßige Rückmeldegespräche mit Angehörigen halten die Pflege im Gleichgewicht.</p>
-<p>Auxilium betreut in <strong>Forst (Baden), Bruchsal, Kraichtal, Bretten, Bad Schönborn</strong> und der gesamten Region Karlsruhe.</p>
+<p>Auxilium betreut in <strong>Forst (Baden), Bruchsal</strong> und der gesamten Region Karlsruhe.</p>
 
 <blockquote style="border-left:4px solid var(--primary);padding:16px 24px;background:#FBF7F2;border-radius:0 10px 10px 0;margin:32px 0;">
   <p style="margin:0 0 8px;font-style:italic;font-size:1.05rem;">„Zuhause zu bleiben ist der sehnlichste Wunsch der meisten pflegebedürftigen Menschen. Mit der richtigen Unterstützung ist das möglich – und oft günstiger als das Pflegeheim."</p>
