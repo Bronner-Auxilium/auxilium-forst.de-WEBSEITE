@@ -4364,7 +4364,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 <p>Wichtig: Der Entlastungsbetrag kommt <strong>zusätzlich</strong> zu Pflegegeld und Pflegesachleistungen. Er wird nicht gegengerechnet.</p>
 
 <h2>Wer bekommt ihn?</h2>
-<p>Alle Personen mit einem anerkannten Pflegegrad, beginnend ab Pflegegrad 1. Selbst wer kaum Einschränkungen hat und keine anderen Pflegeleistungen bezieht, hat Anspruch auf diese 131 Euro monatlich.</p>
+<p>Alle Personen mit einem anerkannten Pflegegrad, beginnend ab Pflegegrad 1 haben Anspruch auf diese 131 Euro monatlich.</p>
 <div style="background:#FBF7F2;border-radius:12px;padding:20px 24px;margin:20px 0;">
   <h3 style="font-size:1rem;margin:0 0 12px;color:var(--primary);">Anspruch Entlastungsbetrag nach Pflegegrad</h3>
   <table style="width:100%;font-size:0.9rem;">
@@ -4378,33 +4378,19 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 <h2>Wofür kann das Geld verwendet werden?</h2>
 <p>Der Entlastungsbetrag ist an einen Zweck geknüpft, allerdings sind die Möglichkeiten des Einsatzes breiter als viele denken: häusliche Betreuung durch anerkannte Dienstleister wie Auxilium, Haushaltshilfen von anerkannten Anbietern, Begleitdienste zum Arzt oder Einkauf. Als Zuschuss kann dieser Betrag auch zur Tages- oder Nachtpflege oder Kurzzeitpflege verwendet werden. Eine direkte Barauszahlung ist nicht möglich. Was genau im Einzelnen über den Entlastungsbetrag abgerechnet werden kann, erklärt Kristina Bronner Ihnen in der Erstberatung.</p>
 
-<h2>Der Übertragungstrick: Bis zu 3.144 Euro ansparen</h2>
+<h2>Der Übertragungstrick: Bis zu 2.358 Euro ansparen</h2>
 <p>Nicht genutzter Entlastungsbetrag <strong>verfällt nicht sofort</strong>: Er kann bis zum <strong>30. Juni des Folgejahres</strong> übertragen und genutzt werden. Das bedeutet: Wenn Sie in einem Jahr den Betrag nicht oder nicht vollständig nutzen, können Sie in den ersten sechs Monaten des Folgejahres das angesammelte Budget für Auxilium-Leistungen verwenden.</p>
-<div style="background:#FBF7F2;border-radius:12px;padding:20px 24px;margin:20px 0;">
-  <h3 style="font-size:1rem;margin:0 0 12px;color:#2C6E49;"><i class="fas fa-lightbulb" style="margin-right:8px;"></i>Rechenbeispiel: Maximale Nutzung</h3>
-  <p style="margin:0 0 8px;font-size:0.92rem;">Angenommen, Sie nutzen den Entlastungsbetrag in Jahr 1 überhaupt nicht:</p>
-  <ul style="font-size:0.92rem;margin:0;padding-left:20px;">
-    <li>12 Monate × 131 € = <strong>1.572 € aus Jahr 1</strong></li>
-    <li>6 Monate × 131 € (Jan–Jun Jahr 2) = <strong>786 € aus Jahr 2</strong></li>
-    <li>Nutzbar bis 30. Juni Jahr 2: <strong>2.358 € in einem Halbjahr</strong></li>
-  </ul>
-  <p style="margin:12px 0 0;font-size:0.88rem;color:var(--text-light);">Hinweis: Auch das neue Budget ab Juli läuft parallel weiter.</p>
-</div>
-
 <h2>Kombination mit anderen Leistungen</h2>
 <p>Der Entlastungsbetrag ergänzt alle anderen Pflegeversicherungsleistungen. Wer Pflegegeld bezieht, bekommt die 131 Euro monatlich obendrauf. Wer Verhinderungspflege nutzt, kann den Entlastungsbetrag parallel einsetzen. Bis zu 40 Prozent des ungenutzten Pflegesachleistungsbudgets lassen sich außerdem in Entlastungsleistungen umwandeln. Wer das alles geschickt kombiniert, kommt auf beachtliche Beträge jährlich.</p>
 
 <h2>Wie wird der Antrag gestellt?</h2>
-<p>Zur Inanspruchnahme der Entlastungsleistung benötigen Sie keinen zusätzlichen Antrag. Ab Pflegegrad 1 steht Ihnen dieser automatisch zu. Allerdings wird er Ihnen nicht automatisch ausgezahlt. Sobald Sie einen anerkannten Hilfeleister gefunden haben und dieser Ihnen eine Rechnung stellt, müssen Sie die Rechnung bei Ihrer Pflegekasse einreichen und bekommen dann den Betrag erstattet. Der Vorteil: Auf Wunsch geht Auxilium für Sie in Vorkasse und kümmert sich selbst um die Begleichung der Rechnung.</p>
-<p>Wenn Sie noch unentschlossen sind, welchen Dienstleister Sie einsetzen möchten, bekommen Sie entweder von der Pflegekasse oder vom Pflegestützpunkt eine Liste anerkannter Anbieter in Ihrer Region. Auxilium ist als <strong>anerkannter Entlastungsdienstleister im Landkreis Karlsruhe</strong> registriert.</p>
-
+<p>Zur Inanspruchnahme der Entlastungsleistung benötigen Sie keinen zusätzlichen Antrag. Ab Pflegegrad 1 steht Ihnen dieser automatisch zu. Allerdings wird er Ihnen nicht ausgezahlt. Sobald Sie einen anerkannten Hilfeleister gefunden haben und dieser Ihnen eine Rechnung stellt, müssen Sie die Rechnung bei Ihrer Pflegekasse einreichen und bekommen dann den Betrag erstattet. Der Vorteil: Auf Wunsch geht Auxilium für Sie in Vorkasse und kümmert sich selbst um die Begleichung der Rechnung.</p>
 <blockquote style="border-left:4px solid var(--primary);padding:16px 24px;background:#FBF7F2;border-radius:0 10px 10px 0;margin:32px 0;">
-  <p style="margin:0 0 8px;font-style:italic;font-size:1.05rem;">„131 Euro klingen wenig – aber über zwei Jahre angespart und mit anderen Leistungen kombiniert, sprechen wir von einem echten Unterschied für die Pflegequalität zuhause."</p>
+  <p style="margin:0 0 8px;font-style:italic;font-size:1.05rem;">„131 Euro klingen wenig – wenn man diese allerdings anspart und mit anderen Leistungen sinnvoll kombiniert, sprechen wir von einem echten Unterschied für die Pflegequalität zuhause."</p>
   <cite style="font-size:0.85rem;color:var(--text-light);display:block;">– Kristina Bronner, Auxilium Pflegeberatung Forst Baden</cite>
 </blockquote>
 
-<p>Als anerkannter Entlastungsdienstleister in der Region Forst (Baden) übernimmt Auxilium die gesamte Abwicklung mit der Pflegekasse – Antrag, Abrechnung und Dokumentation. Kristina Bronner prüft gemeinsam mit Ihnen, welche Leistungen Ihnen zustehen.</p>
-<p style="margin-top:24px;"><a href="/beratung" style="color:var(--accent);font-weight:700;font-size:1.05rem;">Persönliche Erstberatung anfragen →</a></p>`
+<p>Als anerkannter Entlastungsdienstleister in der Region Forst (Baden) übernimmt Auxilium die gesamte Abwicklung mit der Pflegekasse – Antrag, Abrechnung und Dokumentation. Kristina Bronner prüft gemeinsam mit Ihnen, welche Leistungen Ihnen zustehen.</p>`
   },
   {
     slug: 'pflegende-angehoerige-selbst-schuetzen',
