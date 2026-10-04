@@ -1680,8 +1680,10 @@ p  { color: var(--text-light); line-height: 1.75; }
 /* ─── Startseite: Kategorien-Kacheln ─────────────────────── */
 .home-kat-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 22px;
+  max-width: 860px;
+  margin: 0 auto;
 }
 .home-kat-card {
   background: white;
@@ -1746,7 +1748,7 @@ p  { color: var(--text-light); line-height: 1.75; }
   .home-kat-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
 }
 @media (max-width: 480px) {
-  .home-kat-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .home-kat-grid { grid-template-columns: 1fr; gap: 12px; }
   .home-kat-card { padding: 20px 14px; }
   .home-kat-card__icon { width: 44px; height: 44px; font-size: 1.1rem; }
   .home-kat-card__name { font-size: 0.92rem; }

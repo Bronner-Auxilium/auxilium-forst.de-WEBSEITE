@@ -455,25 +455,11 @@ app.get('/', async (c) => {
 
 <section class="section" aria-labelledby="quote-heading">
   <div class="container">
-    <div class="grid-2">
-      <div>
-        <span class="section-label">Meine Philosophie</span>
-        <h2 id="quote-heading">Zuhause ist kein Ort &ndash;<br>es ist ein Gef&uuml;hl</h2>
-        <p style="margin:18px 0 28px;">Ich glaube, dass jeder Mensch das Recht hat, in seiner vertrauten Umgebung zu leben &ndash; auch wenn Pflege notwendig wird.</p>
-        <a href="/ueber-auxilium" class="btn btn-accent"><i class="fas fa-user" aria-hidden="true"></i>Mehr &uuml;ber mich</a>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:18px;">
-        <div class="quote-card">
-          <div class="quote-card__icon" aria-hidden="true">&bdquo;</div>
-          <p class="quote-card__text">Akzeptiere, was ist, lass gehen, was war, und habe Vertrauen in das, was kommt.</p>
-          <div class="quote-card__author"><div class="quote-card__avatar">M</div><div><div class="quote-card__name">Ma Vie</div><div class="quote-card__role">Leitspruch von Auxilium</div></div></div>
-        </div>
-        <div class="quote-card">
-          <div class="quote-card__icon" aria-hidden="true">&bdquo;</div>
-          <p class="quote-card__text">Der Schmetterling steht f&uuml;r die Kraft der pers&ouml;nlichen Transformation &ndash; und f&uuml;r den Mut, Hilfe anzunehmen.</p>
-          <div class="quote-card__author"><div class="quote-card__avatar">KB</div><div><div class="quote-card__name">Kristina Bronner</div><div class="quote-card__role">Gr&uuml;nderin von Auxilium</div></div></div>
-        </div>
-      </div>
+    <div class="text-center" style="max-width:720px;margin:0 auto;">
+      <span class="section-label">Meine Philosophie</span>
+      <h2 id="quote-heading">Zuhause ist kein Ort &ndash;<br>es ist ein Gef&uuml;hl</h2>
+      <p style="margin:18px 0 32px;font-size:1.05rem;line-height:1.8;">Ich glaube, dass jeder Mensch das Recht hat, in seiner vertrauten Umgebung zu leben &ndash; auch wenn Pflege notwendig wird.</p>
+      <a href="/ueber-auxilium" class="btn btn-accent"><i class="fas fa-user" aria-hidden="true"></i>Mehr &uuml;ber mich</a>
     </div>
   </div>
 </section>
