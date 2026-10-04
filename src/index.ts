@@ -4190,7 +4190,7 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
   <cite style="font-size:0.85rem;color:var(--text-light);display:block;">– Kristina Bronner, Auxilium Pflegeberatung Forst Baden</cite>
 </blockquote>
 
-<p>Auxilium betreut Pflegebedürftige in <strong>Forst (Baden), Bruchsal, Bretten, Karlsruhe</strong> und der gesamten Region. Kristina Bronner kennt die lokalen Pflegekassen gut – das spart Zeit bei der Abrechnung.</p>
+<p>Auxilium betreut Pflegebedürftige in <strong>Forst (Baden), Bruchsal</strong> und der gesamten Region. Kristina Bronner kennt die lokalen Pflegekassen gut – das spart Zeit bei der Abrechnung.</p>
 <p style="margin-top:24px;"><a href="/beratung" style="color:var(--accent);font-weight:700;font-size:1.05rem;">Persönliche Erstberatung vereinbaren →</a></p>`
   },
   {
