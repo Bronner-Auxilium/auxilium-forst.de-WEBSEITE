@@ -124,7 +124,7 @@ function layout(title: string, description: string, body: string, S: Record<stri
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#ffffff">
 <meta name="description" content="${description}">
-<meta name="keywords" content="Pflegeberatung Forst Baden, Pflege Bruchsal, ambulante Pflege 76694, Verhinderungspflege, Pflegedienst Karlsruhe, Körperpflege, Betreuung zuhause, Kristina Bronner">
+<meta name="keywords" content="${S._keywords||'Pflegeberatung Forst Baden, Pflege Bruchsal, ambulante Pflege 76694, Verhinderungspflege, Betreuung zuhause, Kristina Bronner'}">
 <meta name="author" content="Kristina Bronner – Auxilium Pflegeberatung">
 <meta name="robots" content="index, follow">
 <meta name="geo.region" content="DE-BW">
@@ -591,7 +591,7 @@ ${(S.show_testimonials !== '0') && dbTestimonials.length > 0 ? `
   </div>
 </section>
 </main>`
-  return c.html(layout('Pflegeberatung Bruchsal &amp; Pflegeberatung Forst &ndash; Hauswirtschaftliche Hilfe Forst | Auxilium', 'Auxilium bietet individuelle Pflegeberatung und ambulante Pflegeleistungen in Forst Baden.', body, S))
+  return c.html(layout('Pflegeberatung Bruchsal &amp; Pflegeberatung Forst &ndash; Hauswirtschaftliche Hilfe Forst | Auxilium', 'Ihre Pflegeberatung Bruchsal &amp; Pflegeberatung Forst: Betreuung, Hauswirtschaftliche Hilfe Forst (Baden) &ndash; feste Bezugsperson, Abrechnung &uuml;ber die Pflegekasse.', body, { ...S, _keywords: 'pflegeberatung bruchsal, pflegeberatung forst, hauswirtschaftliche hilfe forst, pflegeberatung, pflege zu hause, betreuung und hauswirtschaft' }))
 })
 
 // ─── ÜBER AUXILIUM ────────────────────────────────────────────
@@ -939,7 +939,7 @@ app.get('/leistungen', async (c) => {
     </div>
   </div>
 </section>`
-  return c.html(layout('Hauswirtschaftliche Hilfe &amp; Betreuung in Forst (Baden)', 'Hauswirtschaftliche Hilfe und Betreuung zu Hause in Forst (Baden) &amp; Umgebung: Mahlzeiten, Haushalt, Begleitung und Beratung – transparente Preise, Abrechnung über die Pflegekasse möglich.', body, S))
+  return c.html(layout('Hauswirtschaftliche Hilfe Forst &amp; Haushaltshilfe f&uuml;r Senioren &ndash; Auxilium', 'Hauswirtschaftliche Hilfe Forst (Baden): Haushaltshilfe f&uuml;r Senioren, Betreuung &amp; Pflegeberatung zu Hause &ndash; faire Preise, Abrechnung &uuml;ber die Pflegekasse.', body, { ...S, _keywords: 'hauswirtschaftliche hilfe forst, haushaltshilfe für senioren, hauswirtschaft senioren, alltagshilfe senioren' }))
 })
 
 // ─── BERATUNG ─────────────────────────────────────────────────
@@ -1514,9 +1514,9 @@ app.get('/pflege/forst-76694', async (c) => {
 </section>`
 
   return c.html(layout(
-    'Pflegeberatung &amp; Betreuung in Forst (Baden) 76694 – Auxilium',
-    'Pers\u00f6nliche Pflegeberatung und Alltagsbegleitung in Forst (Baden) 76694. Betreuung, Hauswirtschaft, Verhinderungspflege & Entlastungsbetrag – Kristina Bronner, Auxilium.',
-    body, { ...S, _canonical: '/pflege/forst-76694' }
+    'Pflegeberatung 76694 Forst (Baden) &ndash; Betreuung zu Hause | Auxilium',
+    'Ihre Pflegeberatung 76694 in Forst (Baden): Betreuung &amp; Hauswirtschaft zu Hause &ndash; feste Bezugsperson, Abrechnung &uuml;ber die Pflegekasse.',
+    body, { ...S, _canonical: '/pflege/forst-76694', _keywords: 'pflegeberatung 76694, pflegeberatung forst, pflegeberatung forst baden, betreuung und hauswirtschaft forst' }
   ))
 })
 
@@ -1683,9 +1683,9 @@ app.get('/pflege/bruchsal-76646', async (c) => {
 </section>`
 
   return c.html(layout(
-    'Pflegeberatung Bruchsal (76646) &ndash; Betreuung zu Hause | Auxilium',
-    'Ihre Pflegeberatung in Bruchsal: Betreuung, Hauswirtschaft und Beratung zu Hause – abgerechnet über Verhinderungspflege & Entlastungsbetrag. Persönliches Erstgespräch vereinbaren.',
-    body, { ...S, _canonical: '/pflege/bruchsal-76646' }
+    'Seniorenbetreuung Bruchsal &ndash; Pflegeberatung (76646) | Auxilium',
+    'Seniorenbetreuung Bruchsal: Betreuung, Hauswirtschaft &amp; Pflegeberatung zu Hause &ndash; feste Bezugsperson, Abrechnung &uuml;ber die Pflegekasse.',
+    body, { ...S, _canonical: '/pflege/bruchsal-76646', _keywords: 'seniorenbetreuung bruchsal, pflegeberatung bruchsal, betreuung senioren bruchsal, hauswirtschaft senioren' }
   ))
 })
 
@@ -4557,8 +4557,9 @@ app.get('/robots.txt', (c) => {
 const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;category:string;intro:string;heroTitle?:string;lead?:string;content:string}> = [
   {
     slug: 'verhinderungspflege-richtig-nutzen',
-    title: 'Verhinderungspflege richtig nutzen – bis zu 3.539 € | Auxilium',
-    meta_desc: 'Verhinderungspflege 2026: Was ist erlaubt, wie beantragen, wie viel bekomme ich? Auxilium Forst Baden erklärt alle Möglichkeiten und hilft bei der Abrechnung über die Pflegekasse.',
+    title: 'Verhinderungspflege beauftragen – richtig nutzen, bis zu 3.539 € | Auxilium',
+    meta_desc: 'Verhinderungspflege beauftragen: So nutzen Sie Ihre 3.539 € jährlich für Betreuung & Hauswirtschaft zu Hause – Regeln & Abrechnung einfach erklärt.',
+    keywords: 'verhinderungspflege beauftragen, verhinderungspflege 2026, verhinderungspflege nutzen, verhinderungspflege pflegekasse',
     category: 'Pflegefinanzierung',
     heroTitle: 'Verhinderungspflege verständlich erklärt!',
     intro: 'Was tun wenn die Hauptpflegeperson ausfällt? Welche Ansprüche stehen Ihnen zu?',
@@ -4650,8 +4651,9 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
   },
   {
     slug: 'pflegegrade-erklaert',
-    title: 'Pflegegrade 1 bis 5 einfach erklärt – Voraussetzungen, Leistungen und die Begutachtung vom Medizinischen Dienst (MD)',
-    meta_desc: 'Pflegegrade 1 bis 5 einfach erklärt: Voraussetzungen, Begutachtung durch den MDK, Geldbeträge und Leistungen. Auxilium Forst Baden hilft beim Antrag und beim Widerspruch.',
+    title: 'Pflegegrade einfach erklärt – Pflegegrad beantragen | Auxilium',
+    meta_desc: 'Pflegegrade 1–5 einfach erklärt: Voraussetzungen, Begutachtung durch den MD und wie Sie Ihren Pflegegrad beantragen – mit Schritt-für-Schritt-Hilfe.',
+    keywords: 'pflegegrad beantragen, pflegegrade erklärt, pflegegrad 1 2 3 4 5, mdk begutachtung',
     category: 'Pflegegrundlagen',
     heroTitle: 'Die 5 Pflegegrade',
     intro: 'Was bedeuten die Pflegegrade? Wie ist der Ablauf und was steht mir zu?',
@@ -4799,8 +4801,9 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
   },
   {
     slug: 'entlastungsbetrag-131-euro-nutzen',
-    title: 'Entlastungsbetrag 131 Euro monatlich: Wer bekommt ihn und wie nutze ich ihn optimal?',
-    meta_desc: 'Der Entlastungsbetrag von 131 Euro monatlich steht allen Pflegebedürftigen ab Pflegegrad 1 zu – auch für Auxilium-Leistungen in Forst Baden. Wie er beantragt und übertragen werden kann.',
+    title: 'Entlastungsbetrag 131 Euro nutzen – Anspruch & Ideen | Auxilium',
+    meta_desc: 'Entlastungsbetrag 131 Euro monatlich: Wofür Sie ihn einsetzen können, wie Sie ihn beantragen und wie Ihre Pflegekasse Betreuung & Hauswirtschaft zahlt.',
+    keywords: 'entlastungsbetrag 131 euro, entlastungsbetrag beantragen, entlastungsbetrag nutzen, entlastende leistungen',
     heroTitle: '131 Euro im Monat für Betreuung und Entlastungsleistungen',
     category: 'Pflegefinanzierung',
     intro: 'Ab Pflegegrad 1 zahlt die Pflegekasse monatlich 131 Euro Entlastungsbetrag – jährlich bis zu 1.572 Euro, die viele Familien nicht oder nicht vollständig abrufen.',
@@ -4849,8 +4852,9 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
   },
   {
     slug: 'pflegende-angehoerige-selbst-schuetzen',
-    title: 'Pflegende Angehörige: Rechte, Auszeiten und Selbstschutz – So hilft Auxilium',
-    meta_desc: 'Pflegende Angehörige in Forst Baden: Welche Rechte haben Sie? Wie finanzieren Sie Auszeiten? Auxilium erklärt Pflegeunterstützungsgeld, Verhinderungspflege und Rentenversicherung.',
+    title: 'Pflegende Angehörige entlasten – Tipps & Leistungen | Auxilium',
+    meta_desc: 'Wie Sie pflegende Angehörige entlasten: Entlastungsbetrag, Verhinderungspflege & praktische Unterstützung im Alltag – damit die Pflege zu Hause gelingt.',
+    keywords: 'pflegende angehörige entlasten, entlastung pflegende angehörige, verhinderungspflege, entlastungsbetrag',
     category: 'Angehörige',
     heroTitle: 'Wie pflegende Angehörige entlastet werden können',
     intro: 'Wer einen Angehörigen pflegt, trägt täglich eine enorme Last – und hat dabei mehr Rechte, als die meisten wissen. Dieser Ratgeber zeigt, welche Leistungen Ihnen zustehen und wie Auxilium Sie dabei entlastet.',
@@ -5008,7 +5012,7 @@ app.get('/ratgeber/:slug', async (c) => {
   </div>
 </section>
 </main>`
-  return c.html(layout(article.title + ' – Auxilium Ratgeber', article.meta_desc, body, { ...S, _canonical: '/ratgeber/' + slug }) + `<script type="application/ld+json">${articleSchema}</script>`)
+  return c.html(layout(article.title, article.meta_desc, body, { ...S, _canonical: '/ratgeber/' + slug, ...(article.keywords ? { _keywords: article.keywords } : {}) }) + `<script type="application/ld+json">${articleSchema}</script>`)
 })
 
 // ═══════════════════════════════════════════════════════════════
