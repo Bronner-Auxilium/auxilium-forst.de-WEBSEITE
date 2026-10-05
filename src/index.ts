@@ -418,7 +418,7 @@ app.get('/', async (c) => {
   <div class="container">
     <div class="text-center mb-12">
       <span class="section-label">Wieso Auxilium?</span>
-      <h2 id="why-heading">Pflegeberatung Bruchsal / Pflegeberatung Forst</h2>
+      <h2 id="why-heading">Pflegeberatung Bruchsal / Pflegeberatung Forst (Baden)</h2>
       <p style="max-width:580px;margin:14px auto 0;">Die Entscheidung f&uuml;r einen Pflegedienst ist nicht leicht. Auxilium bietet Ihnen eine bewusste Alternative &ndash; professionell, menschlich und bezahlbar.</p>
     </div>
     <div class="grid-3">
