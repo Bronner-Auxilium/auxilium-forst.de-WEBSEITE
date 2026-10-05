@@ -1357,27 +1357,63 @@ app.get('/pflege/forst-76694', async (c) => {
       Ich zeige Ihnen, wie Sie diese Mittel f&uuml;r meine Leistungen nutzen k&ouml;nnen.
     </p>
 
-    <div style="background:var(--bg-soft);border-radius:var(--radius);padding:40px;margin:48px 0;">
-      <h2 style="margin-top:0;">H&auml;ufige Fragen</h2>
+  </div>
+</section>
 
-      <h3>In welchen Orten sind Sie t&auml;tig?</h3>
-      <p style="line-height:1.8;margin-bottom:24px;">
-        In ganz Forst (Baden), 76694, sowie im Umland wie Bruchsal, Karlsdorf-Neuthard und
-        Graben-Neudorf. Die Wegpauschale wird vorab transparent kommuniziert.
-      </p>
-
-      <h3>Wie kann ich bezahlen?</h3>
-      <p style="line-height:1.8;margin-bottom:24px;">
-        &Uuml;ber Ihre Pflegekasse (Verhinderungspflege, Entlastungsbetrag) oder als Privatzahler.
-        Ich berate Sie im Erstgespr&auml;ch zur g&uuml;nstigsten L&ouml;sung.
-      </p>
-
-      <h3>&Uuml;bernehmen Sie auch medizinische Behandlungspflege?</h3>
-      <p style="line-height:1.8;margin-bottom:0;">
-        Nein &ndash; Spritzen oder Verbandswechsel &uuml;bernehme ich nicht. Alles rund um Betreuung,
-        Hauswirtschaft und Beratung geh&ouml;rt zu meinen Aufgaben.
-      </p>
+<section class="section section--soft" aria-labelledby="forst-faq-heading">
+  <div class="container" style="max-width:860px;">
+    <div class="text-center mb-12">
+      <span class="section-label">H&auml;ufige Fragen</span>
+      <h2 id="forst-faq-heading">Antworten auf Ihre Fragen</h2>
+      <p style="max-width:520px;margin:14px auto 0;">Die wichtigsten Fragen rund um meine T&auml;tigkeit in Forst (Baden) &ndash; schnell und &uuml;bersichtlich.</p>
     </div>
+    <div class="accordion-list" style="max-width:720px;margin:0 auto;">
+
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false" aria-controls="faq-forst-1">
+          In welchen Orten sind Sie t&auml;tig?
+          <span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+        </button>
+        <div class="accordion-body" id="faq-forst-1">
+          <div class="accordion-body__inner">
+            In ganz Forst (Baden), 76694, sowie im Umland wie Bruchsal, Karlsdorf-Neuthard und
+            Graben-Neudorf. Die Wegpauschale wird vorab transparent kommuniziert.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false" aria-controls="faq-forst-2">
+          Wie kann ich bezahlen?
+          <span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+        </button>
+        <div class="accordion-body" id="faq-forst-2">
+          <div class="accordion-body__inner">
+            &Uuml;ber Ihre Pflegekasse (Verhinderungspflege, Entlastungsbetrag) oder als Privatzahler.
+            Ich berate Sie im Erstgespr&auml;ch zur g&uuml;nstigsten L&ouml;sung.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false" aria-controls="faq-forst-3">
+          &Uuml;bernehmen Sie auch medizinische Behandlungspflege?
+          <span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+        </button>
+        <div class="accordion-body" id="faq-forst-3">
+          <div class="accordion-body__inner">
+            Nein &ndash; Spritzen oder Verbandswechsel &uuml;bernehme ich nicht. Alles rund um Betreuung,
+            Hauswirtschaft und Beratung geh&ouml;rt zu meinen Aufgaben.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width:860px;">
 
     <div class="text-center" style="margin-top:48px;">
       <p style="margin-bottom:20px;color:var(--text-light);font-size:1rem;">
