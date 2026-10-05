@@ -391,7 +391,7 @@ app.get('/', async (c) => {
   <div class="hero__inner">
     <div class="hero__content animate-fade-in">
       <h1 id="hero-heading" class="hero__title">Ihre pers&ouml;nliche<br><span class="highlight">St&uuml;tze</span> &ndash;<br><span class="highlight-amber">wenn Sie sie brauchen</span></h1>
-      <p class="hero__text">Mit Auxilium biete ich Ihnen individuelle Betreuung, Beratung sowie Pflege im Raum Forst (Baden) und Umgebung an. Mit langjähriger Erfahrung in der Pflege begleite ich pflegebedürftige Menschen und ihre Angehörigen – persönlich, kompetent und mit Herz. Dabei steht für mich im Fokus, dass jeder Mensch individuelle Aufmerksamkeit verdient.</p>
+      <p class="hero__text">Mit Auxilium biete ich Ihnen individuelle Betreuung, Pflegeberatung sowie Hauswirtschaft im Raum Forst (Baden) und Umgebung an. Mit langjähriger Erfahrung in der Pflege begleite ich pflegebedürftige Menschen und ihre Angehörigen – persönlich, kompetent und mit Herz. Dabei steht für mich im Fokus, dass jeder Mensch individuelle Aufmerksamkeit verdient.</p>
       <div class="hero__actions">
         <a href="/kontakt" class="btn btn-accent"><i class="fas fa-envelope" aria-hidden="true"></i>Kontakt aufnehmen</a>
         <a href="/leistungen" class="btn btn-outline"><i class="fas fa-list" aria-hidden="true"></i>Alle Leistungen</a>
