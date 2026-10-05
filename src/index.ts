@@ -591,7 +591,7 @@ ${(S.show_testimonials !== '0') && dbTestimonials.length > 0 ? `
   </div>
 </section>
 </main>`
-  return c.html(layout('Auxilium &ndash; Ihre St&uuml;tze in der Pflege | Forst Baden', 'Auxilium bietet individuelle Pflegeberatung und ambulante Pflegeleistungen in Forst Baden.', body, S))
+  return c.html(layout('Pflegeberatung Bruchsal &amp; Pflegeberatung Forst &ndash; Hauswirtschaftliche Hilfe Forst | Auxilium', 'Auxilium bietet individuelle Pflegeberatung und ambulante Pflegeleistungen in Forst Baden.', body, S))
 })
 
 // ─── ÜBER AUXILIUM ────────────────────────────────────────────
