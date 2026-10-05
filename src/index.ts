@@ -1434,6 +1434,175 @@ app.get('/pflege/forst-76694', async (c) => {
   ))
 })
 
+// ─── Dedizierte Landingpage: Bruchsal 76646 ───────────────────
+app.get('/pflege/bruchsal-76646', async (c) => {
+  const S = await loadSettings(c.env.DB)
+  const { results: kats } = await c.env.DB.prepare('SELECT * FROM kategorien WHERE active=1 ORDER BY sort_order LIMIT 6').all<any>()
+  const katLinks = kats.map((k: any) => `<a href="/leistungen#${k.slug}" class="home-kat-card">
+    <div class="home-kat-card__icon"><i class="fas ${k.icon}" aria-hidden="true"></i></div>
+    <div class="home-kat-card__name">${k.name}</div>
+    <span class="home-kat-card__arrow"><i class="fas fa-arrow-right"></i> Details</span>
+  </a>`).join('')
+
+  const structuredData = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Auxilium – Pflegeberatung & Betreuung Bruchsal",
+    "description": "Persönliche Pflegeberatung und Alltagsbegleitung in Bruchsal (76646) – Kristina Bronner, Auxilium",
+    "url": "https://www.auxilium-forst.de/pflege/bruchsal-76646",
+    "areaServed": { "@type": "City", "name": "Bruchsal", "postalCode": "76646" }
+  })
+
+  const body = pageHero(
+    'Pflege in 76646',
+    'Pflegeberatung &amp; Betreuung in Bruchsal &ndash; 76646',
+    'Pers&ouml;nlich vor Ort &ndash; Betreuung, Hauswirtschaft und Pflegeberatung in Bruchsal.',
+    'Bruchsal'
+  ) + `
+<script type="application/ld+json">${structuredData}</script>
+
+<section class="section">
+  <div class="container">
+    <div class="text-center mb-12">
+      <span class="section-label">Pflege in Bruchsal</span>
+      <h2>Auxilium in Bruchsal</h2>
+      <p>Als Ihre pers&ouml;nliche Pflegeberatung und Alltagsbegleitung bin ich direkt vor Ort &ndash;
+      in Bruchsal und Umgebung. Keine wechselnden Kr&auml;fte, sondern eine feste Bezugsperson,
+      die Sie und Ihre Familie kennt.</p>
+    </div>
+    <div class="grid-3">
+      <article class="card">
+        <div class="card__icon"><i class="fas fa-home" aria-hidden="true"></i></div>
+        <h3 class="card__title">Betreuung &amp; Hauswirtschaft</h3>
+        <p class="card__text">Mahlzeiten, Einkaufen, Haushalt, W&auml;sche, Spazierg&auml;nge &ndash; flexibel kombiniert in einem Termin.</p>
+      </article>
+      <article class="card">
+        <div class="card__icon"><i class="fas fa-hand-holding-heart" aria-hidden="true"></i></div>
+        <h3 class="card__title">Pflegeberatung</h3>
+        <p class="card__text">Pflegegrad-Antrag, Verhinderungspflege, Entlastungsbetrag &ndash; ich erkl&auml;re Ihre Anspr&uuml;che verst&auml;ndlich.</p>
+      </article>
+      <article class="card">
+        <div class="card__icon"><i class="fas fa-coins" aria-hidden="true"></i></div>
+        <h3 class="card__title">G&uuml;nstig &amp; abrechenbar</h3>
+        <p class="card__text">Meine Preise sind g&uuml;nstiger als gro&szlig;e ambulante Anbieter &ndash; und direkt &uuml;ber Ihre Pflegekasse abrechenbar.</p>
+      </article>
+    </div>
+    <div class="text-center mt-8">
+      <a href="/kontakt" class="btn btn-accent"><i class="fas fa-envelope" aria-hidden="true"></i>Pers&ouml;nliches Erstgespr&auml;ch anfragen</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section--soft">
+  <div class="container">
+    <div class="text-center mb-12">
+      <span class="section-label">Alle Stadtteile</span>
+      <h2>Betreuung zu Hause &ndash; in allen Stadtteilen von Bruchsal</h2>
+      <p>Ob Bruchsal Kernstadt, Odenheim, Untergrombach, Heidelsheim oder B&uuml;chenau &ndash; ich bin
+      f&uuml;r Sie da. Mit einer festen Bezugsperson, flexiblen Einsatzzeiten und dem
+      Kombipaket aus Betreuung und Hauswirtschaft in einem Termin.</p>
+    </div>
+    ${kats.length > 0 ? `<div class="home-kat-grid">${katLinks}</div>` : ''}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="text-center mb-12">
+      <span class="section-label">Ihre Anspr&uuml;che</span>
+      <h2>Pflegeberatung in Bruchsal &ndash; Ihre Anspr&uuml;che kennen</h2>
+      <p>Sie leben in Bruchsal und fragen sich, welche Pflegeleistungen Ihnen zustehen? Ich
+      erkl&auml;re Ihnen Verhinderungspflege (bis zu 3.539&nbsp;&euro; j&auml;hrlich), Entlastungsbetrag
+      (131&nbsp;&euro; monatlich) und den Pflegegrad-Antrag &ndash; verst&auml;ndlich und ohne Fachchinesisch.</p>
+    </div>
+    <div class="grid-3">
+      <article class="card">
+        <div class="card__icon"><i class="fas fa-umbrella-beach" aria-hidden="true"></i></div>
+        <h3 class="card__title">Verhinderungspflege</h3>
+        <p class="card__text">Bis zu 3.539&nbsp;&euro; j&auml;hrlich &ndash; nutzbar f&uuml;r meine Betreuungs- und Begleitungsleistungen in Bruchsal.</p>
+      </article>
+      <article class="card">
+        <div class="card__icon"><i class="fas fa-hand-holding-heart" aria-hidden="true"></i></div>
+        <h3 class="card__title">Entlastungsbetrag</h3>
+        <p class="card__text">131&nbsp;&euro; monatlich ab Pflegegrad 1 &ndash; zweckgebunden f&uuml;r anerkannte Betreuungsleistungen.</p>
+      </article>
+      <article class="card">
+        <div class="card__icon"><i class="fas fa-file-alt" aria-hidden="true"></i></div>
+        <h3 class="card__title">Pflegegrad-Antrag</h3>
+        <p class="card__text">Ich begleite Sie beim Antrag und der Begutachtung &ndash; f&uuml;r den richtigen Pflegegrad von Anfang an.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section--soft">
+  <div class="container">
+    <div class="text-center mb-12">
+      <span class="section-label">Preise</span>
+      <h2>G&uuml;nstiger als Sie denken</h2>
+      <p>Als kleines Team mit fester Bezugsperson sind meine Preise deutlich niedriger als
+      bei gro&szlig;en ambulanten Anbietern &ndash; ohne Qualit&auml;tsverlust.</p>
+    </div>
+    <div class="text-center">
+      <a href="/leistungen" class="btn btn-outline"><i class="fas fa-list" aria-hidden="true"></i>Alle Leistungen &amp; Preise ansehen</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section--soft" aria-labelledby="faq-heading-bruchsal">
+  <div class="container">
+    <div class="text-center mb-12">
+      <span class="section-label">H&auml;ufige Fragen</span>
+      <h2 id="faq-heading-bruchsal">Antworten auf Ihre Fragen</h2>
+      <p>Die wichtigsten Fragen rund um meine T&auml;tigkeit in Bruchsal &ndash; schnell und &uuml;bersichtlich.</p>
+    </div>
+    <div class="accordion-list" style="max-width:720px;margin:0 auto;">
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false" aria-controls="faq-body-bruchsal-1">
+          Kommen Sie auch in meine Stra&szlig;e in Bruchsal?
+          <span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+        </button>
+        <div class="accordion-body" id="faq-body-bruchsal-1">
+          <div class="accordion-body__inner">
+            Ich bin in allen Bruchsaler Stadtteilen t&auml;tig. Sprechen Sie mich einfach
+            an &ndash; ich best&auml;tige den Einsatzort vorab transparent inklusive Wegpauschale.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false" aria-controls="faq-body-bruchsal-2">
+          Wie starte ich die Betreuung?
+          <span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+        </button>
+        <div class="accordion-body" id="faq-body-bruchsal-2">
+          <div class="accordion-body__inner">
+            Mit einem pers&ouml;nlichen Erstgespr&auml;ch &ndash; telefonisch oder &uuml;ber das
+            Kontaktformular. Danach k&ouml;nnen wir meist innerhalb weniger Tage starten.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section-green" aria-labelledby="cta-bruchsal-heading">
+  <div class="container text-center">
+    <h2 id="cta-bruchsal-heading" class="cta-section-green__title">Jetzt Erstgespr&auml;ch anfragen</h2>
+    <p class="cta-section-green__text">Ich berate Sie unverbindlich &ndash; pers&ouml;nlich, telefonisch oder per Kontaktformular.</p>
+    <div class="flex justify-center gap-4 flex-wrap">
+      <a href="/kontakt" class="btn btn-green-solid"><i class="fas fa-envelope" aria-hidden="true"></i>Kontakt aufnehmen</a>
+      <a href="/leistungen" class="btn btn-green-ghost"><i class="fas fa-list" aria-hidden="true"></i>Leistungen ansehen</a>
+    </div>
+  </div>
+</section>`
+
+  return c.html(layout(
+    'Pflegeberatung Bruchsal (76646) &ndash; Betreuung zu Hause | Auxilium',
+    'Ihre Pflegeberatung in Bruchsal: Betreuung, Hauswirtschaft und Beratung zu Hause – abgerechnet über Verhinderungspflege & Entlastungsbetrag. Erstgespräch persönlich.',
+    body, { ...S, _canonical: '/pflege/bruchsal-76646' }
+  ))
+})
+
 // ─── Generische Ortschaften-Landingpages ──────────────────────
 app.get('/pflege/:slug', async (c) => {
   const slug = c.req.param('slug')
