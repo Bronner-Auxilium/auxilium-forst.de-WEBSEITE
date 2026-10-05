@@ -1299,6 +1299,106 @@ const ORTE: Record<string, {name:string, plz:string, landkreis:string, text:stri
   'graben-neudorf-76676': { name:'Graben-Neudorf', plz:'76676', landkreis:'Landkreis Karlsruhe', text:'F&uuml;r Pflegebed&uuml;rftige in Graben-Neudorf bietet Auxilium alle Leistungen rund um Pflege, Beratung und Alltagsunterst&uuml;tzung.' },
 }
 
+// ─── Dedizierte Landingpage: Forst (Baden) 76694 ─────────────
+app.get('/pflege/forst-76694', async (c) => {
+  const S = await loadSettings(c.env.DB)
+  const structuredData = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Auxilium – Pflegeberatung & Betreuung Forst (Baden)",
+    "description": "Persönliche Pflegeberatung und Alltagsbegleitung in Forst (Baden) 76694 – Kristina Bronner, Auxilium",
+    "url": "https://www.auxilium-forst.de/pflege/forst-76694",
+    "areaServed": { "@type": "City", "name": "Forst (Baden)", "postalCode": "76694" }
+  })
+
+  const body = pageHero(
+    'Pflege in 76694',
+    'Pflegeberatung &amp; Betreuung in Forst (Baden) &ndash; 76694',
+    'Pers&ouml;nlich vor Ort &ndash; f&uuml;r Betreuung, Hauswirtschaft und Pflegeberatung.',
+    'Forst (Baden)'
+  ) + `
+<script type="application/ld+json">${structuredData}</script>
+
+<section class="section">
+  <div class="container" style="max-width:860px;">
+
+    <p style="font-size:1.08rem;line-height:1.85;margin-bottom:40px;">
+      Als Ihre pers&ouml;nliche Pflegeberatung und Alltagsbegleitung bin ich direkt vor Ort &ndash;
+      in Forst (Baden) und Umgebung. Ich unterst&uuml;tze Sie mit Betreuung, Hauswirtschaft
+      und Beratung rund um die Pflege: pers&ouml;nlich, verl&auml;sslich und mit Herz. Keine
+      wechselnden Kr&auml;fte, sondern eine feste Bezugsperson, die Sie und Ihre Familie kennt.
+    </p>
+
+    <div class="text-center" style="margin-bottom:48px;">
+      <a href="/kontakt" class="btn btn-accent" style="font-size:1.05rem;padding:14px 32px;">
+        <i class="fas fa-envelope" aria-hidden="true"></i>Pers&ouml;nliches Erstgespr&auml;ch anfragen
+      </a>
+    </div>
+
+    <h2>Betreuung &amp; Hauswirtschaft in Forst (Baden)</h2>
+    <p style="margin:16px 0 40px;line-height:1.8;">
+      Ich begleite Sie im Alltag: Zubereitung von Mahlzeiten, Einkaufen, Haushaltf&uuml;hrung,
+      W&auml;sche, Spazierg&auml;nge und Gesellschaft. Ob ein paar Stunden pro Woche oder t&auml;glich &ndash;
+      die Unterst&uuml;tzung passt sich Ihrer Situation an und wird flexibel kombiniert.
+    </p>
+
+    <h2>Ihre Pflegeberatung in Forst (Baden)</h2>
+    <p style="margin:16px 0 40px;line-height:1.8;">
+      Die Pflegeversicherung ist komplex &ndash; ich mache sie verst&auml;ndlich. Ich erkl&auml;re Ihnen
+      Ihre Anspr&uuml;che, helfe beim Pflegegrad-Antrag und zeige, welche Leistungen Ihnen
+      zustehen. Das Erstgespr&auml;ch ist f&uuml;r Sie kostenfrei und unverbindlich.
+    </p>
+
+    <h2>Verhinderungspflege &amp; Entlastungsbetrag nutzen</h2>
+    <p style="margin:16px 0 40px;line-height:1.8;">
+      Sie beziehen Pflegegeld oder haben einen Pflegegrad? Dann stehen Ihnen j&auml;hrlich bis
+      zu 3.539&nbsp;&euro; Verhinderungspflege (gemeinsamer Jahresbetrag mit Kurzzeitpflege) und
+      monatlich 131&nbsp;&euro; Entlastungsbetrag zu &ndash; abgerechnet direkt &uuml;ber Ihre Pflegekasse.
+      Ich zeige Ihnen, wie Sie diese Mittel f&uuml;r meine Leistungen nutzen k&ouml;nnen.
+    </p>
+
+    <div style="background:var(--bg-soft);border-radius:var(--radius);padding:40px;margin:48px 0;">
+      <h2 style="margin-top:0;">H&auml;ufige Fragen</h2>
+
+      <h3>In welchen Orten sind Sie t&auml;tig?</h3>
+      <p style="line-height:1.8;margin-bottom:24px;">
+        In ganz Forst (Baden), 76694, sowie im Umland wie Bruchsal, Karlsdorf-Neuthard und
+        Graben-Neudorf. Die Wegpauschale wird vorab transparent kommuniziert.
+      </p>
+
+      <h3>Wie kann ich bezahlen?</h3>
+      <p style="line-height:1.8;margin-bottom:24px;">
+        &Uuml;ber Ihre Pflegekasse (Verhinderungspflege, Entlastungsbetrag) oder als Privatzahler.
+        Ich berate Sie im Erstgespr&auml;ch zur g&uuml;nstigsten L&ouml;sung.
+      </p>
+
+      <h3>&Uuml;bernehmen Sie auch medizinische Behandlungspflege?</h3>
+      <p style="line-height:1.8;margin-bottom:0;">
+        Nein &ndash; Spritzen oder Verbandswechsel &uuml;bernehme ich nicht. Alles rund um Betreuung,
+        Hauswirtschaft und Beratung geh&ouml;rt zu meinen Aufgaben.
+      </p>
+    </div>
+
+    <div class="text-center" style="margin-top:48px;">
+      <p style="margin-bottom:20px;color:var(--text-light);font-size:1rem;">
+        Bereit f&uuml;r ein unverbindliches Gespr&auml;ch? Ich freue mich auf Ihre Anfrage.
+      </p>
+      <a href="/kontakt" class="btn btn-accent" style="font-size:1.05rem;padding:14px 32px;">
+        <i class="fas fa-envelope" aria-hidden="true"></i>Pers&ouml;nliches Erstgespr&auml;ch anfragen
+      </a>
+    </div>
+
+  </div>
+</section>`
+
+  return c.html(layout(
+    'Pflegeberatung &amp; Betreuung in Forst (Baden) 76694 – Auxilium',
+    'Pers\u00f6nliche Pflegeberatung und Alltagsbegleitung in Forst (Baden) 76694. Betreuung, Hauswirtschaft, Verhinderungspflege & Entlastungsbetrag – Kristina Bronner, Auxilium.',
+    body, { ...S, _canonical: '/pflege/forst-76694' }
+  ))
+})
+
+// ─── Generische Ortschaften-Landingpages ──────────────────────
 app.get('/pflege/:slug', async (c) => {
   const slug = c.req.param('slug')
   const ort = ORTE[slug]
