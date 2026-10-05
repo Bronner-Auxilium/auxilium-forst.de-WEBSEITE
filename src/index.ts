@@ -799,6 +799,42 @@ app.get('/leistungen', async (c) => {
     .join('')
 
   const body = hero + `
+<section class="section" aria-labelledby="leistungen-hw-heading">
+  <div class="container">
+    <div class="text-center mb-12">
+      <span class="section-label">Hauswirtschaft</span>
+      <h2 id="leistungen-hw-heading">Hauswirtschaftliche Hilfe</h2>
+      <p>Ich entlaste Sie im Haushalt: Zubereitung von Mahlzeiten, Einkaufen, Reinigung,
+      W&auml;sche und Organisation des Alltags. So bleibt mehr Zeit f&uuml;r das, was wirklich
+      z&auml;hlt.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section--soft" aria-labelledby="leistungen-betreuung-heading">
+  <div class="container">
+    <div class="text-center mb-12">
+      <span class="section-label">Betreuung</span>
+      <h2 id="leistungen-betreuung-heading">Betreuung zu Hause</h2>
+      <p>Gesellschaft, Spazierg&auml;nge, gemeinsame Aktivit&auml;ten und Ged&auml;chnistraining &ndash;
+      f&uuml;r Menschen mit und ohne Demenz. Eine feste Bezugsperson schafft Vertrauen
+      und Struktur.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="leistungen-beratung-heading">
+  <div class="container">
+    <div class="text-center mb-12">
+      <span class="section-label">Pflegeberatung</span>
+      <h2 id="leistungen-beratung-heading">Pflegeberatung</h2>
+      <p>Ich berate Sie zu allen Leistungen der Pflegeversicherung: Pflegegrad,
+      Verhinderungspflege, Entlastungsbetrag und Hilfsmittel &ndash; und begleite Sie
+      bei der Antragstellung.</p>
+    </div>
+  </div>
+</section>
+
 <section class="section" aria-labelledby="intro-heading">
   <div class="container">
     <div class="grid-2" style="gap:56px;">
@@ -853,8 +889,57 @@ app.get('/leistungen', async (c) => {
       <a href="/kontakt" class="btn btn-accent"><i class="fas fa-calendar-check" aria-hidden="true"></i>Pers&ouml;nliches Erstgespr&auml;ch vereinbaren</a>
     </div>
   </div>
+</section>
+
+<section class="section section--soft" aria-labelledby="leistungen-preise-heading">
+  <div class="container">
+    <div class="text-center mb-12">
+      <span class="section-label">Preise</span>
+      <h2 id="leistungen-preise-heading">Transparente Preise</h2>
+      <p>Sie zahlen nur was Sie buchen &ndash; ohne versteckte Kosten. Die Wegpauschale je
+      Einsatzort wird vorab transparent kommuniziert. Abrechnung &uuml;ber die
+      Pflegekasse (Verhinderungspflege, Entlastungsbetrag) ist m&ouml;glich.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section--soft" aria-labelledby="faq-heading-leistungen">
+  <div class="container">
+    <div class="text-center mb-12">
+      <span class="section-label">H&auml;ufige Fragen</span>
+      <h2 id="faq-heading-leistungen">Antworten auf Ihre Fragen</h2>
+      <p>Die wichtigsten Fragen zu Leistungen und Abrechnung &ndash; schnell und &uuml;bersichtlich.</p>
+    </div>
+    <div class="accordion-list" style="max-width:720px;margin:0 auto;">
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false" aria-controls="faq-body-leistungen-1">
+          Was kostet ein Einsatz?
+          <span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+        </button>
+        <div class="accordion-body" id="faq-body-leistungen-1">
+          <div class="accordion-body__inner">
+            Die Kosten richten sich nach Umfang und Einsatzort. Die Wegpauschale wird
+            vorab transparent kommuniziert &ndash; Sie zahlen nur was Sie buchen.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false" aria-controls="faq-body-leistungen-2">
+          Kann ich &uuml;ber die Pflegekasse abrechnen?
+          <span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+        </button>
+        <div class="accordion-body" id="faq-body-leistungen-2">
+          <div class="accordion-body__inner">
+            Ja &ndash; mit Verhinderungspflege (bis zu 3.539&nbsp;&euro; j&auml;hrlich) oder dem
+            Entlastungsbetrag (131&nbsp;&euro; monatlich). Ich pr&uuml;fe Ihren Anspruch im pers&ouml;nlichen
+            Erstgespr&auml;ch.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>`
-  return c.html(layout('Leistungen &amp; Kosten &ndash; Auxilium Forst Baden', 'Alle Pflegeleistungen von Auxilium auf einen Blick &ndash; transparent und fair.', body, S))
+  return c.html(layout('Hauswirtschaftliche Hilfe &amp; Betreuung in Forst (Baden)', 'Hauswirtschaftliche Hilfe und Betreuung zu Hause in Forst (Baden) &amp; Umgebung: Mahlzeiten, Haushalt, Begleitung und Beratung – transparente Preise, Abrechnung über die Pflegekasse möglich.', body, S))
 })
 
 // ─── BERATUNG ─────────────────────────────────────────────────
@@ -1346,7 +1431,8 @@ app.get('/pflege/forst-76694', async (c) => {
     <p style="margin:16px 0 40px;line-height:1.8;">
       Die Pflegeversicherung ist komplex &ndash; ich mache sie verst&auml;ndlich. Ich erkl&auml;re Ihnen
       Ihre Anspr&uuml;che, helfe beim Pflegegrad-Antrag und zeige, welche Leistungen Ihnen
-      zustehen. Das Erstgespr&auml;ch ist f&uuml;r Sie kostenfrei und unverbindlich.
+      zustehen. Vereinbaren Sie ein pers&ouml;nliches Erstgespr&auml;ch &ndash; ich nehme mir Zeit f&uuml;r
+      Ihre Situation.
     </p>
 
     <h2>Verhinderungspflege &amp; Entlastungsbetrag nutzen</h2>
@@ -1390,7 +1476,7 @@ app.get('/pflege/forst-76694', async (c) => {
         <div class="accordion-body" id="faq-forst-2">
           <div class="accordion-body__inner">
             &Uuml;ber Ihre Pflegekasse (Verhinderungspflege, Entlastungsbetrag) oder als Privatzahler.
-            Ich berate Sie im Erstgespr&auml;ch zur g&uuml;nstigsten L&ouml;sung.
+            Ich berate Sie im pers&ouml;nlichen Erstgespr&auml;ch zur g&uuml;nstigsten L&ouml;sung.
           </div>
         </div>
       </div>
@@ -1588,7 +1674,7 @@ app.get('/pflege/bruchsal-76646', async (c) => {
 <section class="cta-section-green" aria-labelledby="cta-bruchsal-heading">
   <div class="container text-center">
     <h2 id="cta-bruchsal-heading" class="cta-section-green__title">Jetzt Erstgespr&auml;ch anfragen</h2>
-    <p class="cta-section-green__text">Ich berate Sie unverbindlich &ndash; pers&ouml;nlich, telefonisch oder per Kontaktformular.</p>
+    <p class="cta-section-green__text">Sprechen Sie mich an &ndash; pers&ouml;nlich, telefonisch oder per Kontaktformular.</p>
     <div class="flex justify-center gap-4 flex-wrap">
       <a href="/kontakt" class="btn btn-green-solid"><i class="fas fa-envelope" aria-hidden="true"></i>Kontakt aufnehmen</a>
       <a href="/leistungen" class="btn btn-green-ghost"><i class="fas fa-list" aria-hidden="true"></i>Leistungen ansehen</a>
@@ -1598,7 +1684,7 @@ app.get('/pflege/bruchsal-76646', async (c) => {
 
   return c.html(layout(
     'Pflegeberatung Bruchsal (76646) &ndash; Betreuung zu Hause | Auxilium',
-    'Ihre Pflegeberatung in Bruchsal: Betreuung, Hauswirtschaft und Beratung zu Hause – abgerechnet über Verhinderungspflege & Entlastungsbetrag. Erstgespräch persönlich.',
+    'Ihre Pflegeberatung in Bruchsal: Betreuung, Hauswirtschaft und Beratung zu Hause – abgerechnet über Verhinderungspflege & Entlastungsbetrag. Persönliches Erstgespräch vereinbaren.',
     body, { ...S, _canonical: '/pflege/bruchsal-76646' }
   ))
 })
@@ -4471,8 +4557,8 @@ app.get('/robots.txt', (c) => {
 const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;category:string;intro:string;heroTitle?:string;lead?:string;content:string}> = [
   {
     slug: 'verhinderungspflege-richtig-nutzen',
-    title: 'Verhinderungspflege richtig nutzen – bis zu 3.539 Euro Anspruch bei PG 2–5 sichern',
-    meta_desc: 'Verhinderungspflege 2025: Was ist erlaubt, wie beantragen, wie viel bekomme ich? Auxilium Forst Baden erklärt alle Möglichkeiten und hilft bei der Abrechnung über die Pflegekasse.',
+    title: 'Verhinderungspflege richtig nutzen – bis zu 3.539 € | Auxilium',
+    meta_desc: 'Verhinderungspflege 2026: Was ist erlaubt, wie beantragen, wie viel bekomme ich? Auxilium Forst Baden erklärt alle Möglichkeiten und hilft bei der Abrechnung über die Pflegekasse.',
     category: 'Pflegefinanzierung',
     heroTitle: 'Verhinderungspflege verständlich erklärt!',
     intro: 'Was tun wenn die Hauptpflegeperson ausfällt? Welche Ansprüche stehen Ihnen zu?',
@@ -4514,7 +4600,53 @@ const RATGEBER_ARTICLES: Array<{slug:string;title:string;meta_desc:string;catego
 </blockquote>
 
 <p>Auxilium betreut Pflegebedürftige in <strong>Forst (Baden), Bruchsal</strong> und der gesamten Region. Kristina Bronner kennt die lokalen Pflegekassen gut – das spart Zeit bei der Abrechnung.</p>
-<p style="margin-top:24px;"><a href="/beratung" style="color:var(--accent);font-weight:700;font-size:1.05rem;">Persönliche Erstberatung vereinbaren →</a></p>`
+<p style="margin-top:24px;"><a href="/beratung" style="color:var(--accent);font-weight:700;font-size:1.05rem;">Persönliche Erstberatung vereinbaren →</a></p>
+
+<section class="cta-section-green" id="cta-verhinderungspflege" aria-labelledby="cta-vhp-heading" style="margin:48px 0 0;">
+  <div class="container text-center">
+    <h2 id="cta-vhp-heading" class="cta-section-green__title">Verhinderungspflege nutzen &ndash; ohne klassischen Pflegedienst</h2>
+    <p class="cta-section-green__text">Sie m&ouml;chten Ihre Verhinderungspflege nutzen, aber ein klassischer Pflegedienst kommt f&uuml;r Sie nicht infrage? Genau daf&uuml;r bin ich da: Ich &uuml;bernehme die Verhinderungspflege in Forst (Baden) und Umgebung &ndash; mit fester Bezugsperson, Betreuung und Hauswirtschaft in einem Einsatz. Abgerechnet direkt &uuml;ber Ihre Pflegekasse.</p>
+    <div class="flex justify-center gap-4 flex-wrap">
+      <a href="/kontakt" class="btn btn-green-solid"><i class="fas fa-envelope" aria-hidden="true"></i>Pers&ouml;nliches Erstgespr&auml;ch anfragen</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section--soft" aria-labelledby="faq-heading-vhp" style="margin-top:0;">
+  <div class="container">
+    <div class="text-center mb-12">
+      <span class="section-label">H&auml;ufige Fragen</span>
+      <h2 id="faq-heading-vhp">Noch Fragen zur Verhinderungspflege?</h2>
+    </div>
+    <div class="accordion-list" style="max-width:720px;margin:0 auto;">
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false" aria-controls="faq-body-vhp-1">
+          Was kostet die Verhinderungspflege f&uuml;r mich?
+          <span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+        </button>
+        <div class="accordion-body" id="faq-body-vhp-1">
+          <div class="accordion-body__inner">
+            Wenn Ihre Pflegekasse die Verhinderungspflege &uuml;bernimmt, zahlt die Kasse
+            direkt an mich &ndash; f&uuml;r Sie fallen keine zus&auml;tzlichen Kosten an, ggf. nur die
+            vereinbarte Wegpauschale.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false" aria-controls="faq-body-vhp-2">
+          Wie lange dauert es bis zum Start?
+          <span class="chevron" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+        </button>
+        <div class="accordion-body" id="faq-body-vhp-2">
+          <div class="accordion-body__inner">
+            Nach dem pers&ouml;nlichen Erstgespr&auml;ch k&ouml;nnen wir meist innerhalb weniger Tage
+            starten &ndash; auch kurzfristig bei Urlaub oder Krankheit Ihrer regul&auml;ren Pflegeperson.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>`
   },
   {
     slug: 'pflegegrade-erklaert',
