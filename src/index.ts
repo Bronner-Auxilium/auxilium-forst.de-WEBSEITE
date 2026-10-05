@@ -459,7 +459,7 @@ app.get('/', async (c) => {
     <div class="text-center mb-12">
       <span class="section-label">Meine Leistungen</span>
       <h2 id="services-heading">Was ich f&uuml;r Sie tue</h2>
-      <p style="max-width:540px;margin:14px auto 0;">Von der Pflege &uuml;ber Betreuung bis zur Haushaltsorganisation &ndash; Auxilium ist f&uuml;r Sie da.</p>
+      <p style="max-width:540px;margin:14px auto 0;">Von der Pflege &uuml;ber Betreuung bis zur Pflegeberatung &ndash; Auxilium ist f&uuml;r Sie da.</p>
     </div>
     <div class="home-kat-grid">
       ${homeKatCards}
