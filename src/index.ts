@@ -1503,7 +1503,7 @@ app.get('/pflege/forst-76694', async (c) => {
 
     <div class="text-center" style="margin-top:48px;">
       <p style="margin-bottom:20px;color:var(--text-light);font-size:1rem;">
-        Bereit f&uuml;r ein unverbindliches Gespr&auml;ch? Ich freue mich auf Ihre Anfrage.
+        Ich freue mich auf Ihre Anfrage.
       </p>
       <a href="/kontakt" class="btn btn-accent" style="font-size:1.05rem;padding:14px 32px;">
         <i class="fas fa-envelope" aria-hidden="true"></i>Pers&ouml;nliches Erstgespr&auml;ch anfragen
