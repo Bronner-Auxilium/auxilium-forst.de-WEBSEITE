@@ -799,42 +799,6 @@ app.get('/leistungen', async (c) => {
     .join('')
 
   const body = hero + `
-<section class="section" aria-labelledby="leistungen-hw-heading">
-  <div class="container">
-    <div class="text-center mb-12">
-      <span class="section-label">Hauswirtschaft</span>
-      <h2 id="leistungen-hw-heading">Hauswirtschaftliche Hilfe</h2>
-      <p>Ich entlaste Sie im Haushalt: Zubereitung von Mahlzeiten, Einkaufen, Reinigung,
-      W&auml;sche und Organisation des Alltags. So bleibt mehr Zeit f&uuml;r das, was wirklich
-      z&auml;hlt.</p>
-    </div>
-  </div>
-</section>
-
-<section class="section section--soft" aria-labelledby="leistungen-betreuung-heading">
-  <div class="container">
-    <div class="text-center mb-12">
-      <span class="section-label">Betreuung</span>
-      <h2 id="leistungen-betreuung-heading">Betreuung zu Hause</h2>
-      <p>Gesellschaft, Spazierg&auml;nge, gemeinsame Aktivit&auml;ten und Ged&auml;chnistraining &ndash;
-      f&uuml;r Menschen mit und ohne Demenz. Eine feste Bezugsperson schafft Vertrauen
-      und Struktur.</p>
-    </div>
-  </div>
-</section>
-
-<section class="section" aria-labelledby="leistungen-beratung-heading">
-  <div class="container">
-    <div class="text-center mb-12">
-      <span class="section-label">Pflegeberatung</span>
-      <h2 id="leistungen-beratung-heading">Pflegeberatung</h2>
-      <p>Ich berate Sie zu allen Leistungen der Pflegeversicherung: Pflegegrad,
-      Verhinderungspflege, Entlastungsbetrag und Hilfsmittel &ndash; und begleite Sie
-      bei der Antragstellung.</p>
-    </div>
-  </div>
-</section>
-
 <section class="section" aria-labelledby="intro-heading">
   <div class="container">
     <div class="grid-2" style="gap:56px;">
