@@ -1686,7 +1686,7 @@ app.get('/pflege/:slug', async (c) => {
   <div class="container" style="max-width:860px;">
     <div class="text-center mb-12">
       <span class="section-label">Pflegedienst ${ort.plz} ${ort.name}</span>
-      <h2>Auxilium in ${ort.name}</h2>
+      <h2>${slug === 'karlsdorf-neuthard-76689' ? 'Beratungseinsatz Karlsdorf-Neuthard' : `Auxilium in ${ort.name}`}</h2>
       <p style="max-width:620px;margin:16px auto 0;">${ort.text} Profitieren Sie von individueller Pflege, kompetenter Beratung und der Abrechnung &uuml;ber Ihre Pflegekasse.</p>
     </div>
     <div class="grid-3" style="margin-bottom:48px;">
@@ -1703,7 +1703,9 @@ app.get('/pflege/:slug', async (c) => {
   </div>
 </section>`
   return c.html(layout(
-    `Pflegeberatung ${ort.plz} ${ort.name} – Auxilium`,
+    slug === 'karlsdorf-neuthard-76689'
+      ? 'Beratungseinsatz Karlsdorf-Neuthard – Pflegeberatung & Hauswirtschaft | Auxilium'
+      : `Pflegeberatung ${ort.plz} ${ort.name} – Auxilium`,
     `Pflegeberatung & Hauswirtschaft in ${ort.name} (${ort.plz}): K\u00f6rperpflege, Betreuung, Einkauf & Alltagshilfe. Grundpflege & individuelle Dienste auf Anfrage. Auxilium – Kristina Bronner.`,
     body, { ...S, _canonical: `/pflege/${slug}` }
   ))
