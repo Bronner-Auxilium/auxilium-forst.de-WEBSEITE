@@ -710,7 +710,7 @@ app.get('/ueber-auxilium', async (c) => {
     </div>
   </div>
 </section>`
-  return c.html(layout('&Uuml;ber Auxilium &ndash; Kristina Bronner | Pflegeberatung Forst Baden', 'Lernen Sie Kristina Bronner und die Philosophie von Auxilium kennen.', body, S))
+  return c.html(layout('&Uuml;ber Auxilium &ndash; Kristina Bronner | Pflegeberatung Forst Baden', 'Lernen Sie Kristina Bronner und die Philosophie von Auxilium kennen.', body, { ...S, _canonical: '/ueber-auxilium' }))
 })
 
 // ─── LEISTUNGEN (aus DB) ──────────────────────────────────────
@@ -903,7 +903,7 @@ app.get('/leistungen', async (c) => {
     </div>
   </div>
 </section>`
-  return c.html(layout('Hauswirtschaftliche Hilfe Forst &amp; Haushaltshilfe f&uuml;r Senioren &ndash; Auxilium', 'Hauswirtschaftliche Hilfe Forst (Baden): Haushaltshilfe f&uuml;r Senioren, Betreuung &amp; Pflegeberatung zu Hause &ndash; faire Preise, Abrechnung &uuml;ber die Pflegekasse.', body, { ...S, _keywords: 'hauswirtschaftliche hilfe forst, haushaltshilfe für senioren, hauswirtschaft senioren, alltagshilfe senioren' }))
+  return c.html(layout('Hauswirtschaftliche Hilfe Forst &amp; Haushaltshilfe f&uuml;r Senioren &ndash; Auxilium', 'Hauswirtschaftliche Hilfe Forst (Baden): Haushaltshilfe f&uuml;r Senioren, Betreuung &amp; Pflegeberatung zu Hause &ndash; faire Preise, Abrechnung &uuml;ber die Pflegekasse.', body, { ...S, _canonical: '/leistungen', _keywords: 'hauswirtschaftliche hilfe forst, haushaltshilfe für senioren, hauswirtschaft senioren, alltagshilfe senioren' }))
 })
 
 // ─── BERATUNG ─────────────────────────────────────────────────
@@ -990,7 +990,7 @@ app.get('/beratung', async (c) => {
     <a href="/kontakt" class="btn btn-green-solid"><i class="fas fa-calendar-check" aria-hidden="true"></i>Jetzt Beratungstermin anfragen</a>
   </div>
 </section>`
-  return c.html(layout('Pflegeberatung &ndash; Auxilium Forst Baden', 'Kostenlose Pflegeberatung in Forst (Baden): Pflegeversicherung, Entlastungsbetrag und mehr.', body, S))
+  return c.html(layout('Pflegeberatung &ndash; Auxilium Forst Baden', 'Kostenlose Pflegeberatung in Forst (Baden): Pflegeversicherung, Entlastungsbetrag und mehr.', body, { ...S, _canonical: '/beratung' }))
 })
 
 // ─── KONTAKT ──────────────────────────────────────────────────
@@ -1078,7 +1078,7 @@ ${recaptchaScript}
     </div>
   </div>
 </section>`
-  return c.html(layout('Kontakt &ndash; Auxilium Pflegeberatung Forst Baden', 'Nehmen Sie Kontakt mit Auxilium auf &ndash; pers&ouml;nliche Erstberatung in Forst (Baden).', body, S))
+  return c.html(layout('Kontakt &ndash; Auxilium Pflegeberatung Forst Baden', 'Nehmen Sie Kontakt mit Auxilium auf &ndash; pers&ouml;nliche Erstberatung in Forst (Baden).', body, { ...S, _canonical: '/kontakt' }))
 })
 
 // ─── API: Kontaktformular (POST /api/contact) ─────────────────
@@ -1312,7 +1312,7 @@ app.get('/impressum', async (c) => {
     ${content}
   </article>
 </div></section>`
-  return c.html(layout('Impressum &ndash; Auxilium Forst Baden', 'Impressum von Auxilium Pflegeberatung in Forst Baden.', body, S))
+  return c.html(layout('Impressum &ndash; Auxilium Forst Baden', 'Impressum von Auxilium Pflegeberatung in Forst Baden.', body, { ...S, _canonical: '/impressum' }))
 })
 
 // ─── Datenschutz (aus DB) ─────────────────────────────────────
@@ -1326,7 +1326,7 @@ app.get('/datenschutz', async (c) => {
     ${content}
   </article>
 </div></section>`
-  return c.html(layout('Datenschutz &ndash; Auxilium Forst Baden', 'Datenschutzerkl&auml;rung von Auxilium Pflegeberatung Forst Baden.', body, S))
+  return c.html(layout('Datenschutz &ndash; Auxilium Forst Baden', 'Datenschutzerkl&auml;rung von Auxilium Pflegeberatung Forst Baden.', body, { ...S, _canonical: '/datenschutz' }))
 })
 
 // ═══════════════════════════════════════════════════════════════
@@ -2943,7 +2943,7 @@ app.get('/stellenangebote', async (c) => {
     ${jobCards}
   </div>
 </section>`
-  return c.html(layout('Stellenangebote &ndash; Auxilium Forst Baden', 'Aktuelle Stellenangebote bei Auxilium Pflegeberatung in Forst Baden.', body, S))
+  return c.html(layout('Stellenangebote &ndash; Auxilium Forst Baden', 'Aktuelle Stellenangebote bei Auxilium Pflegeberatung in Forst Baden.', body, { ...S, _canonical: '/stellenangebote' }))
 })
 
 app.get('/stellenangebote/:slug', async (c) => {
@@ -3032,7 +3032,7 @@ app.get('/stellenangebote/:slug', async (c) => {
     </div>
   </div>
 </section>`
-  return c.html(layout(`${job.title} &ndash; Auxilium`, `Stellenangebot: ${job.title} bei Auxilium Pflegeberatung in ${job.location}.`, body, S))
+  return c.html(layout(`${job.title} &ndash; Auxilium`, `Stellenangebot: ${job.title} bei Auxilium Pflegeberatung in ${job.location}.`, body, { ...S, _canonical: `/stellenangebote/${job.slug}` }))
 })
 
 // ═══════════════════════════════════════════════════════════════
@@ -4454,7 +4454,7 @@ app.get('/barrierefreiheit', async (c) => {
       </div>
     </div>
   </main>`
-  return c.html(layout('Barrierefreiheit – Auxilium Pflegeberatung Forst', 'Erklärung zur Barrierefreiheit gemäß EU-Richtlinie 2016/2102, BITV 2.0 und BGG für die Website Auxilium Pflegeberatung Forst Baden.', body, S))
+  return c.html(layout('Barrierefreiheit – Auxilium Pflegeberatung Forst', 'Erklärung zur Barrierefreiheit gemäß EU-Richtlinie 2016/2102, BITV 2.0 und BGG für die Website Auxilium Pflegeberatung Forst Baden.', body, { ...S, _canonical: '/barrierefreiheit' }))
 })
 
 // ─── Sitemap.xml ──────────────────────────────────────────────
