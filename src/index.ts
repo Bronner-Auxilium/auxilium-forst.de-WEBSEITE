@@ -903,7 +903,7 @@ app.get('/leistungen', async (c) => {
     </div>
   </div>
 </section>`
-  return c.html(layout('Hauswirtschaftliche Hilfe Forst &amp; Haushaltshilfe f&uuml;r Senioren &ndash; Auxilium', 'Hauswirtschaftliche Hilfe Forst (Baden): Haushaltshilfe f&uuml;r Senioren, Betreuung &amp; Pflegeberatung zu Hause &ndash; faire Preise, Abrechnung &uuml;ber die Pflegekasse.', body, { ...S, _canonical: '/leistungen', _keywords: 'hauswirtschaftliche hilfe forst, haushaltshilfe für senioren, hauswirtschaft senioren, alltagshilfe senioren' }))
+  return c.html(layout('Hauswirtschaftliche Hilfe Forst &amp; Haushaltshilfe f&uuml;r Senioren &ndash; Auxilium', 'K&ouml;rperpflege, Hauswirtschaft, Betreuung &amp; Pflegeberatung in Forst und Bruchsal &ndash; faire Preise, G&uuml;nstiger als ambulante Dienste, Abrechnung &uuml;ber die Pflegekasse.', body, { ...S, _canonical: '/leistungen', _keywords: 'hauswirtschaftliche hilfe forst, haushaltshilfe für senioren, hauswirtschaft senioren, alltagshilfe senioren, körperpflege forst' }))
 })
 
 // ─── BERATUNG ─────────────────────────────────────────────────
@@ -990,7 +990,7 @@ app.get('/beratung', async (c) => {
     <a href="/kontakt" class="btn btn-green-solid"><i class="fas fa-calendar-check" aria-hidden="true"></i>Jetzt Beratungstermin anfragen</a>
   </div>
 </section>`
-  return c.html(layout('Pflegeberatung &ndash; Auxilium Forst Baden', 'Kostenlose Pflegeberatung in Forst (Baden): Pflegeversicherung, Entlastungsbetrag und mehr.', body, { ...S, _canonical: '/beratung' }))
+  return c.html(layout('Pflegeberatung &ndash; Auxilium Forst Baden', 'Kostenlose Pflegeberatung in Forst &amp; Bruchsal: Pflegegrad, Verhinderungspflege, Entlastungsbetrag &ndash; Kristina Bronner ber&auml;t Sie pers&ouml;nlich &amp; unbürokratisch.', body, { ...S, _canonical: '/beratung' }))
 })
 
 // ─── KONTAKT ──────────────────────────────────────────────────
@@ -1078,7 +1078,7 @@ ${recaptchaScript}
     </div>
   </div>
 </section>`
-  return c.html(layout('Kontakt &ndash; Auxilium Pflegeberatung Forst Baden', 'Nehmen Sie Kontakt mit Auxilium auf &ndash; pers&ouml;nliche Erstberatung in Forst (Baden).', body, { ...S, _canonical: '/kontakt' }))
+  return c.html(layout('Kontakt &ndash; Auxilium Pflegeberatung Forst Baden', 'Jetzt anfragen &ndash; Pflegeberatung &amp; Hauswirtschaft in Forst, Bruchsal &amp; Umgebung. Kristina Bronner antwortet pers&ouml;nlich.', body, { ...S, _canonical: '/kontakt' }))
 })
 
 // ─── API: Kontaktformular (POST /api/contact) ─────────────────
@@ -1704,7 +1704,7 @@ app.get('/pflege/:slug', async (c) => {
 </section>`
   return c.html(layout(
     `Pflegeberatung ${ort.plz} ${ort.name} – Auxilium`,
-    `Individuelle Pflege und Pflegeberatung in ${ort.name} (${ort.plz}). Auxilium – Kristina Bronner. Verhinderungspflege, Körperpflege, Betreuung & Hauswirtschaft.`,
+    `Pflegeberatung & Hauswirtschaft in ${ort.name} (${ort.plz}): K\u00f6rperpflege, Betreuung, Einkauf & Alltagshilfe. Grundpflege & individuelle Dienste auf Anfrage. Auxilium – Kristina Bronner.`,
     body, { ...S, _canonical: `/pflege/${slug}` }
   ))
 })
